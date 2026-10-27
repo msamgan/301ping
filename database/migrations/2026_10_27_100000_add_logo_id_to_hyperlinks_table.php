@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('hyperlinks', function (Blueprint $table) {
-            $table->foreignId('logo_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('logo_id')->after('user_id')->nullable()->constrained()->nullOnDelete();
         });
     }
 

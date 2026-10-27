@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreHyperlinkRequest;
+use App\Http\Requests\UpdateHyperlinkSlugRequest;
 use App\Http\Requests\UpdateHyperlinkRequest;
 use App\Methods;
 use App\Models\Hyperlink;
@@ -11,7 +12,6 @@ use App\Shortener;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Random\RandomException;
@@ -87,6 +87,7 @@ class HyperlinkController extends Controller
                 'shortened_url' => url('/' . $hyperlink->shot_slug),
                 'visits' => $hyperlink->visits,
                 'is_active' => $hyperlink->is_active,
+                'is_edited' => (bool) $hyperlink->is_edited,
                 'logo_id' => $hyperlink->logo_id,
                 'created_at' => $hyperlink->created_at?->format('F, d Y'),
                 'last_visit' => $hyperlink->last_visit ? date('F, d Y', strtotime($hyperlink->last_visit)) : null,
@@ -97,6 +98,7 @@ class HyperlinkController extends Controller
                 ])->values(),
             ],
             'logos' => auth()->user()->logos()->latest()->get()->map->toFrontend()->values(),
+            'slugEditsRemaining' => auth()->user()->slugEditsRemaining(),
         ]);
     }
 
@@ -206,39 +208,38 @@ class HyperlinkController extends Controller
         return redirect()->back();
     }
 
-    public function updateSlug(Request $request, Hyperlink $hyperlink): JsonResponse
+    public function updateSlug(UpdateHyperlinkSlugRequest $request, Hyperlink $hyperlink): JsonResponse
     {
-        if ($hyperlink->user_id !== auth()->id()) {
-            abort(403);
+        $user = $request->user();
+
+        if (! $hyperlink->is_edited && $user->slugEditsRemaining() === 0) {
+            return response()->json([
+                'message' => 'Free plan allows only ' . $user->currentPlan()->slugEditLimit() . ' edited short links. Upgrade to edit more.',
+                'errors' => ['shot_slug' => ['You have used all your edited short links. Upgrade to edit more.']],
+                'slug_edits_remaining' => 0,
+            ], 403);
         }
 
-        $reserved = collect(Route::getRoutes()->getRoutes())
-            ->map(fn ($route) => strtolower(explode('/', trim($route->uri(), '/'))[0]))
-            ->reject(fn ($segment) => $segment === '' || str_starts_with($segment, '{'))
-            ->unique()
-            ->all();
+        $validated = $request->validated();
 
-        $validated = $request->validate([
-            'shot_slug' => [
-                'required', 'string', 'min:3', 'max:8',
-                'regex:/^(?=.*[A-Za-z0-9])[A-Za-z0-9\-_.~]+$/',
-                Rule::unique('hyperlinks', 'shot_slug')->ignore($hyperlink->id),
-                fn ($attribute, $value, $fail) => in_array(strtolower($value), $reserved, true)
-                    ? $fail('This short link is reserved.')
-                    : null,
-            ],
-        ], [
-            'shot_slug.regex' => 'Use only letters, numbers, and - _ . ~ characters.',
-            'shot_slug.unique' => 'This short link is already taken.',
-        ]);
+        if ($validated['shot_slug'] === $hyperlink->shot_slug) {
+            return response()->json([
+                'status' => true,
+                'shot_slug' => $hyperlink->shot_slug,
+                'shortened_url' => url('/' . $hyperlink->shot_slug),
+                'slug_edits_remaining' => $user->slugEditsRemaining(),
+            ]);
+        }
 
         $hyperlink->shot_slug = $validated['shot_slug'];
+        $hyperlink->is_edited = true;
         $hyperlink->save();
 
         return response()->json([
             'status' => true,
             'shot_slug' => $hyperlink->shot_slug,
             'shortened_url' => url('/' . $hyperlink->shot_slug),
+            'slug_edits_remaining' => $user->slugEditsRemaining(),
         ]);
     }
 

@@ -97,6 +97,27 @@ class User extends Authenticatable implements MustVerifyEmail
         return (Plan::tryFrom($summary['tier']) ?? Plan::Free)->logoLimit();
     }
 
+    public function currentPlan(): Plan
+    {
+        $summary = $this->subscriptionSummary();
+
+        if (! $summary['is_subscribed'] || ! empty($summary['paused'])) {
+            return Plan::Free;
+        }
+
+        return Plan::tryFrom($summary['tier']) ?? Plan::Free;
+    }
+
+    /**
+     * Remaining short link edits, or null when unlimited.
+     */
+    public function slugEditsRemaining(): ?int
+    {
+        $limit = $this->currentPlan()->slugEditLimit();
+
+        return $limit === null ? null : max(0, $limit - $this->hyperlinks()->where('is_edited', true)->count());
+    }
+
     /**
      * @return HasMany<Logo>
      */

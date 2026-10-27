@@ -6,9 +6,11 @@ import { Head, Link } from "@inertiajs/react"
 import axios from "axios"
 import { useState } from "react"
 
-export default function LinkDetails({ auth, link: initialLink, logos = [] }) {
+export default function LinkDetails({ auth, link: initialLink, logos = [], slugEditsRemaining: initialEdits = null }) {
     const [link, setLink] = useState(initialLink)
     const [slugInput, setSlugInput] = useState(initialLink.shot_slug)
+    const [editsRemaining, setEditsRemaining] = useState(initialEdits)
+    const slugLocked = editsRemaining === 0 && !link.is_edited
     const [slugError, setSlugError] = useState("")
     const [savingSlug, setSavingSlug] = useState(false)
     const [copied, setCopied] = useState(false)
@@ -44,11 +46,13 @@ export default function LinkDetails({ auth, link: initialLink, logos = [] }) {
             const { data } = await axios.patch(route("links.slug.update", link.id), {
                 shot_slug: slugInput
             })
-            setLink((prev) => ({ ...prev, shot_slug: data.shot_slug, shortened_url: data.shortened_url }))
+            setLink((prev) => ({ ...prev, is_edited: true, shot_slug: data.shot_slug, shortened_url: data.shortened_url }))
             setSlugInput(data.shot_slug)
+            setEditsRemaining(data.slug_edits_remaining)
             window.history.replaceState(null, "", route("links.show", data.shot_slug))
             showToast("Short link updated.", "success")
         } catch (error) {
+            if (error.response?.data?.slug_edits_remaining === 0) setEditsRemaining(0)
             setSlugError(error.response?.data?.errors?.shot_slug?.[0] || "Failed to update short link.")
         } finally {
             setSavingSlug(false)
@@ -141,6 +145,11 @@ export default function LinkDetails({ auth, link: initialLink, logos = [] }) {
                                     <p className="mb-3 text-xs text-muted">
                                         3-8 characters: letters, numbers, and - _ . ~
                                     </p>
+                                    {editsRemaining !== null && (
+                                        <p className="mb-3 inline-block border border-accent bg-accent/10 px-3 py-1.5 font-mono text-xs font-semibold text-accent">
+                                            {`${editsRemaining} edit${editsRemaining === 1 ? "" : "s"} left for new links on your plan.`}
+                                        </p>
+                                    )}
                                     <div className="flex flex-wrap items-center gap-3">
                                         <input
                                             type="text"
@@ -148,12 +157,13 @@ export default function LinkDetails({ auth, link: initialLink, logos = [] }) {
                                             onChange={(e) => setSlugInput(e.target.value)}
                                             minLength={3}
                                             maxLength={8}
+                                            disabled={slugLocked}
                                             aria-label="Short link slug"
                                             className="min-w-0 flex-1 basis-64 border border-line bg-white px-4 py-3 font-mono text-sm text-ink focus:border-ink focus:ring-0"
                                         />
                                         <button
                                             type="submit"
-                                            disabled={savingSlug || slugInput === link.shot_slug}
+                                            disabled={savingSlug || slugLocked || slugInput === link.shot_slug}
                                             className="w-44 border border-ink bg-ink px-4 py-3 text-center font-mono text-[11px] uppercase tracking-[0.14em] text-paper transition-colors hover:bg-paper hover:text-ink disabled:opacity-50"
                                         >
                                             {savingSlug ? "Saving..." : "Save short link"}

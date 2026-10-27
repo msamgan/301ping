@@ -17,6 +17,7 @@ use Illuminate\Support\Carbon;
  * @property string $shot_slug
  * @property int $visits
  * @property bool $is_active
+ * @property bool $is_edited
  * @property string $last_visit
  * @property string $user_id
  * @property string $logo_id
@@ -36,9 +37,12 @@ class Hyperlink extends Model
         'shot_slug',
         'visits',
         'is_active',
+        'is_edited',
         'last_visit',
         'logo_id',
     ];
+
+    protected $casts = ['is_edited' => 'boolean'];
 
     protected $keyType = 'string';
 

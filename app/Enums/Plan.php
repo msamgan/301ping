@@ -19,4 +19,15 @@ enum Plan: string
             self::RedirectPlus => null,
         };
     }
+
+    /**
+     * Maximum number of short link edits allowed by this plan (null = unlimited).
+     */
+    public function slugEditLimit(): ?int
+    {
+        return match ($this) {
+            self::Free => 3,
+            default => null,
+        };
+    }
 }
