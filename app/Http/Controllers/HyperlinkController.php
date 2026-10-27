@@ -57,6 +57,7 @@ class HyperlinkController extends Controller
                     'url' => $link->url,
                     'shot_slug' => $link->shot_slug,
                     'visits' => $link->visits,
+                    'health' => $link->health->value,
                     'last_visit' => date('F, d Y', strtotime($link->last_visit)),
                     'shortened_url' => url('/' . $link->shot_slug),
                     'status' => 'Active',

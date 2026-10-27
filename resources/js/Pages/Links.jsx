@@ -322,6 +322,9 @@ export default function Links({ auth }) {
                                                     Visits
                                                 </th>
                                                 <th className="px-5 py-4 text-left font-mono text-[10px] uppercase tracking-[0.18em] text-paper/80">
+                                                    Health
+                                                </th>
+                                                <th className="px-5 py-4 text-left font-mono text-[10px] uppercase tracking-[0.18em] text-paper/80">
                                                     Last visited
                                                 </th>
                                                 <th className="px-5 py-4 text-right font-mono text-[10px] uppercase tracking-[0.18em] text-paper/80">
@@ -425,6 +428,22 @@ export default function Links({ auth }) {
                                                                     {link.visits || 0}
                                                                 </span>
                                                             </div>
+                                                        </td>
+
+                                                        <td className="px-5 py-5 align-top">
+                                                            <span
+                                                                className={`inline-flex items-center gap-2 border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] ${
+                                                                    link.health === "healthy"
+                                                                        ? "border-green-200 bg-green-50 text-green-800"
+                                                                        : link.health === "unhealthy"
+                                                                          ? "border-red-200 bg-red-50 text-red-800"
+                                                                          : link.health === "unreachable"
+                                                                            ? "border-amber-200 bg-amber-50 text-amber-800"
+                                                                            : "border-line bg-paper text-muted"
+                                                                }`}
+                                                            >
+                                                                {link.health || "Unknown"}
+                                                            </span>
                                                         </td>
 
                                                         <td className="px-5 py-5 align-top text-sm text-muted">

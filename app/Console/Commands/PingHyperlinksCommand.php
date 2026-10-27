@@ -2,10 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\Health;
 use App\Enums\Plan;
+use App\Mail\UnhealthyHyperlinkMail;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Throwable;
 
 class PingHyperlinksCommand extends Command
@@ -81,12 +84,23 @@ class PingHyperlinksCommand extends Command
                 $totalLinks++;
                 $health = $this->checkDestinationHealth($hyperlink->url, $timeout);
 
+                $healthEnum = match ($health['health']) {
+                    'Healthy' => Health::Healthy,
+                    'Unreachable' => Health::Unreachable,
+                    default => Health::Unhealthy,
+                };
+
+                $hyperlink->update([
+                    'health' => $healthEnum,
+                ]);
+
                 if ($health['health'] === 'Healthy') {
                     $healthyCount++;
                 } elseif ($health['health'] === 'Unreachable') {
                     $unreachableCount++;
                 } else {
                     $unhealthyCount++;
+                    Mail::to($user)->queue(new UnhealthyHyperlinkMail($hyperlink));
                 }
 
                 $statusLabel = strtoupper($health['health']);

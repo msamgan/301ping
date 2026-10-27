@@ -155,6 +155,7 @@ test('authenticated user can view their links ordered by created_at descending',
     $secondLink = Hyperlink::factory()->create([
         'user_id' => $user->id,
         'created_at' => now(),
+        'health' => Health::Unhealthy,
     ]);
     Hyperlink::factory()->create(['user_id' => null]); // Guest link
     Hyperlink::factory()->create(['user_id' => User::factory()->create()->id]); // Other user's link
@@ -172,7 +173,9 @@ test('authenticated user can view their links ordered by created_at descending',
     $serviceResponse->assertStatus(200)
         ->assertJsonCount(2, 'links.data')
         ->assertJsonPath('links.data.0.id', $secondLink->id)
-        ->assertJsonPath('links.data.1.id', $firstLink->id);
+        ->assertJsonPath('links.data.0.health', Health::Unhealthy->value)
+        ->assertJsonPath('links.data.1.id', $firstLink->id)
+        ->assertJsonPath('links.data.1.health', Health::Healthy->value);
 });
 
 test('authenticated user can view link details using its short slug', function () {

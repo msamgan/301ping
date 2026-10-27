@@ -1,11 +1,14 @@
 <?php
 
+use App\Enums\Health;
+use App\Mail\UnhealthyHyperlinkMail;
 use App\Models\Hyperlink;
 use App\Models\User;
 use App\Support\Plans;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Paddle\Subscription;
 use Laravel\Paddle\SubscriptionItem;
 
@@ -276,4 +279,104 @@ test('it accepts tier via --tier option', function () {
         ->expectsOutputToContain('Fetching users and hyperlinks for subscription tier: Free')
         ->expectsOutputToContain('free-opt@example.com')
         ->assertSuccessful();
+});
+
+test('it updates the health column of hyperlinks based on ping results', function () {
+    Http::fake([
+        'https://healthy-link.com' => Http::response('OK', 200),
+        'https://unreachable-link.com' => Http::response('Not Found', 404),
+        'https://unhealthy-link.com' => Http::response('Server Error', 500),
+    ]);
+
+    $user = User::factory()->create();
+
+    $healthy = Hyperlink::create([
+        'user_id' => $user->id,
+        'url' => 'https://healthy-link.com',
+        'shot_slug' => 'hlth',
+        'health' => Health::Unhealthy,
+        'last_visit' => now(),
+    ]);
+
+    $unreachable = Hyperlink::create([
+        'user_id' => $user->id,
+        'url' => 'https://unreachable-link.com',
+        'shot_slug' => 'unrc',
+        'health' => Health::Healthy,
+        'last_visit' => now(),
+    ]);
+
+    $unhealthy = Hyperlink::create([
+        'user_id' => $user->id,
+        'url' => 'https://unhealthy-link.com',
+        'shot_slug' => 'unhl',
+        'health' => Health::Healthy,
+        'last_visit' => now(),
+    ]);
+
+    $this->artisan('hyperlinks:ping', ['tier' => 'Free'])
+        ->assertSuccessful();
+
+    expect($healthy->fresh()->health)->toBe(Health::Healthy)
+        ->and($unreachable->fresh()->health)->toBe(Health::Unreachable)
+        ->and($unhealthy->fresh()->health)->toBe(Health::Unhealthy);
+});
+
+test('it fires a queued email to the user when a hyperlink is unhealthy', function () {
+    Mail::fake();
+
+    Http::fake([
+        'https://unhealthy-link.com' => Http::response('Server Error', 500),
+    ]);
+
+    $user = User::factory()->create([
+        'email' => 'alert-user@example.com',
+    ]);
+
+    $hyperlink = Hyperlink::create([
+        'user_id' => $user->id,
+        'url' => 'https://unhealthy-link.com',
+        'shot_slug' => 'unhealthy-slug',
+        'last_visit' => now(),
+    ]);
+
+    $this->artisan('hyperlinks:ping', ['tier' => 'Free'])
+        ->assertSuccessful();
+
+    Mail::assertQueued(UnhealthyHyperlinkMail::class, function ($mail) use ($user, $hyperlink) {
+        return $mail->hasTo($user->email)
+            && $mail->hyperlink->id === $hyperlink->id;
+    });
+});
+
+test('it does not fire an email when hyperlinks are healthy or unreachable', function () {
+    Mail::fake();
+
+    Http::fake([
+        'https://healthy-link.com' => Http::response('OK', 200),
+        'https://unreachable-link.com' => Http::response('Not Found', 404),
+    ]);
+
+    $user = User::factory()->create([
+        'email' => 'healthy-user@example.com',
+    ]);
+
+    Hyperlink::create([
+        'user_id' => $user->id,
+        'url' => 'https://healthy-link.com',
+        'shot_slug' => 'healthy-slug',
+        'last_visit' => now(),
+    ]);
+
+    Hyperlink::create([
+        'user_id' => $user->id,
+        'url' => 'https://unreachable-link.com',
+        'shot_slug' => 'unreachable-slug',
+        'last_visit' => now(),
+    ]);
+
+    $this->artisan('hyperlinks:ping', ['tier' => 'Free'])
+        ->assertSuccessful();
+
+    Mail::assertNotQueued(UnhealthyHyperlinkMail::class);
 });
