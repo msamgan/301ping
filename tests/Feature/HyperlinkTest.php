@@ -196,6 +196,7 @@ test('authenticated user can view link details using its short slug', function (
             ->where('link.shot_slug', 'detail-slug')
             ->where('link.url', $link->url)
             ->where('link.visits', 12)
+            ->where('link.health', $link->health->value)
             ->where('link.is_slug_edited', false)
             ->has('link.tags', 1)
         );

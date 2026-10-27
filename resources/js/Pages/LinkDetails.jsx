@@ -258,6 +258,26 @@ export default function LinkDetails({
                                     </p>
                                 </div>
                                 <dl className="divide-y divide-line">
+                                    <div className="flex items-center justify-between gap-4 py-4">
+                                        <dt className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
+                                            Health
+                                        </dt>
+                                        <dd>
+                                            <span
+                                                className={`inline-flex items-center border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] ${
+                                                    link.health === "healthy"
+                                                        ? "border-green-200 bg-green-50 text-green-800"
+                                                        : link.health === "unhealthy"
+                                                          ? "border-red-200 bg-red-50 text-red-800"
+                                                          : link.health === "unreachable"
+                                                            ? "border-amber-200 bg-amber-50 text-amber-800"
+                                                            : "border-line bg-paper text-muted"
+                                                }`}
+                                            >
+                                                {link.health || "Unknown"}
+                                            </span>
+                                        </dd>
+                                    </div>
                                     <div className="flex justify-between gap-4 py-4">
                                         <dt className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
                                             Created

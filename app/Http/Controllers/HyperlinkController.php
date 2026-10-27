@@ -87,6 +87,7 @@ class HyperlinkController extends Controller
                 'shot_slug' => $hyperlink->shot_slug,
                 'shortened_url' => url('/' . $hyperlink->shot_slug),
                 'visits' => $hyperlink->visits,
+                'health' => $hyperlink->health->value,
                 'is_active' => $hyperlink->is_active,
                 'is_slug_edited' => (bool) $hyperlink->is_slug_edited,
                 'logo_id' => $hyperlink->logo_id,
