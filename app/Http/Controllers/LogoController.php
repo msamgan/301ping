@@ -70,7 +70,7 @@ class LogoController extends Controller
             $disk = Storage::disk(Logo::DISK);
             $filename = "{$name}.{$extension}";
 
-            if ($disk->exists($logo->directory().'/'.$filename)) {
+            if ($disk->exists($logo->directory() . '/' . $filename)) {
                 $filename = "{$name}-{$logo->id}.{$extension}";
             }
 

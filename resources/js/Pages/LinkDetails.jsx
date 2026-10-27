@@ -19,7 +19,9 @@ export default function LinkDetails({ auth, link, logos = [] }) {
     const saveBranding = async () => {
         try {
             setSavingLogo(true)
-            await axios.patch(route("links.logo.update", link.id), { logo_id: logoId === "" ? null : Number(logoId) })
+            await axios.patch(route("links.logo.update", link.id), {
+                logo_id: logoId === "" ? null : Number(logoId)
+            })
             setSavedLogoId(logoId)
             showToast("Branding saved.", "success")
         } catch (error) {
@@ -43,7 +45,11 @@ export default function LinkDetails({ auth, link, logos = [] }) {
     const downloadQrCode = async () => {
         try {
             setDownloadingQr(true)
-            await downloadQrCodeWithLogo(link.shortened_url, `${link.shot_slug}-qrcode.png`, selectedLogo?.url || "/favicon.svg")
+            await downloadQrCodeWithLogo(
+                link.shortened_url,
+                `${link.shot_slug}-qrcode.png`,
+                selectedLogo?.url || "/favicon.svg"
+            )
         } catch (error) {
             console.error("Failed to generate and download QR code", error)
         } finally {
