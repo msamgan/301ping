@@ -21,6 +21,18 @@ enum Plan: string
     }
 
     /**
+     * Maximum number of short links that can be created via the API per day.
+     */
+    public function apiDailyLimit(): int
+    {
+        return match ($this) {
+            self::Free => 40,
+            self::Redirect => 100,
+            self::RedirectPlus => 300,
+        };
+    }
+
+    /**
      * Maximum number of short link edits allowed by this plan (null = unlimited).
      */
     public function slugEditLimit(): ?int

@@ -91,6 +91,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->currentPlan()->logoLimit();
     }
 
+    public function apiDailyLimit(): int
+    {
+        return $this->currentPlan()->apiDailyLimit();
+    }
+
     public function currentPlan(): Plan
     {
         $summary = $this->subscriptionSummary();
