@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreHyperlinkRequest;
+use App\Http\Requests\UpdateHyperlinkDestinationRequest;
 use App\Http\Requests\UpdateHyperlinkRequest;
 use App\Http\Requests\UpdateHyperlinkSlugRequest;
 use App\Methods;
@@ -90,6 +91,7 @@ class HyperlinkController extends Controller
                 'health' => $hyperlink->health->value,
                 'is_active' => $hyperlink->is_active,
                 'is_slug_edited' => (bool) $hyperlink->is_slug_edited,
+                'is_destination_edited' => (bool) $hyperlink->is_destination_edited,
                 'logo_id' => $hyperlink->logo_id,
                 'created_at' => $hyperlink->created_at?->format('F, d Y'),
                 'last_visit' => $hyperlink->last_visit ? date('F, d Y', strtotime($hyperlink->last_visit)) : null,
@@ -101,6 +103,7 @@ class HyperlinkController extends Controller
             ],
             'logos' => auth()->user()->logos()->latest()->get()->map->toFrontend()->values(),
             'slugEditsRemaining' => auth()->user()->slugEditsRemaining(),
+            'destinationEditsRemaining' => auth()->user()->destinationEditsRemaining(),
         ]);
     }
 
@@ -242,6 +245,39 @@ class HyperlinkController extends Controller
             'shot_slug' => $hyperlink->shot_slug,
             'shortened_url' => url('/' . $hyperlink->shot_slug),
             'slug_edits_remaining' => $user->slugEditsRemaining(),
+        ]);
+    }
+
+    public function updateDestination(UpdateHyperlinkDestinationRequest $request, Hyperlink $hyperlink): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $hyperlink->is_destination_edited && $user->destinationEditsRemaining() === 0) {
+            return response()->json([
+                'message' => 'Free plan allows only ' . $user->currentPlan()->destinationEditLimit() . ' edited destination. Upgrade to edit more.',
+                'errors' => ['url' => ['You have used your edited destination. Upgrade to edit more.']],
+                'destination_edits_remaining' => 0,
+            ], 403);
+        }
+
+        $validated = $request->validated();
+
+        if ($validated['url'] === $hyperlink->url) {
+            return response()->json([
+                'status' => true,
+                'url' => $hyperlink->url,
+                'destination_edits_remaining' => $user->destinationEditsRemaining(),
+            ]);
+        }
+
+        $hyperlink->url = $validated['url'];
+        $hyperlink->is_destination_edited = true;
+        $hyperlink->save();
+
+        return response()->json([
+            'status' => true,
+            'url' => $hyperlink->url,
+            'destination_edits_remaining' => $user->destinationEditsRemaining(),
         ]);
     }
 

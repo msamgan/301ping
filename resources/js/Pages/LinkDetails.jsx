@@ -10,12 +10,18 @@ export default function LinkDetails({
     auth,
     link: initialLink,
     logos = [],
-    slugEditsRemaining: initialEdits = null
+    slugEditsRemaining: initialEdits = null,
+    destinationEditsRemaining: initialDestinationEdits = null
 }) {
     const [link, setLink] = useState(initialLink)
     const [slugInput, setSlugInput] = useState(initialLink.shot_slug)
     const [editsRemaining, setEditsRemaining] = useState(initialEdits)
     const slugLocked = editsRemaining === 0 && !link.is_slug_edited
+    const [destinationEditsRemaining, setDestinationEditsRemaining] = useState(initialDestinationEdits)
+    const destinationLocked = destinationEditsRemaining === 0 && !link.is_destination_edited
+    const [destinationInput, setDestinationInput] = useState(initialLink.url)
+    const [destinationError, setDestinationError] = useState("")
+    const [savingDestination, setSavingDestination] = useState(false)
     const [slugError, setSlugError] = useState("")
     const [savingSlug, setSavingSlug] = useState(false)
     const [copied, setCopied] = useState(false)
@@ -66,6 +72,30 @@ export default function LinkDetails({
             setSlugError(error.response?.data?.errors?.shot_slug?.[0] || "Failed to update short link.")
         } finally {
             setSavingSlug(false)
+        }
+    }
+
+    const saveDestination = async (e) => {
+        e.preventDefault()
+        setDestinationError("")
+        try {
+            setSavingDestination(true)
+            const { data } = await axios.patch(route("links.destination.update", link.id), {
+                url: destinationInput
+            })
+            setLink((prev) => ({
+                ...prev,
+                is_destination_edited: true,
+                url: data.url
+            }))
+            setDestinationInput(data.url)
+            setDestinationEditsRemaining(data.destination_edits_remaining)
+            showToast("Destination updated.", "success")
+        } catch (error) {
+            if (error.response?.data?.destination_edits_remaining === 0) setDestinationEditsRemaining(0)
+            setDestinationError(error.response?.data?.errors?.url?.[0] || "Failed to update destination.")
+        } finally {
+            setSavingDestination(false)
         }
     }
 
@@ -189,19 +219,48 @@ export default function LinkDetails({
                                     </div>
                                     {slugError && <p className="mt-2 text-xs text-red-600">{slugError}</p>}
                                 </form>
-                                <div className="mt-8 border-t border-line pt-6">
-                                    <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
-                                        Destination
-                                    </p>
-                                    <a
-                                        href={link.url}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="break-all text-base leading-7 text-ink underline decoration-line underline-offset-4 hover:text-accent"
-                                    >
-                                        {link.url}
-                                    </a>
-                                </div>
+                                <form onSubmit={saveDestination} className="mt-8 border-t border-line pt-6">
+                                    <div className="mb-3 flex items-center justify-between gap-3">
+                                        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                                            Destination
+                                        </p>
+                                        <Link
+                                            href={route("pricing")}
+                                            className="font-mono text-[10px] uppercase tracking-[0.14em] text-accent underline underline-offset-4 hover:text-ink"
+                                        >
+                                            View plans
+                                        </Link>
+                                    </div>
+                                    {destinationEditsRemaining !== null && (
+                                        <p className="mb-3 inline-block border border-accent bg-accent/10 px-3 py-1.5 font-mono text-xs font-semibold text-accent">
+                                            {`${destinationEditsRemaining} destination edit${destinationEditsRemaining === 1 ? "" : "s"} left on your plan.`}
+                                        </p>
+                                    )}
+                                    <div className="flex flex-wrap items-center gap-3">
+                                        <input
+                                            type="url"
+                                            value={destinationInput}
+                                            onChange={(e) => setDestinationInput(e.target.value)}
+                                            disabled={destinationLocked}
+                                            aria-label="Destination URL"
+                                            className="min-w-0 flex-1 basis-64 border border-line bg-white px-4 py-3 font-mono text-sm text-ink focus:border-ink focus:ring-0 disabled:bg-paper"
+                                        />
+                                        <button
+                                            type="submit"
+                                            disabled={
+                                                savingDestination ||
+                                                destinationLocked ||
+                                                destinationInput === link.url
+                                            }
+                                            className="w-44 border border-ink bg-ink px-4 py-3 text-center font-mono text-[11px] uppercase tracking-[0.14em] text-paper transition-colors hover:bg-paper hover:text-ink disabled:opacity-50"
+                                        >
+                                            {savingDestination ? "Saving..." : "Save destination"}
+                                        </button>
+                                    </div>
+                                    {destinationError && (
+                                        <p className="mt-2 text-xs text-red-600">{destinationError}</p>
+                                    )}
+                                </form>
                                 <div className="mt-8 border-t border-line pt-6">
                                     <div className="mb-3 flex items-center justify-between gap-3">
                                         <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">

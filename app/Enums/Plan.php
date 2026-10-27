@@ -42,4 +42,15 @@ enum Plan: string
             default => null,
         };
     }
+
+    /**
+     * Maximum number of destinations that can be edited by this plan (null = unlimited).
+     */
+    public function destinationEditLimit(): ?int
+    {
+        return match ($this) {
+            self::Free => 1,
+            default => null,
+        };
+    }
 }

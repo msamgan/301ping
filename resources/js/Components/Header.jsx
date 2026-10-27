@@ -42,6 +42,11 @@ export default function Header({ isAuthenticated = false, user = null }) {
                     key: "services.broken-destinations",
                     href: route("services.broken-destinations"),
                     label: "Broken destination monitoring"
+                },
+                {
+                    key: "services.edit-destination",
+                    href: route("services.edit-destination"),
+                    label: "Edit destination"
                 }
             ]
         },

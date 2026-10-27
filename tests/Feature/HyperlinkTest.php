@@ -4,8 +4,11 @@ use App\Enums\Health;
 use App\Models\Hyperlink;
 use App\Models\Tag;
 use App\Models\User;
+use App\Support\Plans;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
+use Laravel\Paddle\Subscription;
+use Laravel\Paddle\SubscriptionItem;
 
 uses(RefreshDatabase::class);
 
@@ -198,8 +201,104 @@ test('authenticated user can view link details using its short slug', function (
             ->where('link.visits', 12)
             ->where('link.health', $link->health->value)
             ->where('link.is_slug_edited', false)
+            ->where('link.is_destination_edited', false)
+            ->where('destinationEditsRemaining', 1)
             ->has('link.tags', 1)
         );
+});
+
+test('free user can edit one link destination and re-edit that same destination', function () {
+    $user = User::factory()->create();
+    $firstLink = Hyperlink::factory()->create([
+        'user_id' => $user->id,
+        'url' => 'https://example.com/first',
+    ]);
+    $secondLink = Hyperlink::factory()->create([
+        'user_id' => $user->id,
+        'url' => 'https://example.com/second',
+    ]);
+
+    $this->actingAs($user)
+        ->patchJson("/service/links/{$firstLink->id}/destination", [
+            'url' => 'https://example.com/updated-first',
+        ])
+        ->assertOk()
+        ->assertJson([
+            'status' => true,
+            'url' => 'https://example.com/updated-first',
+            'destination_edits_remaining' => 0,
+        ]);
+
+    $this->assertDatabaseHas('hyperlinks', [
+        'id' => $firstLink->id,
+        'url' => 'https://example.com/updated-first',
+        'is_destination_edited' => true,
+    ]);
+
+    $this->patchJson("/service/links/{$firstLink->id}/destination", [
+        'url' => 'https://example.com/updated-first-again',
+    ])->assertOk();
+
+    $this->patchJson("/service/links/{$secondLink->id}/destination", [
+        'url' => 'https://example.com/updated-second',
+    ])->assertForbidden()
+        ->assertJsonPath('destination_edits_remaining', 0);
+
+    $this->assertDatabaseHas('hyperlinks', [
+        'id' => $secondLink->id,
+        'url' => 'https://example.com/second',
+        'is_destination_edited' => false,
+    ]);
+});
+
+test('paid user can edit multiple link destinations', function () {
+    $user = User::factory()->create();
+    $subscription = Subscription::create([
+        'billable_id' => $user->id,
+        'billable_type' => $user->getMorphClass(),
+        'type' => 'default',
+        'paddle_id' => 'sub_destination_edits',
+        'status' => Subscription::STATUS_ACTIVE,
+    ]);
+    SubscriptionItem::create([
+        'subscription_id' => $subscription->id,
+        'product_id' => 'pro_redirect',
+        'price_id' => Plans::all()['redirect_monthly']['price_id'],
+        'status' => 'active',
+        'quantity' => 1,
+    ]);
+    $firstLink = Hyperlink::factory()->create(['user_id' => $user->id]);
+    $secondLink = Hyperlink::factory()->create(['user_id' => $user->id]);
+
+    $this->actingAs($user)
+        ->patchJson("/service/links/{$firstLink->id}/destination", [
+            'url' => 'https://example.com/paid-first',
+        ])
+        ->assertOk()
+        ->assertJsonPath('destination_edits_remaining', null);
+
+    $this->patchJson("/service/links/{$secondLink->id}/destination", [
+        'url' => 'https://example.com/paid-second',
+    ])->assertOk();
+});
+
+test('destination edits validate URLs and enforce link ownership', function () {
+    $user = User::factory()->create();
+    $usersLink = Hyperlink::factory()->create(['user_id' => $user->id]);
+    $otherUsersLink = Hyperlink::factory()->create([
+        'user_id' => User::factory()->create()->id,
+    ]);
+
+    $this->actingAs($user)
+        ->patchJson("/service/links/{$usersLink->id}/destination", [
+            'url' => 'javascript:alert(1)',
+        ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['url']);
+
+    $this->patchJson("/service/links/{$otherUsersLink->id}/destination", [
+        'url' => 'https://example.com/unauthorized',
+    ])->assertForbidden();
 });
 
 test('authenticated user cannot view another users link details', function () {

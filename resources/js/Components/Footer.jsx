@@ -91,6 +91,14 @@ export default function Footer() {
                                     Broken destination monitoring
                                 </a>
                             </li>
+                            <li>
+                                <a
+                                    href={route("services.edit-destination")}
+                                    className="text-ink hover:text-accent-dark transition-colors"
+                                >
+                                    Edit destination
+                                </a>
+                            </li>
                         </ul>
                     </div>
 

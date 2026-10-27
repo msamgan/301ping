@@ -49,6 +49,7 @@ const buildPlans = (plansData = {}) => [
 // One value per plan, in the same order as `plans`. true/false render as a check/dash.
 const features = [
     { label: "Custom links", values: ["3", "Unlimited", "Unlimited", "Tailored"] },
+    { label: "Edit destination", values: ["1", "Unlimited", "Unlimited", "Tailored"] },
     { label: "Analytics", values: ["Visits only", "Detailed", "Detailed", "Tailored"] },
     { label: "Short links per day (API & extension)", values: ["40", "100", "300", "Tailored"] },
     { label: "Custom logo in QR code", values: [false, "1", "Unlimited", true] },

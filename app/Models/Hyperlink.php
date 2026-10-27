@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
  * @property int $visits
  * @property bool $is_active
  * @property bool $is_slug_edited
+ * @property bool $is_destination_edited
  * @property Health|string $health
  * @property string $last_visit
  * @property string $user_id
@@ -40,6 +41,7 @@ class Hyperlink extends Model
         'visits',
         'is_active',
         'is_slug_edited',
+        'is_destination_edited',
         'health',
         'last_visit',
         'logo_id',
@@ -47,6 +49,7 @@ class Hyperlink extends Model
 
     protected $casts = [
         'is_slug_edited' => 'boolean',
+        'is_destination_edited' => 'boolean',
         'health' => Health::class,
     ];
 

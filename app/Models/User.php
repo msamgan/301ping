@@ -118,6 +118,16 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Remaining destination edits, or null when unlimited.
+     */
+    public function destinationEditsRemaining(): ?int
+    {
+        $limit = $this->currentPlan()->destinationEditLimit();
+
+        return $limit === null ? null : max(0, $limit - $this->hyperlinks()->where('is_destination_edited', true)->count());
+    }
+
+    /**
      * @return HasMany<Logo>
      */
     public function logos(): HasMany

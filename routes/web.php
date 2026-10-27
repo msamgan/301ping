@@ -39,6 +39,7 @@ Route::inertia('/services/qr-code-logo', 'Services/QrCodeLogo')->name('services.
 Route::inertia('/services/link-tags', 'Services/LinkTags')->name('services.link-tags');
 Route::inertia('/services/custom-links', 'Services/CustomLinks')->name('services.custom-links');
 Route::inertia('/services/broken-destinations', 'Services/BrokenDestinations')->name('services.broken-destinations');
+Route::inertia('/services/edit-destination', 'Services/EditDestination')->name('services.edit-destination');
 Route::inertia('/privacy', 'Privacy')->name('privacy');
 
 // this is the route that redirects the user to the original URL; this has to be the last route
