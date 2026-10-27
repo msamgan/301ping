@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Health;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +19,7 @@ use Illuminate\Support\Carbon;
  * @property int $visits
  * @property bool $is_active
  * @property bool $is_slug_edited
+ * @property Health|string $health
  * @property string $last_visit
  * @property string $user_id
  * @property string $logo_id
@@ -38,11 +40,15 @@ class Hyperlink extends Model
         'visits',
         'is_active',
         'is_slug_edited',
+        'health',
         'last_visit',
         'logo_id',
     ];
 
-    protected $casts = ['is_slug_edited' => 'boolean'];
+    protected $casts = [
+        'is_slug_edited' => 'boolean',
+        'health' => Health::class,
+    ];
 
     protected $keyType = 'string';
 

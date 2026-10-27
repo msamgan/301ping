@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Health;
 use App\Models\Hyperlink;
 use App\Models\Tag;
 use App\Models\User;
@@ -308,5 +309,40 @@ test('authenticated user can detach a tag from a link using its slug', function 
     $this->assertDatabaseMissing('hyperlink_tag', [
         'hyperlink_id' => $link->id,
         'tag_id' => $tag->id,
+    ]);
+});
+
+test('hyperlink defaults to healthy health status', function () {
+    $link = Hyperlink::create([
+        'url' => 'https://example.com/test-health-default',
+        'shot_slug' => 'hlth',
+        'last_visit' => now(),
+    ]);
+
+    expect($link->health)->toBe(Health::Healthy);
+
+    $this->assertDatabaseHas('hyperlinks', [
+        'id' => $link->id,
+        'health' => 'healthy',
+    ]);
+});
+
+test('hyperlink supports unhealthy and unreachable health statuses', function () {
+    $unhealthyLink = Hyperlink::factory()->create([
+        'health' => Health::Unhealthy,
+    ]);
+    expect($unhealthyLink->health)->toBe(Health::Unhealthy);
+    $this->assertDatabaseHas('hyperlinks', [
+        'id' => $unhealthyLink->id,
+        'health' => 'unhealthy',
+    ]);
+
+    $unreachableLink = Hyperlink::factory()->create([
+        'health' => Health::Unreachable,
+    ]);
+    expect($unreachableLink->health)->toBe(Health::Unreachable);
+    $this->assertDatabaseHas('hyperlinks', [
+        'id' => $unreachableLink->id,
+        'health' => 'unreachable',
     ]);
 });
