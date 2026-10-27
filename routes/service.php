@@ -18,6 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/links', 'links')->name('service.links');
         Route::post('/regenerate-token', 'regenerateToken')->name('service.regenerate-token');
         Route::delete('/links/{hyperlink}', 'destroy')->name('links.destroy');
+        Route::patch('/links/{hyperlink}/logo', 'updateLogo')->name('links.logo.update');
         Route::post('/links/{hyperlink}/tags', 'attachTag')->name('links.tags.attach');
         Route::delete('/links/{hyperlink}/tags/{tag:slug}', 'detachTag')->name('links.tags.detach');
     });

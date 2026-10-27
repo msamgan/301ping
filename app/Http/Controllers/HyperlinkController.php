@@ -11,6 +11,7 @@ use App\Shortener;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Random\RandomException;
 
@@ -49,7 +50,7 @@ class HyperlinkController extends Controller
                 'total' => (clone $query)->count(),
                 'visits' => (int) (clone $query)->sum('visits'),
             ],
-            'links' => $listing->with('tags')->orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate(20)->withQueryString()->through(function ($link) {
+            'links' => $listing->with(['tags', 'logo'])->orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate(20)->withQueryString()->through(function ($link) {
                 return [
                     'id' => $link->id,
                     'url' => $link->url,
@@ -58,6 +59,7 @@ class HyperlinkController extends Controller
                     'last_visit' => date('F, d Y', strtotime($link->last_visit)),
                     'shortened_url' => url('/' . $link->shot_slug),
                     'status' => 'Active',
+                    'logo_url' => $link->logo?->url(),
                     'tags' => $link->tags->map(fn ($tag) => [
                         'id' => $tag->id,
                         'name' => $tag->name,
@@ -73,7 +75,7 @@ class HyperlinkController extends Controller
         $hyperlink = Hyperlink::query()
             ->where('user_id', auth()->id())
             ->where('shot_slug', $shot_slug)
-            ->with('tags')
+            ->with(['tags', 'logo'])
             ->firstOrFail();
 
         return Inertia::render('LinkDetails', [
@@ -84,6 +86,7 @@ class HyperlinkController extends Controller
                 'shortened_url' => url('/' . $hyperlink->shot_slug),
                 'visits' => $hyperlink->visits,
                 'is_active' => $hyperlink->is_active,
+                'logo_id' => $hyperlink->logo_id,
                 'created_at' => $hyperlink->created_at?->format('F, d Y'),
                 'last_visit' => $hyperlink->last_visit ? date('F, d Y', strtotime($hyperlink->last_visit)) : null,
                 'tags' => $hyperlink->tags->map(fn ($tag) => [
@@ -92,6 +95,7 @@ class HyperlinkController extends Controller
                     'slug' => $tag->slug,
                 ])->values(),
             ],
+            'logos' => auth()->user()->logos()->latest()->get()->map->toFrontend()->values(),
         ]);
     }
 
@@ -199,6 +203,29 @@ class HyperlinkController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function updateLogo(Request $request, Hyperlink $hyperlink): JsonResponse
+    {
+        if ($hyperlink->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'logo_id' => [
+                'nullable', 'integer',
+                Rule::exists('logos', 'id')->where('user_id', auth()->id()),
+            ],
+        ]);
+
+        $hyperlink->logo_id = $validated['logo_id'] ?? null;
+        $hyperlink->save();
+
+        return response()->json([
+            'status' => true,
+            'logo_id' => $hyperlink->logo_id,
+            'logo_url' => $hyperlink->logo?->url(),
+        ]);
     }
 
     public function attachTag(Request $request, Hyperlink $hyperlink): JsonResponse

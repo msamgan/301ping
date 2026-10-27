@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @method static create(array $array)
@@ -18,11 +19,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property bool $is_active
  * @property string $last_visit
  * @property string $user_id
+ * @property string $logo_id
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class Hyperlink extends Model
 {
     use HasFactory, HasUuids;
 
+    /**
+     * @var mixed|null
+     */
     protected $fillable = [
         'user_id',
         'url',
@@ -30,9 +37,18 @@ class Hyperlink extends Model
         'visits',
         'is_active',
         'last_visit',
+        'logo_id',
     ];
 
     protected $keyType = 'string';
+
+    /**
+     * @return BelongsTo<Logo, Hyperlink>
+     */
+    public function logo(): BelongsTo
+    {
+        return $this->belongsTo(Logo::class);
+    }
 
     /**
      * Get the user that owns the hyperlink.

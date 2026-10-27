@@ -105,7 +105,7 @@ export default function Links({ auth }) {
             setDownloadingQrId(link.id)
             const targetUrl = link.shortened_url || link.url
             const filename = `${link.shot_slug || "link"}-qrcode.png`
-            await downloadQrCodeWithLogo(targetUrl, filename, "/favicon.svg")
+            await downloadQrCodeWithLogo(targetUrl, filename, link.logo_url || "/favicon.svg")
         } catch (error) {
             console.error("Failed to generate and download QR code", error)
         } finally {

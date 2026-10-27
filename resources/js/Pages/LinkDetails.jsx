@@ -1,12 +1,34 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout"
+import { useToast } from "@/Components/ToastProvider"
 import LinkTags from "@/Components/LinkTags"
 import { downloadQrCodeWithLogo } from "@/Utils/qrCode"
 import { Head, Link } from "@inertiajs/react"
+import axios from "axios"
 import { useState } from "react"
 
-export default function LinkDetails({ auth, link }) {
+export default function LinkDetails({ auth, link, logos = [] }) {
     const [copied, setCopied] = useState(false)
     const [downloadingQr, setDownloadingQr] = useState(false)
+    const [logoId, setLogoId] = useState(link.logo_id ? String(link.logo_id) : "")
+    const [savedLogoId, setSavedLogoId] = useState(link.logo_id ? String(link.logo_id) : "")
+    const [savingLogo, setSavingLogo] = useState(false)
+    const showToast = useToast()
+
+    const selectedLogo = logos.find((logo) => String(logo.id) === savedLogoId)
+
+    const saveBranding = async () => {
+        try {
+            setSavingLogo(true)
+            await axios.patch(route("links.logo.update", link.id), { logo_id: logoId === "" ? null : Number(logoId) })
+            setSavedLogoId(logoId)
+            showToast("Branding saved.", "success")
+        } catch (error) {
+            console.error("Failed to save branding", error)
+            showToast(error.response?.data?.message || "Failed to save branding.", "error")
+        } finally {
+            setSavingLogo(false)
+        }
+    }
 
     const copyShortLink = async () => {
         try {
@@ -21,7 +43,7 @@ export default function LinkDetails({ auth, link }) {
     const downloadQrCode = async () => {
         try {
             setDownloadingQr(true)
-            await downloadQrCodeWithLogo(link.shortened_url, `${link.shot_slug}-qrcode.png`, "/favicon.svg")
+            await downloadQrCodeWithLogo(link.shortened_url, `${link.shot_slug}-qrcode.png`, selectedLogo?.url || "/favicon.svg")
         } catch (error) {
             console.error("Failed to generate and download QR code", error)
         } finally {
@@ -71,14 +93,14 @@ export default function LinkDetails({ auth, link }) {
                                         href={link.shortened_url}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="break-all border border-line bg-white px-4 py-3 font-mono text-sm text-accent hover:border-ink"
+                                        className="min-w-0 flex-1 basis-64 break-all border border-line bg-white px-4 py-3 font-mono text-sm text-accent hover:border-ink"
                                     >
                                         {link.shortened_url}
                                     </a>
                                     <button
                                         type="button"
                                         onClick={copyShortLink}
-                                        className="border border-ink bg-ink px-4 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-paper transition-colors hover:bg-paper hover:text-ink"
+                                        className="w-44 border border-ink bg-ink px-4 py-3 text-center font-mono text-[11px] uppercase tracking-[0.14em] text-paper transition-colors hover:bg-paper hover:text-ink"
                                     >
                                         {copied ? "Copied" : "Copy short link"}
                                     </button>
@@ -95,6 +117,39 @@ export default function LinkDetails({ auth, link }) {
                                     >
                                         {link.url}
                                     </a>
+                                </div>
+                                <div className="mt-8 border-t border-line pt-6">
+                                    <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                                        Branding
+                                    </p>
+                                    <p className="mb-3 text-xs text-muted">
+                                        This logo will be used in the QR code.
+                                    </p>
+                                    <div className="flex flex-wrap items-center gap-3">
+                                        <select
+                                            value={logoId}
+                                            onChange={(e) => {
+                                                setLogoId(e.target.value)
+                                            }}
+                                            aria-label="QR code logo"
+                                            className="min-w-0 flex-1 basis-64 border border-line bg-white px-4 py-3 font-mono text-sm text-ink focus:border-ink focus:ring-0"
+                                        >
+                                            <option value="">Default</option>
+                                            {logos.map((logo) => (
+                                                <option key={logo.id} value={logo.id}>
+                                                    {logo.title}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            type="button"
+                                            onClick={saveBranding}
+                                            disabled={savingLogo || logoId === savedLogoId}
+                                            className="w-44 border border-ink bg-ink px-4 py-3 text-center font-mono text-[11px] uppercase tracking-[0.14em] text-paper transition-colors hover:bg-paper hover:text-ink disabled:opacity-50"
+                                        >
+                                            {savingLogo ? "Saving..." : "Save branding"}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -128,7 +183,7 @@ export default function LinkDetails({ auth, link }) {
                                     type="button"
                                     onClick={downloadQrCode}
                                     disabled={downloadingQr}
-                                    className="mt-2 w-full border border-line px-4 py-3 text-left font-mono text-[11px] uppercase tracking-[0.14em] transition-colors hover:border-ink disabled:opacity-50"
+                                    className="mt-2 w-full border border-ink bg-ink px-4 py-3 text-center font-mono text-[11px] uppercase tracking-[0.14em] text-paper transition-colors hover:bg-paper hover:text-ink disabled:opacity-50"
                                 >
                                     {downloadingQr ? "Preparing QR code..." : "Download QR code"}
                                 </button>
