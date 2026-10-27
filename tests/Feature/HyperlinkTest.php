@@ -174,6 +174,38 @@ test('authenticated user can view their links ordered by created_at descending',
         ->assertJsonPath('links.data.1.id', $firstLink->id);
 });
 
+test('authenticated user can view link details using its short slug', function () {
+    $user = User::factory()->create();
+    $link = Hyperlink::factory()->create([
+        'user_id' => $user->id,
+        'shot_slug' => 'detail-slug',
+        'visits' => 12,
+    ]);
+    $tag = Tag::factory()->create(['user_id' => $user->id]);
+    $link->tags()->attach($tag);
+
+    $response = $this->actingAs($user)->get('/links/detail-slug');
+
+    $response->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('LinkDetails')
+            ->where('link.shot_slug', 'detail-slug')
+            ->where('link.url', $link->url)
+            ->where('link.visits', 12)
+            ->has('link.tags', 1)
+        );
+});
+
+test('authenticated user cannot view another users link details', function () {
+    $user = User::factory()->create();
+    $link = Hyperlink::factory()->create([
+        'user_id' => User::factory()->create()->id,
+        'shot_slug' => 'private-slug',
+    ]);
+
+    $this->actingAs($user)->get('/links/' . $link->shot_slug)->assertNotFound();
+});
+
 test('authenticated user can search and filter their links via service endpoint', function () {
     $user = User::factory()->create();
     $targetLink = Hyperlink::factory()->create([

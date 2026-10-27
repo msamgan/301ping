@@ -11,6 +11,7 @@ use App\Shortener;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Random\RandomException;
 
 class HyperlinkController extends Controller
@@ -65,6 +66,33 @@ class HyperlinkController extends Controller
                 ];
             }),
         ];
+    }
+
+    public function details(string $shot_slug)
+    {
+        $hyperlink = Hyperlink::query()
+            ->where('user_id', auth()->id())
+            ->where('shot_slug', $shot_slug)
+            ->with('tags')
+            ->firstOrFail();
+
+        return Inertia::render('LinkDetails', [
+            'link' => [
+                'id' => $hyperlink->id,
+                'url' => $hyperlink->url,
+                'shot_slug' => $hyperlink->shot_slug,
+                'shortened_url' => url('/' . $hyperlink->shot_slug),
+                'visits' => $hyperlink->visits,
+                'is_active' => $hyperlink->is_active,
+                'created_at' => $hyperlink->created_at?->format('F, d Y'),
+                'last_visit' => $hyperlink->last_visit ? date('F, d Y', strtotime($hyperlink->last_visit)) : null,
+                'tags' => $hyperlink->tags->map(fn ($tag) => [
+                    'id' => $tag->id,
+                    'name' => $tag->name,
+                    'slug' => $tag->slug,
+                ])->values(),
+            ],
+        ]);
     }
 
     /**

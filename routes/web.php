@@ -25,6 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('billing.invoices.download');
 
     Route::inertia('/links', 'Links')->name('links');
+    Route::get('/links/{shot_slug}', [HyperlinkController::class, 'details'])->name('links.show');
     Route::inertia('/tags', 'Tags')->name('tags');
 });
 
