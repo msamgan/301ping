@@ -61,12 +61,188 @@ function FieldActions({ editing, onEdit, onCancel, onSave, saving, dirty, locked
     )
 }
 
+const PLACEHOLDER_ANALYTICS = {
+    total: 1284,
+    bots: 12,
+    daily: Array.from({ length: 30 }, (_, i) => ({
+        date: String(i),
+        total: [4, 9, 6, 12, 8, 15, 11, 7, 14, 18, 10, 16, 20, 13, 9, 17, 22, 19, 12, 15][i % 20]
+    })),
+    countries: [
+        { label: "United States", total: 540 },
+        { label: "India", total: 310 },
+        { label: "Germany", total: 180 },
+        { label: "Brazil", total: 90 }
+    ],
+    devices: [
+        { label: "Mobile", total: 700 },
+        { label: "Desktop", total: 520 },
+        { label: "Tablet", total: 64 }
+    ],
+    browsers: [
+        { label: "Chrome", total: 800 },
+        { label: "Safari", total: 300 },
+        { label: "Firefox", total: 120 }
+    ],
+    os: [
+        { label: "Android", total: 420 },
+        { label: "Windows", total: 380 },
+        { label: "iOS", total: 290 },
+        { label: "macOS", total: 140 }
+    ],
+    languages: [
+        { label: "en", total: 700 },
+        { label: "es", total: 220 },
+        { label: "de", total: 140 },
+        { label: "hi", total: 90 }
+    ],
+    referrers: [
+        { label: "twitter.com", total: 400 },
+        { label: "google.com", total: 260 },
+        { label: "linkedin.com", total: 140 }
+    ]
+}
+
+function BreakdownCard({ title, rows }) {
+    const max = Math.max(1, ...rows.map((r) => r.total))
+    return (
+        <div className="border border-line bg-white p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">{title}</p>
+            {rows.length === 0 ? (
+                <p className="mt-4 text-xs text-muted">No data yet.</p>
+            ) : (
+                <ul className="mt-4 space-y-3">
+                    {rows.map((row) => (
+                        <li key={row.label}>
+                            <div className="flex justify-between gap-3 font-mono text-xs">
+                                <span className="truncate">{row.label}</span>
+                                <span className="tabular-nums">{row.total}</span>
+                            </div>
+                            <div className="mt-1 h-1.5 bg-paper">
+                                <div
+                                    className="h-full bg-ink"
+                                    style={{ width: `${(row.total / max) * 100}%` }}
+                                />
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    )
+}
+
+const DEVICE_COLORS = ["#111111", "#6b7280", "#9ca3af", "#d1d5db", "#e5e7eb"]
+
+function DeviceChart({ rows }) {
+    const total = rows.reduce((sum, r) => sum + r.total, 0)
+    let offset = 0
+    const stops = rows.map((row, i) => {
+        const start = offset
+        offset += (row.total / total) * 100
+        return `${DEVICE_COLORS[i % DEVICE_COLORS.length]} ${start}% ${offset}%`
+    })
+
+    return (
+        <div className="border border-line bg-white p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">Devices</p>
+            {total === 0 ? (
+                <p className="mt-4 text-xs text-muted">No data yet.</p>
+            ) : (
+                <div className="mt-4 flex flex-wrap items-center gap-8">
+                    <div
+                        className="relative h-40 w-40 shrink-0 rounded-full"
+                        style={{ background: `conic-gradient(${stops.join(", ")})` }}
+                    >
+                        <div className="absolute inset-6 flex flex-col items-center justify-center rounded-full bg-white">
+                            <span className="font-grotesk text-2xl font-extrabold tabular-nums">{total}</span>
+                            <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
+                                visits
+                            </span>
+                        </div>
+                    </div>
+                    <ul className="min-w-[200px] flex-1 space-y-3">
+                        {rows.map((row, i) => (
+                            <li
+                                key={row.label}
+                                className="flex items-center justify-between gap-3 font-mono text-xs"
+                            >
+                                <span className="flex items-center gap-2">
+                                    <span
+                                        className="inline-block h-3 w-3 border border-line"
+                                        style={{ background: DEVICE_COLORS[i % DEVICE_COLORS.length] }}
+                                    />
+                                    <span className="capitalize">{row.label}</span>
+                                </span>
+                                <span className="tabular-nums">
+                                    {row.total} · {Math.round((row.total / total) * 100)}%
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </div>
+    )
+}
+
+function AnalyticsPanel({ data }) {
+    const max = Math.max(1, ...data.daily.map((d) => d.total))
+    return (
+        <div className="space-y-6">
+            <div className="grid gap-6 md:grid-cols-3">
+                <div className="border border-line bg-white p-5">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                        Tracked visits
+                    </p>
+                    <p className="mt-2 font-grotesk text-4xl font-extrabold tabular-nums">{data.total}</p>
+                </div>
+                <div className="border border-line bg-white p-5">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">Bot visits</p>
+                    <p className="mt-2 font-grotesk text-4xl font-extrabold tabular-nums">{data.bots}</p>
+                </div>
+                <div className="border border-line bg-white p-5">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">Last 30 days</p>
+                    <p className="mt-2 font-grotesk text-4xl font-extrabold tabular-nums">
+                        {data.daily.reduce((sum, d) => sum + d.total, 0)}
+                    </p>
+                </div>
+            </div>
+            <div className="border border-line bg-white p-5">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                    Visits per day (30 days)
+                </p>
+                <div className="mt-4 flex h-32 items-end gap-1">
+                    {data.daily.map((d, i) => (
+                        <div
+                            key={`${d.date}-${i}`}
+                            title={`${d.date}: ${d.total}`}
+                            className="flex-1 bg-ink"
+                            style={{ height: `${Math.max(2, (d.total / max) * 100)}%` }}
+                        />
+                    ))}
+                </div>
+            </div>
+            <DeviceChart rows={data.devices} />
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                <BreakdownCard title="Countries" rows={data.countries} />
+                <BreakdownCard title="Browsers" rows={data.browsers} />
+                <BreakdownCard title="Operating systems" rows={data.os} />
+                <BreakdownCard title="Languages" rows={data.languages} />
+                <BreakdownCard title="Referrers" rows={data.referrers} />
+            </div>
+        </div>
+    )
+}
+
 export default function LinkDetails({
     auth,
     link: initialLink,
     logos = [],
     slugEditsRemaining: initialEdits = null,
-    destinationEditsRemaining: initialDestinationEdits = null
+    destinationEditsRemaining: initialDestinationEdits = null,
+    canViewAnalytics = false,
+    analytics = null
 }) {
     const [link, setLink] = useState(initialLink)
     const [slugInput, setSlugInput] = useState(initialLink.shot_slug)
@@ -430,6 +606,28 @@ export default function LinkDetails({
                                         </dt>
                                         <dd className="font-mono text-xs">{link.last_visit || "Never"}</dd>
                                     </div>
+                                    {canViewAnalytics &&
+                                        analytics &&
+                                        [
+                                            ["Tracked visits", analytics.total],
+                                            ["Bot visits", analytics.bots],
+                                            [
+                                                "Last 30 days",
+                                                analytics.daily.reduce((sum, d) => sum + d.total, 0)
+                                            ],
+                                            ["Top country", analytics.countries[0]?.label || "—"],
+                                            ["Top device", analytics.devices[0]?.label || "—"],
+                                            ["Top referrer", analytics.referrers[0]?.label || "—"]
+                                        ].map(([label, value]) => (
+                                            <div key={label} className="flex justify-between gap-4 py-4">
+                                                <dt className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
+                                                    {label}
+                                                </dt>
+                                                <dd className="truncate font-mono text-xs capitalize">
+                                                    {value}
+                                                </dd>
+                                            </div>
+                                        ))}
                                 </dl>
                                 <button
                                     type="button"
@@ -444,9 +642,39 @@ export default function LinkDetails({
                     </div>
                 </section>
 
-                <section className="mx-auto max-w-grid px-6 py-10 md:px-10 md:py-14 lg:px-16">
+                <section className="mx-auto max-w-grid px-6 pt-10 md:px-10 md:pt-14 lg:px-16">
                     <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Link tags</p>
                     <LinkTags linkId={link.id} initialTags={link.tags} />
+                </section>
+                <section className="mx-auto max-w-grid px-6 pb-10 pt-10 md:px-10 md:pb-14 md:pt-16 lg:px-16">
+                    <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
+                        Analytics
+                    </p>
+                    <div className="relative">
+                        <div
+                            className={canViewAnalytics ? "" : "pointer-events-none select-none blur-sm"}
+                            aria-hidden={!canViewAnalytics}
+                        >
+                            <AnalyticsPanel data={canViewAnalytics ? analytics : PLACEHOLDER_ANALYTICS} />
+                        </div>
+                        {!canViewAnalytics && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/50 p-6 text-center">
+                                <p className="font-grotesk text-xl font-extrabold text-ink">
+                                    Unlock link analytics
+                                </p>
+                                <p className="max-w-md text-sm text-muted">
+                                    See visits over time, countries, devices, browsers and referrers by
+                                    upgrading your plan.
+                                </p>
+                                <Link
+                                    href={route("pricing")}
+                                    className="border border-ink bg-ink px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-paper transition-colors hover:bg-paper hover:text-ink"
+                                >
+                                    Upgrade to view analytics
+                                </Link>
+                            </div>
+                        )}
+                    </div>
                 </section>
             </main>
         </AuthenticatedLayout>

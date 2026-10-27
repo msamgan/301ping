@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Plan;
 use App\Http\Requests\StoreHyperlinkRequest;
 use App\Http\Requests\UpdateHyperlinkDestinationRequest;
 use App\Http\Requests\UpdateHyperlinkRequest;
 use App\Http\Requests\UpdateHyperlinkSlugRequest;
+use App\Jobs\RecordAnalyticsJob;
 use App\Methods;
 use App\Models\Hyperlink;
 use App\Models\Tag;
+use App\Services\AnalyticsService;
 use App\Shortener;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -81,6 +84,8 @@ class HyperlinkController extends Controller
             ->with(['tags', 'logo'])
             ->firstOrFail();
 
+        $canViewAnalytics = auth()->user()->currentPlan() !== Plan::Free;
+
         return Inertia::render('LinkDetails', [
             'link' => [
                 'id' => $hyperlink->id,
@@ -104,7 +109,53 @@ class HyperlinkController extends Controller
             'logos' => auth()->user()->logos()->latest()->get()->map->toFrontend()->values(),
             'slugEditsRemaining' => auth()->user()->slugEditsRemaining(),
             'destinationEditsRemaining' => auth()->user()->destinationEditsRemaining(),
+            'canViewAnalytics' => $canViewAnalytics,
+            'analytics' => $canViewAnalytics ? $this->analyticsFor($hyperlink) : null,
         ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function analyticsFor(Hyperlink $hyperlink): array
+    {
+        $base = fn () => $hyperlink->analytics()->where('is_robot', false);
+
+        $breakdown = fn (string $column) => $base()
+            ->whereNotNull($column)
+            ->where($column, '!=', '')
+            ->selectRaw("{$column} as label, count(*) as total")
+            ->groupBy($column)
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get()
+            ->map(fn ($row) => ['label' => $row->label, 'total' => (int) $row->total])
+            ->values();
+
+        $since = now()->subDays(29)->startOfDay();
+        $perDay = $base()
+            ->where('created_at', '>=', $since)
+            ->selectRaw('date(created_at) as day, count(*) as total')
+            ->groupBy('day')
+            ->pluck('total', 'day');
+
+        $daily = collect(range(0, 29))->map(function ($i) use ($since, $perDay) {
+            $date = $since->copy()->addDays($i)->toDateString();
+
+            return ['date' => $date, 'total' => (int) ($perDay[$date] ?? 0)];
+        })->values();
+
+        return [
+            'total' => $base()->count(),
+            'bots' => $hyperlink->analytics()->where('is_robot', true)->count(),
+            'daily' => $daily,
+            'countries' => $breakdown('country'),
+            'devices' => $breakdown('device'),
+            'browsers' => $breakdown('browser'),
+            'os' => $breakdown('os'),
+            'languages' => $breakdown('language'),
+            'referrers' => $breakdown('referer_host'),
+        ];
     }
 
     /**
@@ -172,6 +223,8 @@ class HyperlinkController extends Controller
             $hyperlink->visits = $hyperlink->visits + 1;
             $hyperlink->last_visit = now();
             $hyperlink->save();
+
+            RecordAnalyticsJob::dispatch($hyperlink, AnalyticsService::snapshotRequest($request));
 
             return redirect($hyperlink->url);
         }
