@@ -83,6 +83,14 @@ export default function Footer() {
                                     Custom links
                                 </a>
                             </li>
+                            <li>
+                                <a
+                                    href={route("services.broken-destinations")}
+                                    className="text-ink hover:text-accent-dark transition-colors"
+                                >
+                                    Broken destination monitoring
+                                </a>
+                            </li>
                         </ul>
                     </div>
 

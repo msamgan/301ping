@@ -37,6 +37,11 @@ export default function Header({ isAuthenticated = false, user = null }) {
                     key: "services.custom-links",
                     href: route("services.custom-links"),
                     label: "Custom links"
+                },
+                {
+                    key: "services.broken-destinations",
+                    href: route("services.broken-destinations"),
+                    label: "Broken destination monitoring"
                 }
             ]
         },
