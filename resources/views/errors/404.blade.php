@@ -138,10 +138,6 @@
 
             <div class="flex flex-col items-start justify-between gap-4 pt-8 font-mono text-xs text-muted sm:flex-row sm:items-center">
                 <p>© {{ date('Y') }} 301 ping. All rights reserved.</p>
-                <p>
-                    Built by
-                    <a href="https://msamgan.com" class="text-ink transition-colors hover:text-accent-dark">msamgan</a>
-                </p>
             </div>
         </div>
     </footer>

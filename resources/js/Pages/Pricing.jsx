@@ -51,7 +51,7 @@ const features = [
     { label: "Custom links", values: ["3", "Unlimited", "Unlimited", "Tailored"] },
     { label: "Analytics", values: ["Visits only", "Detailed", "Detailed", "Tailored"] },
     { label: "Short links per day (API & extension)", values: ["40", "100", "300", "Tailored"] },
-    { label: "Custom logo in QR code", values: [false, true, true, true] },
+    { label: "Custom logo in QR code", values: [false, "1", "Unlimited", true] },
     { label: "Custom domain", values: [false, false, true, true] },
     { label: "Dedicated support", values: [false, false, true, true] }
 ]
