@@ -80,7 +80,10 @@ class HyperlinkController extends Controller
     )]
     public function shorten(StoreHyperlinkRequest $request): HyperlinkResource|JsonResponse
     {
-        $hyperlinkExists = Hyperlink::query()->where('url', $request->get('url'))->first();
+        $hyperlinkExists = Hyperlink::query()
+            ->where('url', $request->string('url'))
+            ->where('user_id', $request->user->id)
+            ->first();
 
         if ($hyperlinkExists) {
             return new HyperlinkResource([

@@ -112,12 +112,15 @@ class HyperlinkController extends Controller
      */
     public function store(StoreHyperlinkRequest $request): JsonResponse
     {
-        $hyperlinkExists = Hyperlink::query()->where('url', $request->get('url'))->first();
+        $hyperlinkExists = Hyperlink::query()->where('url', $request->string('url'));
 
-        if ($hyperlinkExists && $hyperlinkExists->user_id === null && auth()->check()) {
-            $hyperlinkExists->user_id = auth()->id();
-            $hyperlinkExists->save();
+        if (auth()->check()) {
+            $hyperlinkExists->where('user_id', auth()->id());
+        } else {
+            $hyperlinkExists->whereNull('user_id');
         }
+
+        $hyperlinkExists = $hyperlinkExists->first();
 
         if ($hyperlinkExists) {
             return response()->json([
@@ -130,7 +133,7 @@ class HyperlinkController extends Controller
         $shotSlug = Shortener::shorten();
 
         $hyperLinkData = [
-            'url' => $request->get('url'),
+            'url' => $request->string('url'),
             'shot_slug' => $shotSlug,
             'last_visit' => now(),
         ];

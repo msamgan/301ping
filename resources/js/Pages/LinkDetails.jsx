@@ -6,6 +6,61 @@ import { Head, Link } from "@inertiajs/react"
 import axios from "axios"
 import { useState } from "react"
 
+const actionButtonClass =
+    "border border-ink px-4 py-3 text-center font-mono text-[11px] uppercase tracking-[0.14em] transition-colors disabled:opacity-50"
+
+function FieldActions({ editing, onEdit, onCancel, onSave, saving, dirty, locked, label }) {
+    if (!editing) {
+        return (
+            <button
+                key="edit"
+                type="button"
+                onClick={onEdit}
+                disabled={locked}
+                aria-label={`Edit ${label}`}
+                title={locked ? "No edits remaining" : `Edit ${label}`}
+                className="flex h-[46px] w-[46px] items-center justify-center border border-line bg-white text-muted transition-colors hover:border-ink hover:text-ink disabled:opacity-50"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-4 w-4"
+                >
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                </svg>
+            </button>
+        )
+    }
+
+    return (
+        <>
+            <button
+                key="save"
+                type="submit"
+                onClick={onSave}
+                disabled={saving || !dirty}
+                className={`${actionButtonClass} bg-ink text-paper hover:bg-paper hover:text-ink`}
+            >
+                {saving ? "Saving..." : "Save"}
+            </button>
+            <button
+                type="button"
+                onClick={onCancel}
+                disabled={saving}
+                className={`${actionButtonClass} bg-paper text-ink hover:bg-ink hover:text-paper`}
+            >
+                Cancel
+            </button>
+        </>
+    )
+}
+
 export default function LinkDetails({
     auth,
     link: initialLink,
@@ -29,7 +84,25 @@ export default function LinkDetails({
     const [logoId, setLogoId] = useState(link.logo_id ? String(link.logo_id) : "")
     const [savedLogoId, setSavedLogoId] = useState(link.logo_id ? String(link.logo_id) : "")
     const [savingLogo, setSavingLogo] = useState(false)
+    const [editingSlug, setEditingSlug] = useState(false)
+    const [editingDestination, setEditingDestination] = useState(false)
+    const [editingLogo, setEditingLogo] = useState(false)
     const showToast = useToast()
+
+    const cancelSlug = () => {
+        setSlugInput(link.shot_slug)
+        setSlugError("")
+        setEditingSlug(false)
+    }
+    const cancelDestination = () => {
+        setDestinationInput(link.url)
+        setDestinationError("")
+        setEditingDestination(false)
+    }
+    const cancelLogo = () => {
+        setLogoId(savedLogoId)
+        setEditingLogo(false)
+    }
 
     const selectedLogo = logos.find((logo) => String(logo.id) === savedLogoId)
 
@@ -40,6 +113,7 @@ export default function LinkDetails({
                 logo_id: logoId === "" ? null : Number(logoId)
             })
             setSavedLogoId(logoId)
+            setEditingLogo(false)
             showToast("Branding saved.", "success")
         } catch (error) {
             console.error("Failed to save branding", error)
@@ -65,6 +139,7 @@ export default function LinkDetails({
             }))
             setSlugInput(data.shot_slug)
             setEditsRemaining(data.slug_edits_remaining)
+            setEditingSlug(false)
             window.history.replaceState(null, "", route("links.show", data.shot_slug))
             showToast("Short link updated.", "success")
         } catch (error) {
@@ -90,6 +165,7 @@ export default function LinkDetails({
             }))
             setDestinationInput(data.url)
             setDestinationEditsRemaining(data.destination_edits_remaining)
+            setEditingDestination(false)
             showToast("Destination updated.", "success")
         } catch (error) {
             if (error.response?.data?.destination_edits_remaining === 0) setDestinationEditsRemaining(0)
@@ -205,17 +281,19 @@ export default function LinkDetails({
                                             onChange={(e) => setSlugInput(e.target.value)}
                                             minLength={3}
                                             maxLength={8}
-                                            disabled={slugLocked}
+                                            readOnly={!editingSlug}
                                             aria-label="Short link slug"
-                                            className="min-w-0 flex-1 basis-64 border border-line bg-white px-4 py-3 font-mono text-sm text-ink focus:border-ink focus:ring-0"
+                                            className={`min-w-0 flex-1 basis-64 border border-line px-4 py-3 font-mono text-sm text-ink focus:border-ink focus:ring-0 ${editingSlug ? "bg-white" : "bg-paper"}`}
                                         />
-                                        <button
-                                            type="submit"
-                                            disabled={savingSlug || slugLocked || slugInput === link.shot_slug}
-                                            className="w-44 border border-ink bg-ink px-4 py-3 text-center font-mono text-[11px] uppercase tracking-[0.14em] text-paper transition-colors hover:bg-paper hover:text-ink disabled:opacity-50"
-                                        >
-                                            {savingSlug ? "Saving..." : "Save short link"}
-                                        </button>
+                                        <FieldActions
+                                            editing={editingSlug}
+                                            onEdit={() => setEditingSlug(true)}
+                                            onCancel={cancelSlug}
+                                            saving={savingSlug}
+                                            dirty={slugInput !== link.shot_slug}
+                                            locked={slugLocked}
+                                            label="short link"
+                                        />
                                     </div>
                                     {slugError && <p className="mt-2 text-xs text-red-600">{slugError}</p>}
                                 </form>
@@ -241,21 +319,19 @@ export default function LinkDetails({
                                             type="url"
                                             value={destinationInput}
                                             onChange={(e) => setDestinationInput(e.target.value)}
-                                            disabled={destinationLocked}
+                                            readOnly={!editingDestination}
                                             aria-label="Destination URL"
-                                            className="min-w-0 flex-1 basis-64 border border-line bg-white px-4 py-3 font-mono text-sm text-ink focus:border-ink focus:ring-0 disabled:bg-paper"
+                                            className={`min-w-0 flex-1 basis-64 border border-line px-4 py-3 font-mono text-sm text-ink focus:border-ink focus:ring-0 ${editingDestination ? "bg-white" : "bg-paper"}`}
                                         />
-                                        <button
-                                            type="submit"
-                                            disabled={
-                                                savingDestination ||
-                                                destinationLocked ||
-                                                destinationInput === link.url
-                                            }
-                                            className="w-44 border border-ink bg-ink px-4 py-3 text-center font-mono text-[11px] uppercase tracking-[0.14em] text-paper transition-colors hover:bg-paper hover:text-ink disabled:opacity-50"
-                                        >
-                                            {savingDestination ? "Saving..." : "Save destination"}
-                                        </button>
+                                        <FieldActions
+                                            editing={editingDestination}
+                                            onEdit={() => setEditingDestination(true)}
+                                            onCancel={cancelDestination}
+                                            saving={savingDestination}
+                                            dirty={destinationInput !== link.url}
+                                            locked={destinationLocked}
+                                            label="destination"
+                                        />
                                     </div>
                                     {destinationError && (
                                         <p className="mt-2 text-xs text-red-600">{destinationError}</p>
@@ -282,8 +358,9 @@ export default function LinkDetails({
                                             onChange={(e) => {
                                                 setLogoId(e.target.value)
                                             }}
+                                            disabled={!editingLogo}
                                             aria-label="QR code logo"
-                                            className="min-w-0 flex-1 basis-64 border border-line bg-white px-4 py-3 font-mono text-sm text-ink focus:border-ink focus:ring-0"
+                                            className={`min-w-0 flex-1 basis-64 border border-line px-4 py-3 font-mono text-sm text-ink focus:border-ink focus:ring-0 ${editingLogo ? "bg-white" : "bg-paper"}`}
                                         >
                                             <option value="">Default</option>
                                             {logos.map((logo) => (
@@ -292,14 +369,18 @@ export default function LinkDetails({
                                                 </option>
                                             ))}
                                         </select>
-                                        <button
-                                            type="button"
-                                            onClick={saveBranding}
-                                            disabled={savingLogo || logoId === savedLogoId}
-                                            className="w-44 border border-ink bg-ink px-4 py-3 text-center font-mono text-[11px] uppercase tracking-[0.14em] text-paper transition-colors hover:bg-paper hover:text-ink disabled:opacity-50"
-                                        >
-                                            {savingLogo ? "Saving..." : "Save branding"}
-                                        </button>
+                                        <FieldActions
+                                            editing={editingLogo}
+                                            onEdit={() => setEditingLogo(true)}
+                                            onCancel={cancelLogo}
+                                            onSave={(e) => {
+                                                e.preventDefault()
+                                                saveBranding()
+                                            }}
+                                            saving={savingLogo}
+                                            dirty={logoId !== savedLogoId}
+                                            label="branding"
+                                        />
                                     </div>
                                 </div>
                             </div>
