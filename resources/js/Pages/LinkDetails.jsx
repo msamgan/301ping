@@ -6,7 +6,11 @@ import { Head, Link } from "@inertiajs/react"
 import axios from "axios"
 import { useState } from "react"
 
-export default function LinkDetails({ auth, link, logos = [] }) {
+export default function LinkDetails({ auth, link: initialLink, logos = [] }) {
+    const [link, setLink] = useState(initialLink)
+    const [slugInput, setSlugInput] = useState(initialLink.shot_slug)
+    const [slugError, setSlugError] = useState("")
+    const [savingSlug, setSavingSlug] = useState(false)
     const [copied, setCopied] = useState(false)
     const [downloadingQr, setDownloadingQr] = useState(false)
     const [logoId, setLogoId] = useState(link.logo_id ? String(link.logo_id) : "")
@@ -29,6 +33,25 @@ export default function LinkDetails({ auth, link, logos = [] }) {
             showToast(error.response?.data?.message || "Failed to save branding.", "error")
         } finally {
             setSavingLogo(false)
+        }
+    }
+
+    const saveSlug = async (e) => {
+        e.preventDefault()
+        setSlugError("")
+        try {
+            setSavingSlug(true)
+            const { data } = await axios.patch(route("links.slug.update", link.id), {
+                shot_slug: slugInput
+            })
+            setLink((prev) => ({ ...prev, shot_slug: data.shot_slug, shortened_url: data.shortened_url }))
+            setSlugInput(data.shot_slug)
+            window.history.replaceState(null, "", route("links.show", data.shot_slug))
+            showToast("Short link updated.", "success")
+        } catch (error) {
+            setSlugError(error.response?.data?.errors?.shot_slug?.[0] || "Failed to update short link.")
+        } finally {
+            setSavingSlug(false)
         }
     }
 
@@ -111,6 +134,33 @@ export default function LinkDetails({ auth, link, logos = [] }) {
                                         {copied ? "Copied" : "Copy short link"}
                                     </button>
                                 </div>
+                                <form onSubmit={saveSlug} className="mt-8 border-t border-line pt-6">
+                                    <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                                        Customize short link
+                                    </p>
+                                    <p className="mb-3 text-xs text-muted">
+                                        3-8 characters: letters, numbers, and - _ . ~
+                                    </p>
+                                    <div className="flex flex-wrap items-center gap-3">
+                                        <input
+                                            type="text"
+                                            value={slugInput}
+                                            onChange={(e) => setSlugInput(e.target.value)}
+                                            minLength={3}
+                                            maxLength={8}
+                                            aria-label="Short link slug"
+                                            className="min-w-0 flex-1 basis-64 border border-line bg-white px-4 py-3 font-mono text-sm text-ink focus:border-ink focus:ring-0"
+                                        />
+                                        <button
+                                            type="submit"
+                                            disabled={savingSlug || slugInput === link.shot_slug}
+                                            className="w-44 border border-ink bg-ink px-4 py-3 text-center font-mono text-[11px] uppercase tracking-[0.14em] text-paper transition-colors hover:bg-paper hover:text-ink disabled:opacity-50"
+                                        >
+                                            {savingSlug ? "Saving..." : "Save short link"}
+                                        </button>
+                                    </div>
+                                    {slugError && <p className="mt-2 text-xs text-red-600">{slugError}</p>}
+                                </form>
                                 <div className="mt-8 border-t border-line pt-6">
                                     <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
                                         Destination

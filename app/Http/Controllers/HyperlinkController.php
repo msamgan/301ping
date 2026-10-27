@@ -11,6 +11,7 @@ use App\Shortener;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Random\RandomException;
@@ -203,6 +204,42 @@ class HyperlinkController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function updateSlug(Request $request, Hyperlink $hyperlink): JsonResponse
+    {
+        if ($hyperlink->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $reserved = collect(Route::getRoutes()->getRoutes())
+            ->map(fn ($route) => strtolower(explode('/', trim($route->uri(), '/'))[0]))
+            ->reject(fn ($segment) => $segment === '' || str_starts_with($segment, '{'))
+            ->unique()
+            ->all();
+
+        $validated = $request->validate([
+            'shot_slug' => [
+                'required', 'string', 'min:3', 'max:8',
+                'regex:/^(?=.*[A-Za-z0-9])[A-Za-z0-9\-_.~]+$/',
+                Rule::unique('hyperlinks', 'shot_slug')->ignore($hyperlink->id),
+                fn ($attribute, $value, $fail) => in_array(strtolower($value), $reserved, true)
+                    ? $fail('This short link is reserved.')
+                    : null,
+            ],
+        ], [
+            'shot_slug.regex' => 'Use only letters, numbers, and - _ . ~ characters.',
+            'shot_slug.unique' => 'This short link is already taken.',
+        ]);
+
+        $hyperlink->shot_slug = $validated['shot_slug'];
+        $hyperlink->save();
+
+        return response()->json([
+            'status' => true,
+            'shot_slug' => $hyperlink->shot_slug,
+            'shortened_url' => url('/' . $hyperlink->shot_slug),
+        ]);
     }
 
     public function updateLogo(Request $request, Hyperlink $hyperlink): JsonResponse
