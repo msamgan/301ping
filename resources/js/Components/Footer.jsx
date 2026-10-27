@@ -4,11 +4,7 @@ export default function Footer() {
             <div className="mx-auto max-w-grid px-6 md:px-10 lg:px-16 py-16 md:py-20">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-12 pb-12 border-b border-line">
                     <div className="lg:col-span-3">
-                        <a
-                            href={route("home")}
-                            aria-label="301 Ping home"
-                            className="inline-flex mb-6"
-                        >
+                        <a href={route("home")} aria-label="301 Ping home" className="inline-flex mb-6">
                             <img src="/301ping.svg" alt="301 Ping" className="h-8 w-auto" />
                         </a>
                         <p className="font-editorial text-ink text-4xl sm:text-5xl leading-[1.1] max-w-lg">
@@ -77,6 +73,14 @@ export default function Footer() {
                                     className="text-ink hover:text-accent-dark transition-colors"
                                 >
                                     Link tags
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href={route("services.custom-links")}
+                                    className="text-ink hover:text-accent-dark transition-colors"
+                                >
+                                    Custom links
                                 </a>
                             </li>
                         </ul>

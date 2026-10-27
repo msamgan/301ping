@@ -6,7 +6,7 @@ const sampleTags = [
     { name: "campaign-spring", count: 14 },
     { name: "newsletter", count: 9 },
     { name: "social", count: 22 },
-    { name: "docs", count: 6 },
+    { name: "docs", count: 6 }
 ]
 
 const sampleLinks = [

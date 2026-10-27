@@ -6,11 +6,16 @@ import { Head, Link } from "@inertiajs/react"
 import axios from "axios"
 import { useState } from "react"
 
-export default function LinkDetails({ auth, link: initialLink, logos = [], slugEditsRemaining: initialEdits = null }) {
+export default function LinkDetails({
+    auth,
+    link: initialLink,
+    logos = [],
+    slugEditsRemaining: initialEdits = null
+}) {
     const [link, setLink] = useState(initialLink)
     const [slugInput, setSlugInput] = useState(initialLink.shot_slug)
     const [editsRemaining, setEditsRemaining] = useState(initialEdits)
-    const slugLocked = editsRemaining === 0 && !link.is_edited
+    const slugLocked = editsRemaining === 0 && !link.is_slug_edited
     const [slugError, setSlugError] = useState("")
     const [savingSlug, setSavingSlug] = useState(false)
     const [copied, setCopied] = useState(false)
@@ -46,7 +51,12 @@ export default function LinkDetails({ auth, link: initialLink, logos = [], slugE
             const { data } = await axios.patch(route("links.slug.update", link.id), {
                 shot_slug: slugInput
             })
-            setLink((prev) => ({ ...prev, is_edited: true, shot_slug: data.shot_slug, shortened_url: data.shortened_url }))
+            setLink((prev) => ({
+                ...prev,
+                is_slug_edited: true,
+                shot_slug: data.shot_slug,
+                shortened_url: data.shortened_url
+            }))
             setSlugInput(data.shot_slug)
             setEditsRemaining(data.slug_edits_remaining)
             window.history.replaceState(null, "", route("links.show", data.shot_slug))
@@ -139,9 +149,17 @@ export default function LinkDetails({ auth, link: initialLink, logos = [], slugE
                                     </button>
                                 </div>
                                 <form onSubmit={saveSlug} className="mt-8 border-t border-line pt-6">
-                                    <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
-                                        Customize short link
-                                    </p>
+                                    <div className="mb-3 flex items-center justify-between gap-3">
+                                        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                                            Customize short link
+                                        </p>
+                                        <Link
+                                            href={route("pricing")}
+                                            className="font-mono text-[10px] uppercase tracking-[0.14em] text-accent underline underline-offset-4 hover:text-ink"
+                                        >
+                                            View plans
+                                        </Link>
+                                    </div>
                                     <p className="mb-3 text-xs text-muted">
                                         3-8 characters: letters, numbers, and - _ . ~
                                     </p>
@@ -185,9 +203,17 @@ export default function LinkDetails({ auth, link: initialLink, logos = [], slugE
                                     </a>
                                 </div>
                                 <div className="mt-8 border-t border-line pt-6">
-                                    <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
-                                        Branding
-                                    </p>
+                                    <div className="mb-3 flex items-center justify-between gap-3">
+                                        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                                            Branding
+                                        </p>
+                                        <Link
+                                            href={route("branding")}
+                                            className="font-mono text-[10px] uppercase tracking-[0.14em] text-accent underline underline-offset-4 hover:text-ink"
+                                        >
+                                            Manage logos
+                                        </Link>
+                                    </div>
                                     <p className="mb-3 text-xs text-muted">
                                         This logo will be used in the QR code.
                                     </p>

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreHyperlinkRequest;
-use App\Http\Requests\UpdateHyperlinkSlugRequest;
 use App\Http\Requests\UpdateHyperlinkRequest;
+use App\Http\Requests\UpdateHyperlinkSlugRequest;
 use App\Methods;
 use App\Models\Hyperlink;
 use App\Models\Tag;
@@ -87,7 +87,7 @@ class HyperlinkController extends Controller
                 'shortened_url' => url('/' . $hyperlink->shot_slug),
                 'visits' => $hyperlink->visits,
                 'is_active' => $hyperlink->is_active,
-                'is_edited' => (bool) $hyperlink->is_edited,
+                'is_slug_edited' => (bool) $hyperlink->is_slug_edited,
                 'logo_id' => $hyperlink->logo_id,
                 'created_at' => $hyperlink->created_at?->format('F, d Y'),
                 'last_visit' => $hyperlink->last_visit ? date('F, d Y', strtotime($hyperlink->last_visit)) : null,
@@ -212,7 +212,7 @@ class HyperlinkController extends Controller
     {
         $user = $request->user();
 
-        if (! $hyperlink->is_edited && $user->slugEditsRemaining() === 0) {
+        if (! $hyperlink->is_slug_edited && $user->slugEditsRemaining() === 0) {
             return response()->json([
                 'message' => 'Free plan allows only ' . $user->currentPlan()->slugEditLimit() . ' edited short links. Upgrade to edit more.',
                 'errors' => ['shot_slug' => ['You have used all your edited short links. Upgrade to edit more.']],
@@ -232,7 +232,7 @@ class HyperlinkController extends Controller
         }
 
         $hyperlink->shot_slug = $validated['shot_slug'];
-        $hyperlink->is_edited = true;
+        $hyperlink->is_slug_edited = true;
         $hyperlink->save();
 
         return response()->json([

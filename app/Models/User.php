@@ -88,13 +88,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function logoLimit(): ?int
     {
-        $summary = $this->subscriptionSummary();
-
-        if (! $summary['is_subscribed'] || ! empty($summary['paused'])) {
-            return Plan::Free->logoLimit();
-        }
-
-        return (Plan::tryFrom($summary['tier']) ?? Plan::Free)->logoLimit();
+        return $this->currentPlan()->logoLimit();
     }
 
     public function currentPlan(): Plan
@@ -115,7 +109,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $limit = $this->currentPlan()->slugEditLimit();
 
-        return $limit === null ? null : max(0, $limit - $this->hyperlinks()->where('is_edited', true)->count());
+        return $limit === null ? null : max(0, $limit - $this->hyperlinks()->where('is_slug_edited', true)->count());
     }
 
     /**
