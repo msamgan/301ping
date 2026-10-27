@@ -176,8 +176,8 @@ class PingHyperlinksCommand extends Command
             ];
         } catch (Throwable $e) {
             return [
-                'health' => 'Unreachable',
-                'healthy' => false,
+                'health' => 'Unhealthy',
+                'healthy' => 'false',
                 'status' => 'FAILED',
                 'details' => $e->getMessage(),
             ];
