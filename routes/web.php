@@ -16,6 +16,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'mustVerifyEmail' => true,
         'status' => session('status'),
     ])->name('profile.edit');
+    Route::inertia('/branding', 'Branding', [
+        'logos' => fn () => auth()->user()->logos()->latest()->get()->map->toFrontend()->values(),
+        'logoLimit' => fn () => auth()->user()->logoLimit(),
+    ])->name('branding');
     Route::get('/billing', [BillingController::class, 'index'])->name('billing');
     Route::get('/billing/invoices/{transaction}/download', [BillingController::class, 'downloadInvoice'])
         ->name('billing.invoices.download');

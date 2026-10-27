@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Plan;
 use App\Support\Plans;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -80,6 +81,28 @@ class User extends Authenticatable implements MustVerifyEmail
             Plans::REDIRECT_PLUS_MONTHLY,
             Plans::REDIRECT_PLUS_ANNUAL,
         ]);
+    }
+
+    /**
+     * Maximum number of logos allowed: 0 (none), 1 (Redirect), or null (unlimited, Redirect Plus).
+     */
+    public function logoLimit(): ?int
+    {
+        $summary = $this->subscriptionSummary();
+
+        if (! $summary['is_subscribed'] || ! empty($summary['paused'])) {
+            return Plan::Free->logoLimit();
+        }
+
+        return (Plan::tryFrom($summary['tier']) ?? Plan::Free)->logoLimit();
+    }
+
+    /**
+     * @return HasMany<Logo>
+     */
+    public function logos(): HasMany
+    {
+        return $this->hasMany(Logo::class);
     }
 
     /**

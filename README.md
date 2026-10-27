@@ -10,35 +10,35 @@
 
 ### Shorten and share
 
--   Create a short link from the home page without an account, or while signed in.
--   Redirect visitors to the original destination and count each visit.
--   Return the existing short link when the same destination URL has already been shortened.
--   Copy short links to the clipboard from the link library.
--   Search your links by destination URL or short slug, filter by tag, and browse paginated results.
--   Download a high-resolution PNG QR code for a short link, with the 301 Ping logo embedded in the center.
+- Create a short link from the home page without an account, or while signed in.
+- Redirect visitors to the original destination and count each visit.
+- Return the existing short link when the same destination URL has already been shortened.
+- Copy short links to the clipboard from the link library.
+- Search your links by destination URL or short slug, filter by tag, and browse paginated results.
+- Download a high-resolution PNG QR code for a short link, with the 301 Ping logo embedded in the center.
 
 ### Browser extensions
 
 Shorten the current page and copy its short link directly from the browser toolbar:
 
--   [Chrome Web Store](https://chromewebstore.google.com/detail/ms0org-url-shortener/goaddbeloaeledjpkaankdiglhnmpdld)
--   [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/301ping-url-shortener/)
+- [Chrome Web Store](https://chromewebstore.google.com/detail/ms0org-url-shortener/goaddbeloaeledjpkaankdiglhnmpdld)
+- [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/301ping-url-shortener/)
 
 ### Accounts and link management
 
--   Register and sign in, verify your email, and reset or update your password.
--   Manage your profile and delete your account from account settings.
--   View your link count and total visits on the dashboard.
--   Manage your links: search, filter, copy, tag, download QR codes, and delete.
--   Create, search, edit, and delete tags; attach tags to links to keep them organized.
--   View visit counts and the most recent visit for each link.
+- Register and sign in, verify your email, and reset or update your password.
+- Manage your profile and delete your account from account settings.
+- View your link count and total visits on the dashboard.
+- Manage your links: search, filter, copy, tag, download QR codes, and delete.
+- Create, search, edit, and delete tags; attach tags to links to keep them organized.
+- View visit counts and the most recent visit for each link.
 
 ### API access
 
--   Create links programmatically with the authenticated `POST /api/shorten` endpoint.
--   Return the existing short link for a destination or create a new one.
--   Find the interactive API documentation at [`/documentation/api`](https://301p.ing/documentation/api).
--   View, copy, and regenerate the API access token from the dashboard. Regenerating a token invalidates the previous one.
+- Create links programmatically with the authenticated `POST /api/shorten` endpoint.
+- Return the existing short link for a destination or create a new one.
+- Find the interactive API documentation at [`/documentation/api`](https://301p.ing/documentation/api).
+- View, copy, and regenerate the API access token from the dashboard. Regenerating a token invalidates the previous one.
 
 ### URL safety
 
@@ -46,10 +46,10 @@ Destinations are validated before shortening. Only HTTP and HTTPS URLs are accep
 
 ## Requirements
 
--   PHP 8.4+
--   Composer
--   Node.js and npm
--   MySQL or another database supported by Laravel
+- PHP 8.4+
+- Composer
+- Node.js and npm
+- MySQL or another database supported by Laravel
 
 ## Local development
 
@@ -113,11 +113,11 @@ Requests with a missing or invalid token return `401`. Missing, invalid, or unsa
 
 The following are potential directions for future development, not features currently offered:
 
--   More detailed analytics, such as visits over time and referral or device summaries.
--   Custom short slugs and support for customer-owned domains.
--   Link controls such as expiration dates, scheduled activation, and pause/resume.
--   Bulk link creation and export for larger link libraries.
--   Additional browser integrations and API management options.
+- More detailed analytics, such as visits over time and referral or device summaries.
+- Custom short slugs and support for customer-owned domains.
+- Link controls such as expiration dates, scheduled activation, and pause/resume.
+- Bulk link creation and export for larger link libraries.
+- Additional browser integrations and API management options.
 
 ## Tests
 

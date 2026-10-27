@@ -120,7 +120,8 @@ test('user model subscription helper methods return accurate summaries and tier 
     expect($user->isSubscribed())->toBeFalse()
         ->and($user->subscribedToRedirect())->toBeFalse()
         ->and($user->subscribedToRedirectPlus())->toBeFalse()
-        ->and($user->activeSubscription())->toBeNull();
+        ->and($user->activeSubscription())->toBeNull()
+        ->and($user->logoLimit())->toBe(0);
 
     $summary = $user->subscriptionSummary();
     expect($summary['is_subscribed'])->toBeFalse()
@@ -154,7 +155,30 @@ test('user model subscription helper methods return accurate summaries and tier 
     expect($summary['is_subscribed'])->toBeTrue()
         ->and($summary['tier'])->toBe('Redirect')
         ->and($summary['plan_name'])->toBe('Redirect Monthly')
-        ->and($summary['price_id'])->toBe(Plans::REDIRECT_MONTHLY);
+        ->and($summary['price_id'])->toBe(Plans::REDIRECT_MONTHLY)
+        ->and($user->logoLimit())->toBe(1);
+});
+
+test('user logo limit is unlimited on Redirect Plus', function () {
+    $user = User::factory()->create();
+
+    $subscription = Subscription::create([
+        'billable_id' => $user->id,
+        'billable_type' => $user->getMorphClass(),
+        'type' => 'default',
+        'paddle_id' => 'sub_plus_123',
+        'status' => Subscription::STATUS_ACTIVE,
+    ]);
+
+    SubscriptionItem::create([
+        'subscription_id' => $subscription->id,
+        'product_id' => 'pro_plus_123',
+        'price_id' => Plans::REDIRECT_PLUS_MONTHLY,
+        'status' => 'active',
+        'quantity' => 1,
+    ]);
+
+    expect($user->logoLimit())->toBeNull();
 });
 
 test('unauthenticated user cannot resume subscription', function () {

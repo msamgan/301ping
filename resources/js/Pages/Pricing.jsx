@@ -257,7 +257,7 @@ export default function Pricing({ plans: serverPlans = null }) {
                                                 : null
                                             const isCurrent = Boolean(
                                                 currentPriceId &&
-                                                    user?.subscription?.price_id === currentPriceId
+                                                user?.subscription?.price_id === currentPriceId
                                             )
 
                                             return (
