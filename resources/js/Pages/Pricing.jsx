@@ -4,6 +4,7 @@ import axios from "axios"
 import Header from "@/Components/Header.jsx"
 import Footer from "@/Components/Footer.jsx"
 import Reveal from "@/Components/Home/Reveal"
+import ContactModal from "@/Components/ContactModal.jsx"
 import { useToast } from "@/Components/ToastProvider"
 
 const buildPlans = (plansData = {}) => [
@@ -42,7 +43,7 @@ const buildPlans = (plansData = {}) => [
         tier: "Enterprise",
         price: null,
         cta: "Contact us",
-        href: "mailto:support@ms0.io"
+        contact: true
     }
 ]
 
@@ -82,6 +83,7 @@ export default function Pricing({ plans: serverPlans = null }) {
     const user = pageProps.auth?.user
     const [annual, setAnnual] = useState(false)
     const [loadingPlan, setLoadingPlan] = useState(null)
+    const [contactOpen, setContactOpen] = useState(false)
     const [plansData, setPlansData] = useState(serverPlans || pageProps.plans || null)
     const showToast = useToast()
 
@@ -101,6 +103,12 @@ export default function Pricing({ plans: serverPlans = null }) {
     const plans = buildPlans(plansData)
 
     const handlePlanAction = (e, plan) => {
+        if (plan.contact) {
+            e.preventDefault()
+            setContactOpen(true)
+            return
+        }
+
         if (!plan.priceIds) {
             return
         }
@@ -178,8 +186,8 @@ export default function Pricing({ plans: serverPlans = null }) {
     }
 
     const getPlanHref = (plan) => {
-        if (plan.href.startsWith("mailto:")) {
-            return plan.href
+        if (plan.contact) {
+            return "#contact"
         }
         if (user && plan.name === "Free") {
             return route("dashboard")
@@ -335,6 +343,7 @@ export default function Pricing({ plans: serverPlans = null }) {
                 </section>
             </main>
 
+            <ContactModal show={contactOpen} onClose={() => setContactOpen(false)} />
             <Footer />
         </>
     )

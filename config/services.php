@@ -35,6 +35,10 @@ return [
         ],
     ],
 
+    'contact' => [
+        'recipient' => env('CONTACT_MAIL_TO'),
+    ],
+
     'paddle' => [
         'plans' => [
             'redirect_monthly' => env('PADDLE_PRICE_REDIRECT_MONTHLY'),

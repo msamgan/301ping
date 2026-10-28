@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HyperlinkController;
 use App\Support\Plans;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,7 @@ Route::inertia('/documentation/api', 'ApiDocumentation')->name('documentation.ap
 Route::inertia('/pricing', 'Pricing', [
     'plans' => fn () => Plans::all(),
 ])->name('pricing');
+Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
 Route::inertia('/services/qr-code-logo', 'Services/QrCodeLogo')->name('services.qr-code-logo');
 Route::inertia('/services/link-tags', 'Services/LinkTags')->name('services.link-tags');
 Route::inertia('/services/custom-links', 'Services/CustomLinks')->name('services.custom-links');
