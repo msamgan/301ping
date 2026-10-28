@@ -84,7 +84,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Maximum number of logos allowed: 0 (none), 1 (Redirect), or null (unlimited, Redirect Plus).
+     * Maximum number of logos allowed: 0 (none), 1 (Redirect), or 5 (Redirect Plus).
      */
     public function logoLimit(): ?int
     {

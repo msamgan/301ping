@@ -19,6 +19,9 @@ class LogoController extends Controller
 
     public const int MAX_KB = 2048;
 
+    /**
+     * @throws \Throwable
+     */
     public function store(Request $request): RedirectResponse
     {
         $user = $request->user();
@@ -31,8 +34,10 @@ class LogoController extends Controller
         }
 
         if ($limit !== null && $user->logos()->count() >= $limit) {
+            $logoLabel = $limit === 1 ? 'logo' : 'logos';
+
             throw ValidationException::withMessages([
-                'logo' => 'Your plan allows only ' . $limit . ' logo. Delete it or upgrade to Redirect Plus to add more.',
+                'logo' => "Your plan allows up to {$limit} {$logoLabel}. Delete one to upload another.",
             ]);
         }
 

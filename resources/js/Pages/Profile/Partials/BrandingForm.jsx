@@ -196,8 +196,8 @@ export default function BrandingForm({ logos = [], logoLimit = 0, className = ""
                         </form>
                     ) : (
                         <p className="border border-line p-4 text-sm text-muted">
-                            You have reached your plan&apos;s logo limit. Delete the existing logo or upgrade to
-                            Redirect Plus to upload more.{" "}
+                            You have reached your plan&apos;s logo limit. Delete a logo to upload another or review
+                            available plans.{" "}
                             <Link href={route("pricing")} className="font-semibold text-ink underline">
                                 View plans
                             </Link>

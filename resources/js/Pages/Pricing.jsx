@@ -52,10 +52,10 @@ const features = [
     { label: "Edit destination", values: ["1", "Unlimited", "Unlimited", "Tailored"] },
     { label: "Analytics", values: ["Visits only", "Detailed", "Detailed", "Tailored"] },
     { label: "Short links per day (API & extension)", values: ["40", "100", "300", "Tailored"] },
-    { label: "Custom logo in QR code", values: [false, "1", "Unlimited", true] },
+    { label: "Custom logo in QR code", values: [false, "1", "5", "Tailored"] },
     { label: "Monitor broken destinations", values: [false, "Twice a day", "Every 2 hours", "Tailored"] },
-    { label: "Custom domain", values: [false, false, true, true] },
-    { label: "Dedicated support", values: [false, false, true, true] }
+    { label: "Custom domain", values: [false, false, true, "Tailored"] },
+    { label: "Dedicated support", values: [false, false, true, "Tailored"] }
 ]
 
 function Cell({ value }) {
@@ -285,7 +285,7 @@ export default function Pricing({ plans: serverPlans = null }) {
                                                             </>
                                                         ) : (
                                                             <span className="font-editorial text-3xl">
-                                                                Custom
+                                                                Tailored
                                                             </span>
                                                         )}
                                                     </div>

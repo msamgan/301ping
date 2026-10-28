@@ -9,14 +9,14 @@ enum Plan: string
     case RedirectPlus = 'Redirect Plus';
 
     /**
-     * Maximum number of logos allowed by this plan.
+     * Maximum number of logos allowed by this plan (null = unlimited).
      */
     public function logoLimit(): ?int
     {
         return match ($this) {
             self::Free => 0,
             self::Redirect => 1,
-            self::RedirectPlus => null,
+            self::RedirectPlus => 5,
         };
     }
 

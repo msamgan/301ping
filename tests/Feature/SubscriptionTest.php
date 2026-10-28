@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Plan;
 use App\Models\User;
 use App\Support\Plans;
 use Illuminate\Support\Facades\Http;
@@ -159,26 +160,8 @@ test('user model subscription helper methods return accurate summaries and tier 
         ->and($user->logoLimit())->toBe(1);
 });
 
-test('user logo limit is unlimited on Redirect Plus', function () {
-    $user = User::factory()->create();
-
-    $subscription = Subscription::create([
-        'billable_id' => $user->id,
-        'billable_type' => $user->getMorphClass(),
-        'type' => 'default',
-        'paddle_id' => 'sub_plus_123',
-        'status' => Subscription::STATUS_ACTIVE,
-    ]);
-
-    SubscriptionItem::create([
-        'subscription_id' => $subscription->id,
-        'product_id' => 'pro_plus_123',
-        'price_id' => Plans::REDIRECT_PLUS_MONTHLY,
-        'status' => 'active',
-        'quantity' => 1,
-    ]);
-
-    expect($user->logoLimit())->toBeNull();
+test('Redirect Plus plan allows five logos', function () {
+    expect(Plan::RedirectPlus->logoLimit())->toBe(5);
 });
 
 test('unauthenticated user cannot resume subscription', function () {
