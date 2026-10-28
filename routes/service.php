@@ -13,6 +13,7 @@ Route::get('/plans', [SubscriptionController::class, 'plans'])->name('service.pl
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('service.dashboard');
+    Route::get('/api-token', [DashboardController::class, 'token'])->name('service.api-token');
 
     Route::controller(HyperlinkController::class)->group(function () {
         Route::get('/links', 'links')->name('service.links');

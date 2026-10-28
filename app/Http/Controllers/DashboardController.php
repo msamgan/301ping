@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hyperlink;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -15,10 +16,14 @@ class DashboardController extends Controller
         return response()->json($this->payload());
     }
 
+    public function token(): JsonResponse
+    {
+        return response()->json(['token' => auth()->user()->access_token]);
+    }
+
     private function payload(): array
     {
         return [
-            'token' => auth()->user()->access_token,
             'linkCount' => Hyperlink::query()->where('user_id', auth()->id())->count(),
             'visits' => Hyperlink::query()->where('user_id', auth()->id())->sum('visits'),
         ];

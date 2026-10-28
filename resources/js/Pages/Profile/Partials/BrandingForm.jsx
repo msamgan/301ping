@@ -44,7 +44,7 @@ function QrPreview({ logoSrc, label }) {
                 ref={canvasRef}
                 role="img"
                 aria-label={`QR code preview with ${label}`}
-                className="h-[264px] w-[264px] bg-white"
+                className="aspect-square w-full max-w-[264px] bg-white"
             />
         </div>
     )
@@ -245,7 +245,7 @@ export default function BrandingForm({ logos = [], logoLimit = 0, className = ""
                     )}
 
                     {logos.length > 0 && (
-                        <ul className="mt-8 grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2">
+                        <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
                             {logos.map((logo) => (
                                 <li key={logo.id} className="border border-line p-3">
                                     <QrPreview logoSrc={logo.url} label={logo.title} />
