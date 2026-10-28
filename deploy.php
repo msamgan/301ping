@@ -31,9 +31,14 @@ task('deploy:optimize', function () {
     run('php artisan l5-swagger:generate');
 });
 
-// Hooks
+task('deploy:restartQueue', function () {
+    cd('{{release_path}}');
+    run('pm2 restart ecosystem.config.cjs');
+});
 
+// Hooks
 after('deploy:update_code', 'deploy:build');
 after('deploy:symlink', 'deploy:optimize');
+after('deploy:optimize', 'deploy:restartQueue');
 
 after('deploy:failed', 'deploy:unlock');
