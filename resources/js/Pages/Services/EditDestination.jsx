@@ -86,7 +86,8 @@ const useCases = [
 
 const specs = [
     { label: "Free plan", value: "1 edited destination" },
-    { label: "Paid plans", value: "Unlimited destination edits" },
+    { label: "Redirect plan", value: "10 edited destinations" },
+    { label: "Redirect Plus plan", value: "20 edited destinations" },
     { label: "Short link", value: "Stays the same after every edit" },
     { label: "Takes effect", value: "Immediately" },
     { label: "Analytics", value: "Preserved across edits" },

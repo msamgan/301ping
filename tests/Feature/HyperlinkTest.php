@@ -251,7 +251,7 @@ test('free user can edit one link destination and re-edit that same destination'
     ]);
 });
 
-test('paid user can edit multiple link destinations', function () {
+test('Redirect user can edit up to eight link destinations', function () {
     $user = User::factory()->create();
     $subscription = Subscription::create([
         'billable_id' => $user->id,
@@ -275,11 +275,61 @@ test('paid user can edit multiple link destinations', function () {
             'url' => 'https://example.com/paid-first',
         ])
         ->assertOk()
-        ->assertJsonPath('destination_edits_remaining', null);
+        ->assertJsonPath('destination_edits_remaining', 7);
 
     $this->patchJson("/service/links/{$secondLink->id}/destination", [
         'url' => 'https://example.com/paid-second',
-    ])->assertOk();
+    ])->assertOk()
+        ->assertJsonPath('destination_edits_remaining', 6);
+
+    $remainingLinks = Hyperlink::factory()->count(6)->create(['user_id' => $user->id]);
+    foreach ($remainingLinks as $index => $link) {
+        $this->patchJson("/service/links/{$link->id}/destination", [
+            'url' => "https://example.com/redirect-{$index}",
+        ])->assertOk();
+    }
+
+    $this->assertSame(0, $user->fresh()->destinationEditsRemaining());
+
+    $extraLink = Hyperlink::factory()->create(['user_id' => $user->id]);
+    $this->patchJson("/service/links/{$extraLink->id}/destination", [
+        'url' => 'https://example.com/redirect-over-limit',
+    ])->assertForbidden()
+        ->assertJsonPath('destination_edits_remaining', 0);
+});
+
+test('Redirect Plus user can edit up to twenty-three link destinations', function () {
+    $user = User::factory()->create();
+    $subscription = Subscription::create([
+        'billable_id' => $user->id,
+        'billable_type' => $user->getMorphClass(),
+        'type' => 'default',
+        'paddle_id' => 'sub_redirect_plus_destination_edits',
+        'status' => Subscription::STATUS_ACTIVE,
+    ]);
+    SubscriptionItem::create([
+        'subscription_id' => $subscription->id,
+        'product_id' => 'pro_redirect_plus',
+        'price_id' => Plans::all()['redirect_plus_monthly']['price_id'],
+        'status' => 'active',
+        'quantity' => 1,
+    ]);
+
+    $links = Hyperlink::factory()->count(24)->create(['user_id' => $user->id]);
+
+    foreach ($links->take(23) as $index => $link) {
+        $response = $this->actingAs($user)->patchJson("/service/links/{$link->id}/destination", [
+            'url' => "https://example.com/redirect-plus-{$index}",
+        ]);
+        $response->assertOk();
+    }
+
+    $this->assertSame(0, $user->fresh()->destinationEditsRemaining());
+
+    $this->patchJson("/service/links/{$links[23]->id}/destination", [
+        'url' => 'https://example.com/redirect-plus-over-limit',
+    ])->assertForbidden()
+        ->assertJsonPath('destination_edits_remaining', 0);
 });
 
 test('destination edits validate URLs and enforce link ownership', function () {

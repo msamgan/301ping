@@ -51,7 +51,8 @@ enum Plan: string
     {
         return match ($this) {
             self::Free => 1,
-            default => null,
+            self::Redirect => 10,
+            self::RedirectPlus => 20,
         };
     }
 }

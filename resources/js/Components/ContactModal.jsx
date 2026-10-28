@@ -86,8 +86,7 @@ export default function ContactModal({ show, onClose }) {
             .finally(() => setProcessing(false))
     }
 
-    const error = (key) =>
-        errors[key] ? <p className="mt-1 text-xs text-red-600">{errors[key][0]}</p> : null
+    const error = (key) => (errors[key] ? <p className="mt-1 text-xs text-red-600">{errors[key][0]}</p> : null)
 
     return (
         <Modal show={show} onClose={onClose} maxWidth="lg">

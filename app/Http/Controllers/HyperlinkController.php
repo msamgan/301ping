@@ -311,7 +311,7 @@ class HyperlinkController extends Controller
 
         if (! $hyperlink->is_destination_edited && $user->destinationEditsRemaining() === 0) {
             return response()->json([
-                'message' => 'Free plan allows only ' . $user->currentPlan()->destinationEditLimit() . ' edited destination. Upgrade to edit more.',
+                'message' => 'Your plan allows up to ' . $user->currentPlan()->destinationEditLimit() . ' edited destinations. Upgrade to edit more.',
                 'errors' => ['url' => ['You have used your edited destination. Upgrade to edit more.']],
                 'destination_edits_remaining' => 0,
             ], 403);
