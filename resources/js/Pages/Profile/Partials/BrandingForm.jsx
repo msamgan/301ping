@@ -224,13 +224,22 @@ export default function BrandingForm({ logos = [], logoLimit = 0, className = ""
                                                 {logo.width}x{logo.height}
                                             </p>
                                         </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => setLogoToDelete(logo)}
-                                            className="font-mono text-[11px] uppercase tracking-[0.18em] text-red-600 hover:underline"
-                                        >
-                                            Delete
-                                        </button>
+                                        {logo.can_delete ? (
+                                            <button
+                                                type="button"
+                                                onClick={() => setLogoToDelete(logo)}
+                                                className="font-mono text-[11px] uppercase tracking-[0.18em] text-red-600 hover:underline"
+                                            >
+                                                Delete
+                                            </button>
+                                        ) : (
+                                            <span
+                                                title="This logo has been used on a link and can not be deleted."
+                                                className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted"
+                                            >
+                                                In use
+                                            </span>
+                                        )}
                                     </div>
                                 </li>
                             ))}

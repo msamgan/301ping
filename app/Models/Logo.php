@@ -5,13 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @property string $id
+ * @property string $user_id
+ * @property string $title
+ * @property string $path
+ * @property string $mime_type
+ * @property int $width
+ * @property int $height
+ * @property int $size
+ * @property bool $can_delete
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ */
 class Logo extends Model
 {
-    use HasFactory;
-
-    public const DISK = 'public';
+    public const string DISK = 'public';
 
     protected $fillable = [
         'user_id',
@@ -21,7 +33,13 @@ class Logo extends Model
         'width',
         'height',
         'size',
+        'can_delete',
     ];
+
+    protected function casts(): array
+    {
+        return ['can_delete' => 'boolean'];
+    }
 
     /**
      * Directory holding this logo: logos/{user_id}.
@@ -48,6 +66,7 @@ class Logo extends Model
             'width' => $this->width,
             'height' => $this->height,
             'size' => $this->size,
+            'can_delete' => $this->can_delete,
         ];
     }
 

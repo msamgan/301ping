@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateHyperlinkSlugRequest;
 use App\Jobs\RecordAnalyticsJob;
 use App\Methods;
 use App\Models\Hyperlink;
+use App\Models\Logo;
 use App\Models\Tag;
 use App\Services\AnalyticsService;
 use App\Shortener;
@@ -352,6 +353,10 @@ class HyperlinkController extends Controller
 
         $hyperlink->logo_id = $validated['logo_id'] ?? null;
         $hyperlink->save();
+
+        if ($hyperlink->logo_id) {
+            Logo::whereKey($hyperlink->logo_id)->update(['can_delete' => false]);
+        }
 
         return response()->json([
             'status' => true,

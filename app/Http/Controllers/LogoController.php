@@ -90,6 +90,12 @@ class LogoController extends Controller
     {
         abort_unless($logo->user_id === $request->user()->id, 403);
 
+        if (! $logo->can_delete) {
+            throw ValidationException::withMessages([
+                'logo' => 'This logo has been used on a link and can not be deleted.',
+            ]);
+        }
+
         $logo->delete();
 
         return back();
