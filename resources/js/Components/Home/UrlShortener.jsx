@@ -87,10 +87,6 @@ export default function UrlShortener({ onSuccess } = {}) {
                         <ArrowIcon />
                     </button>
                 </div>
-
-                <p className="pt-3 font-mono text-xs text-muted">
-                    Links deactivate automatically after 6 months of inactivity.
-                </p>
             </form>
 
             <div
