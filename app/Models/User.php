@@ -108,7 +108,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Remaining short link edits, or null when unlimited.
+     * Remaining custom links, or null when unlimited.
      */
     public function slugEditsRemaining(): ?int
     {

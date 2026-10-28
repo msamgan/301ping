@@ -89,7 +89,8 @@ const specs = [
     { label: "Allowed characters", value: "Letters, numbers, - _ . ~" },
     { label: "Uniqueness", value: "Each back-half is first come, first served" },
     { label: "Free plan", value: "3 customized links" },
-    { label: "Paid plans", value: "Unlimited customized links" },
+    { label: "Redirect", value: "10 customized links" },
+    { label: "Redirect Plus", value: "25 customized links" },
     { label: "Reserved words", value: "App page names are protected" }
 ]
 

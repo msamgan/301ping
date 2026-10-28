@@ -276,8 +276,8 @@ class HyperlinkController extends Controller
 
         if (! $hyperlink->is_slug_edited && $user->slugEditsRemaining() === 0) {
             return response()->json([
-                'message' => 'Free plan allows only ' . $user->currentPlan()->slugEditLimit() . ' edited short links. Upgrade to edit more.',
-                'errors' => ['shot_slug' => ['You have used all your edited short links. Upgrade to edit more.']],
+                'message' => 'Your plan allows only ' . $user->currentPlan()->slugEditLimit() . ' custom links. Upgrade to customize more.',
+                'errors' => ['shot_slug' => ['You have used all your custom links. Upgrade to customize more.']],
                 'slug_edits_remaining' => 0,
             ], 403);
         }
