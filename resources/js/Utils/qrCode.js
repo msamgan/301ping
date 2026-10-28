@@ -15,7 +15,23 @@ export async function downloadQrCodeWithLogo(text, filename = "qrcode.png", logo
     }
 
     const canvas = document.createElement("canvas")
-    const canvasSize = 1024
+    await renderQrCodeToCanvas(canvas, text, logoSrc, 1024)
+
+    // Trigger download
+    const dataUrl = canvas.toDataURL("image/png")
+    const downloadLink = document.createElement("a")
+    downloadLink.href = dataUrl
+    downloadLink.download = filename.endsWith(".png") ? filename : `${filename}.png`
+    document.body.appendChild(downloadLink)
+    downloadLink.click()
+    document.body.removeChild(downloadLink)
+}
+
+/**
+ * Draws the branded QR code (with embedded logo) onto the given canvas.
+ * Shared by the download and the on-page preview so both look identical.
+ */
+export async function renderQrCodeToCanvas(canvas, text, logoSrc = "/favicon.svg", canvasSize = 1024) {
     canvas.width = canvasSize
     canvas.height = canvasSize
 
@@ -133,15 +149,6 @@ export async function downloadQrCodeWithLogo(text, filename = "qrcode.png", logo
             console.warn("Could not load logo for embedded QR code:", e)
         }
     }
-
-    // Trigger download
-    const dataUrl = canvas.toDataURL("image/png")
-    const downloadLink = document.createElement("a")
-    downloadLink.href = dataUrl
-    downloadLink.download = filename.endsWith(".png") ? filename : `${filename}.png`
-    document.body.appendChild(downloadLink)
-    downloadLink.click()
-    document.body.removeChild(downloadLink)
 }
 
 async function loadLogoImageWithFallback(primarySrc, fallbackSrc) {

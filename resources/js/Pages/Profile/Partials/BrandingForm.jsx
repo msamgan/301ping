@@ -6,7 +6,8 @@ import SecondaryButton from "@/Components/SecondaryButton"
 import PrimaryButton from "@/Components/PrimaryButton"
 import TextInput from "@/Components/TextInput"
 import { Link, router, useForm } from "@inertiajs/react"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { renderQrCodeToCanvas } from "@/Utils/qrCode"
 
 const MIN = 200
 const MAX = 4000
@@ -28,12 +29,44 @@ const readDimensions = (file) =>
         img.src = url
     })
 
+function QrPreview({ logoSrc, label }) {
+    const canvasRef = useRef(null)
+
+    useEffect(() => {
+        if (canvasRef.current) {
+            renderQrCodeToCanvas(canvasRef.current, "https://301p.ing", logoSrc, 768).catch(() => {})
+        }
+    }, [logoSrc])
+
+    return (
+        <div className="flex items-center justify-center p-3">
+            <canvas
+                ref={canvasRef}
+                role="img"
+                aria-label={`QR code preview with ${label}`}
+                className="h-[264px] w-[264px] bg-white"
+            />
+        </div>
+    )
+}
+
 export default function BrandingForm({ logos = [], logoLimit = 0, className = "" }) {
     const fileInput = useRef(null)
     const [fileError, setFileError] = useState(null)
     const { data, setData, post, errors, processing, reset } = useForm({ title: "", logo: null })
 
     const canUpload = logoLimit === null || logos.length < logoLimit
+
+    const [previewUrl, setPreviewUrl] = useState(null)
+    useEffect(() => {
+        if (!data.logo) {
+            setPreviewUrl(null)
+            return
+        }
+        const url = URL.createObjectURL(data.logo)
+        setPreviewUrl(url)
+        return () => URL.revokeObjectURL(url)
+    }, [data.logo])
 
     const onFile = async (e) => {
         const file = e.target.files[0]
@@ -97,7 +130,7 @@ export default function BrandingForm({ logos = [], logoLimit = 0, className = ""
 
     return (
         <section className={className}>
-            <header className="mb-6">
+            <header className="mb-6 max-w-2xl">
                 <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">Branding</p>
                 <h2 className="mt-2 font-editorial text-3xl text-ink">Your Logos</h2>
                 <p className="mt-2 max-w-lg text-sm text-muted">
@@ -121,83 +154,90 @@ export default function BrandingForm({ logos = [], logoLimit = 0, className = ""
             ) : (
                 <>
                     {canUpload ? (
-                        <form onSubmit={submit} className="space-y-6">
-                            <div>
-                                <InputLabel htmlFor="logo_title" value="Title" />
-                                <TextInput
-                                    id="logo_title"
-                                    className="mt-2"
-                                    value={data.title}
-                                    onChange={(e) => setData("title", e.target.value)}
-                                    required
-                                />
-                                <InputError className="mt-2" message={errors.title} />
-                            </div>
-                            <div>
-                                <InputLabel htmlFor="logo_file" value="Logo file" />
-                                <input
-                                    id="logo_file"
-                                    ref={fileInput}
-                                    type="file"
-                                    accept="image/png,image/jpeg,image/webp"
-                                    onChange={onFile}
-                                    aria-describedby="logo-file-help"
-                                    aria-invalid={Boolean(fileError || errors.logo)}
-                                    className="peer sr-only"
-                                />
-                                <label
-                                    htmlFor="logo_file"
-                                    className="group mt-2 flex cursor-pointer items-center gap-4 border border-dashed border-line bg-white p-4 transition-colors hover:border-ink hover:bg-ink/[0.02] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink sm:p-5"
-                                >
-                                    <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center border border-line bg-paper text-ink">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-5 w-5"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            strokeWidth={1.75}
-                                        >
-                                            {data.logo ? (
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M5 13l4 4L19 7"
-                                                />
-                                            ) : (
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M12 16V4m0 0L7 9m5-5l5 5M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"
-                                                />
-                                            )}
-                                        </svg>
-                                    </span>
-                                    <span className="min-w-0 flex-1">
-                                        <span className="block truncate text-sm font-semibold text-ink">
-                                            {data.logo ? data.logo.name : "Choose a logo to upload"}
+                        <form onSubmit={submit} className="flex flex-col gap-8 lg:flex-row">
+                            <div className="w-full max-w-2xl flex-shrink-0 space-y-6">
+                                <div>
+                                    <InputLabel htmlFor="logo_title" value="Title" />
+                                    <TextInput
+                                        id="logo_title"
+                                        className="mt-2"
+                                        value={data.title}
+                                        onChange={(e) => setData("title", e.target.value)}
+                                        required
+                                    />
+                                    <InputError className="mt-2" message={errors.title} />
+                                </div>
+                                <div>
+                                    <InputLabel htmlFor="logo_file" value="Logo file" />
+                                    <input
+                                        id="logo_file"
+                                        ref={fileInput}
+                                        type="file"
+                                        accept="image/png,image/jpeg,image/webp"
+                                        onChange={onFile}
+                                        aria-describedby="logo-file-help"
+                                        aria-invalid={Boolean(fileError || errors.logo)}
+                                        className="peer sr-only"
+                                    />
+                                    <label
+                                        htmlFor="logo_file"
+                                        className="group mt-2 flex cursor-pointer items-center gap-4 border border-dashed border-line bg-white p-4 transition-colors hover:border-ink hover:bg-ink/[0.02] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink sm:p-5"
+                                    >
+                                        <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center border border-line bg-paper text-ink">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-5 w-5"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                                strokeWidth={1.75}
+                                            >
+                                                {data.logo ? (
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        d="M5 13l4 4L19 7"
+                                                    />
+                                                ) : (
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        d="M12 16V4m0 0L7 9m5-5l5 5M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"
+                                                    />
+                                                )}
+                                            </svg>
                                         </span>
-                                        <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
-                                            {data.logo
-                                                ? `${(data.logo.size / 1024 / 1024).toFixed(2)} MB · Ready to upload`
-                                                : "PNG, JPG or WebP · Max 2 MB"}
+                                        <span className="min-w-0 flex-1">
+                                            <span className="block truncate text-sm font-semibold text-ink">
+                                                {data.logo ? data.logo.name : "Choose a logo to upload"}
+                                            </span>
+                                            <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
+                                                {data.logo
+                                                    ? `${(data.logo.size / 1024 / 1024).toFixed(2)} MB · Ready to upload`
+                                                    : "PNG, JPG or WebP · Max 2 MB"}
+                                            </span>
                                         </span>
-                                    </span>
-                                    <span className="flex-shrink-0 border border-line px-3 py-2 font-mono text-[10px] uppercase tracking-[0.12em] text-ink transition-colors group-hover:bg-ink group-hover:text-paper">
-                                        Browse
-                                    </span>
-                                </label>
-                                <p id="logo-file-help" className="mt-2 text-xs text-muted">
-                                    Select an image between {MIN} × {MIN} and {MAX} × {MAX} pixels.
-                                </p>
-                                <InputError className="mt-2" message={fileError || errors.logo} />
+                                        <span className="flex-shrink-0 border border-line px-3 py-2 font-mono text-[10px] uppercase tracking-[0.12em] text-ink transition-colors group-hover:bg-ink group-hover:text-paper">
+                                            Browse
+                                        </span>
+                                    </label>
+                                    <p id="logo-file-help" className="mt-2 text-xs text-muted">
+                                        Select an image between {MIN} × {MIN} and {MAX} × {MAX} pixels.
+                                    </p>
+                                    <InputError className="mt-2" message={fileError || errors.logo} />
+                                </div>
+                                <PrimaryButton disabled={processing || !data.logo}>Upload logo</PrimaryButton>
                             </div>
-                            <PrimaryButton disabled={processing || !data.logo}>Upload logo</PrimaryButton>
+                            {previewUrl && (
+                                <div className="flex-shrink-0 self-center sm:self-start">
+                                    <QrPreview logoSrc={previewUrl} label="selected logo" />
+                                </div>
+                            )}
                         </form>
                     ) : (
                         <p className="border border-line p-4 text-sm text-muted">
-                            You have reached your plan&apos;s logo limit. Delete a logo to upload another or review
-                            available plans.{" "}
+                            You have reached your plan&apos;s logo limit. Delete a logo to upload another or
+                            review available plans.{" "}
                             <Link href={route("pricing")} className="font-semibold text-ink underline">
                                 View plans
                             </Link>
@@ -205,16 +245,10 @@ export default function BrandingForm({ logos = [], logoLimit = 0, className = ""
                     )}
 
                     {logos.length > 0 && (
-                        <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <ul className="mt-8 grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2">
                             {logos.map((logo) => (
                                 <li key={logo.id} className="border border-line p-3">
-                                    <div className="flex h-32 items-center justify-center bg-ink/5">
-                                        <img
-                                            src={logo.url}
-                                            alt={logo.title}
-                                            className="max-h-full max-w-full object-contain"
-                                        />
-                                    </div>
+                                    <QrPreview logoSrc={logo.url} label={logo.title} />
                                     <div className="mt-3 flex items-center justify-between gap-2">
                                         <div className="min-w-0">
                                             <p className="truncate text-sm font-semibold text-ink">

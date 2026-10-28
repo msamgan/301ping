@@ -52,7 +52,7 @@ export default function Branding({ auth, logos = [], logoLimit = 0 }) {
                     </div>
 
                     <section className="border border-line bg-paper p-6">
-                        <BrandingForm logos={logos} logoLimit={logoLimit} className="max-w-2xl" />
+                        <BrandingForm logos={logos} logoLimit={logoLimit} />
                     </section>
                 </div>
             </main>
