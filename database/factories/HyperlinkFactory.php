@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Health;
 use App\Models\Hyperlink;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,6 +22,7 @@ class HyperlinkFactory extends Factory
             'url' => $this->faker->url,
             'shot_slug' => $this->faker->unique()->lexify('????'),
             'visits' => 0,
+            'health' => Health::Healthy,
             'last_visit' => now(),
         ];
     }

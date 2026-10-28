@@ -7,6 +7,8 @@ use App\Http\Requests\StoreHyperlinkRequest;
 use App\Http\Resources\HyperlinkResource;
 use App\Models\Hyperlink;
 use App\Shortener;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\RateLimiter;
 use OpenApi\Attributes as OA;
 
 class HyperlinkController extends Controller
@@ -17,17 +19,17 @@ class HyperlinkController extends Controller
     #[OA\Post(
         path: '/api/shorten',
         operationId: 'shortenUrl',
-        summary: 'Shorten a URL',
         description: 'Creates a new shortened URL or returns the existing shortened URL for the provided URL.',
+        summary: 'Shorten a URL',
         security: [['bearerAuth' => []]],
-        tags: ['Hyperlinks'],
         requestBody: new OA\RequestBody(
-            required: true,
             description: 'URL data to be shortened',
+            required: true,
             content: new OA\JsonContent(
                 ref: '#/components/schemas/StoreHyperlinkRequest'
             )
         ),
+        tags: ['Hyperlinks'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -46,6 +48,15 @@ class HyperlinkController extends Controller
                 )
             ),
             new OA\Response(
+                response: 429,
+                description: 'Daily limit reached (Free: 40, Redirect: 100, Redirect Plus: 300 new links per day)',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string'),
+                    ]
+                )
+            ),
+            new OA\Response(
                 response: 422,
                 description: 'Validation error - invalid URL or unsafe URL',
                 content: new OA\JsonContent(
@@ -53,23 +64,26 @@ class HyperlinkController extends Controller
                         new OA\Property(property: 'message', type: 'string', example: 'The url field is required.'),
                         new OA\Property(
                             property: 'errors',
-                            type: 'object',
                             properties: [
                                 new OA\Property(
                                     property: 'url',
                                     type: 'array',
                                     items: new OA\Items(type: 'string', example: 'The url field is required.')
                                 ),
-                            ]
+                            ],
+                            type: 'object'
                         ),
                     ]
                 )
             ),
         ]
     )]
-    public function shorten(StoreHyperlinkRequest $request): HyperlinkResource
+    public function shorten(StoreHyperlinkRequest $request): HyperlinkResource|JsonResponse
     {
-        $hyperlinkExists = Hyperlink::query()->where('url', $request->get('url'))->first();
+        $hyperlinkExists = Hyperlink::query()
+            ->where('url', $request->string('url'))
+            ->where('user_id', $request->user->id)
+            ->first();
 
         if ($hyperlinkExists) {
             return new HyperlinkResource([
@@ -78,10 +92,21 @@ class HyperlinkController extends Controller
             ]);
         }
 
+        $limitKey = 'api-shorten:' . $request->user->getKey() . ':' . now()->toDateString();
+        $limit = $request->user->apiDailyLimit();
+
+        if (RateLimiter::tooManyAttempts($limitKey, $limit)) {
+            return response()->json([
+                'message' => 'Daily API limit of ' . $limit . ' short links reached. Upgrade your plan or try again tomorrow.',
+            ], 429);
+        }
+
+        RateLimiter::hit($limitKey, now()->diffInSeconds(now()->endOfDay()) + 1);
+
         $shotSlug = Shortener::shorten();
 
         $hyperLinkData = [
-            'url' => $request->get('url'),
+            'url' => $request->string('url'),
             'shot_slug' => $shotSlug,
             'last_visit' => now(),
             'user_id' => $request->user->id,

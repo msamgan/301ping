@@ -6,7 +6,7 @@ import LinkTags from "@/Components/LinkTags"
 import DangerButton from "@/Components/DangerButton"
 import SecondaryButton from "@/Components/SecondaryButton"
 import { downloadQrCodeWithLogo } from "@/Utils/qrCode"
-import { Head } from "@inertiajs/react"
+import { Head, Link } from "@inertiajs/react"
 import { useEffect, useState } from "react"
 import axios from "axios"
 
@@ -105,7 +105,7 @@ export default function Links({ auth }) {
             setDownloadingQrId(link.id)
             const targetUrl = link.shortened_url || link.url
             const filename = `${link.shot_slug || "link"}-qrcode.png`
-            await downloadQrCodeWithLogo(targetUrl, filename, "/favicon.svg")
+            await downloadQrCodeWithLogo(targetUrl, filename, link.logo_url || "/favicon.svg")
         } catch (error) {
             console.error("Failed to generate and download QR code", error)
         } finally {
@@ -322,6 +322,9 @@ export default function Links({ auth }) {
                                                     Visits
                                                 </th>
                                                 <th className="px-5 py-4 text-left font-mono text-[10px] uppercase tracking-[0.18em] text-paper/80">
+                                                    Health
+                                                </th>
+                                                <th className="px-5 py-4 text-left font-mono text-[10px] uppercase tracking-[0.18em] text-paper/80">
                                                     Last visited
                                                 </th>
                                                 <th className="px-5 py-4 text-right font-mono text-[10px] uppercase tracking-[0.18em] text-paper/80">
@@ -367,43 +370,53 @@ export default function Links({ auth }) {
                                                         </td>
 
                                                         <td className="px-5 py-5 align-top">
-                                                            <button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    copyToClipboard(link.shortened_url, rowId)
-                                                                }
-                                                                className="group inline-flex items-center gap-3 rounded-none border border-line bg-paper px-3 py-2 text-left transition-colors hover:border-ink hover:bg-white"
-                                                            >
-                                                                <span className="font-mono text-sm text-ink">
-                                                                    {link.shot_slug}
-                                                                </span>
-                                                                <svg
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    className={`h-4 w-4 transition-colors ${
-                                                                        notification[rowId]
-                                                                            ? "text-accent"
-                                                                            : "text-muted group-hover:text-ink"
-                                                                    }`}
-                                                                    fill="none"
-                                                                    viewBox="0 0 24 24"
-                                                                    stroke="currentColor"
-                                                                    strokeWidth={1.8}
+                                                            <div className="inline-flex items-center border border-line bg-paper transition-colors hover:border-ink hover:bg-white">
+                                                                <Link
+                                                                    href={route("links.show", link.shot_slug)}
+                                                                    className="px-3 py-2 font-mono text-sm text-ink hover:text-accent"
                                                                 >
-                                                                    {notification[rowId] ? (
-                                                                        <path
-                                                                            strokeLinecap="round"
-                                                                            strokeLinejoin="round"
-                                                                            d="M5 13l4 4L19 7"
-                                                                        />
-                                                                    ) : (
-                                                                        <path
-                                                                            strokeLinecap="round"
-                                                                            strokeLinejoin="round"
-                                                                            d="M9 9.75A2.25 2.25 0 0 1 11.25 7.5h6A2.25 2.25 0 0 1 19.5 9.75v6A2.25 2.25 0 0 1 17.25 18h-6A2.25 2.25 0 0 1 9 15.75v-6Zm-4.5 1.5A2.25 2.25 0 0 1 6.75 9h6A2.25 2.25 0 0 1 15 11.25v6A2.25 2.25 0 0 1 12.75 19.5h-6A2.25 2.25 0 0 1 4.5 17.25v-6Z"
-                                                                        />
-                                                                    )}
-                                                                </svg>
-                                                            </button>
+                                                                    {link.shot_slug}
+                                                                </Link>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() =>
+                                                                        copyToClipboard(
+                                                                            link.shortened_url,
+                                                                            rowId
+                                                                        )
+                                                                    }
+                                                                    aria-label={`Copy short link ${link.shot_slug}`}
+                                                                    className="group border-l border-line px-2 py-2 transition-colors hover:bg-white"
+                                                                >
+                                                                    <svg
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        aria-hidden="true"
+                                                                        className={`h-4 w-4 transition-colors ${
+                                                                            notification[rowId]
+                                                                                ? "text-accent"
+                                                                                : "text-muted group-hover:text-ink"
+                                                                        }`}
+                                                                        fill="none"
+                                                                        viewBox="0 0 24 24"
+                                                                        stroke="currentColor"
+                                                                        strokeWidth={1.8}
+                                                                    >
+                                                                        {notification[rowId] ? (
+                                                                            <path
+                                                                                strokeLinecap="round"
+                                                                                strokeLinejoin="round"
+                                                                                d="M5 13l4 4L19 7"
+                                                                            />
+                                                                        ) : (
+                                                                            <path
+                                                                                strokeLinecap="round"
+                                                                                strokeLinejoin="round"
+                                                                                d="M9 9.75A2.25 2.25 0 0 1 11.25 7.5h6A2.25 2.25 0 0 1 19.5 9.75v6A2.25 2.25 0 0 1 17.25 18h-6A2.25 2.25 0 0 1 9 15.75v-6Zm-4.5 1.5A2.25 2.25 0 0 1 6.75 9h6A2.25 2.25 0 0 1 15 11.25v6A2.25 2.25 0 0 1 12.75 19.5h-6A2.25 2.25 0 0 1 4.5 17.25v-6Z"
+                                                                            />
+                                                                        )}
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
                                                         </td>
 
                                                         <td className="px-5 py-5 align-top text-sm text-ink">
@@ -415,6 +428,22 @@ export default function Links({ auth }) {
                                                                     {link.visits || 0}
                                                                 </span>
                                                             </div>
+                                                        </td>
+
+                                                        <td className="px-5 py-5 align-top">
+                                                            <span
+                                                                className={`inline-flex items-center gap-2 border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] ${
+                                                                    link.health === "healthy"
+                                                                        ? "border-green-200 bg-green-50 text-green-800"
+                                                                        : link.health === "unhealthy"
+                                                                          ? "border-red-200 bg-red-50 text-red-800"
+                                                                          : link.health === "unreachable"
+                                                                            ? "border-amber-200 bg-amber-50 text-amber-800"
+                                                                            : "border-line bg-paper text-muted"
+                                                                }`}
+                                                            >
+                                                                {link.health || "Unknown"}
+                                                            </span>
                                                         </td>
 
                                                         <td className="px-5 py-5 align-top text-sm text-muted">
@@ -448,6 +477,15 @@ export default function Links({ auth }) {
                                                                         width="64"
                                                                         contentClasses="bg-paper shadow-lg divide-y divide-line"
                                                                     >
+                                                                        <Dropdown.Link
+                                                                            href={route(
+                                                                                "links.show",
+                                                                                link.shot_slug
+                                                                            )}
+                                                                            className="font-grotesk text-xs uppercase tracking-[0.08em] font-semibold"
+                                                                        >
+                                                                            View details
+                                                                        </Dropdown.Link>
                                                                         <button
                                                                             type="button"
                                                                             onClick={() => downloadQrCode(link)}

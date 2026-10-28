@@ -1,7 +1,13 @@
 import { Head, Link, usePage } from "@inertiajs/react"
+import { useEffect, useState } from "react"
+import axios from "axios"
 import Header from "@/Components/Header.jsx"
 import Footer from "@/Components/Footer.jsx"
 import Reveal from "@/Components/Home/Reveal"
+import ArrowIcon from "@/Components/Home/ArrowIcon"
+import Modal from "@/Components/Modal"
+import SecondaryButton from "@/Components/SecondaryButton"
+import { useToast } from "@/Components/ToastProvider"
 
 const requestExample = `{
   "url": "https://example.com/very/long/url"
@@ -73,8 +79,72 @@ function SectionLabel({ children }) {
 export default function ApiDocumentation() {
     const { auth } = usePage().props
     const user = auth.user
+    const [token, setToken] = useState("")
+    const [tokenError, setTokenError] = useState("")
+    const [isTokenVisible, setIsTokenVisible] = useState(false)
+    const [confirmingTokenRegeneration, setConfirmingTokenRegeneration] = useState(false)
+    const [regeneratingToken, setRegeneratingToken] = useState(false)
+    const showToast = useToast()
 
     const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://301p.ing"
+
+    useEffect(() => {
+        if (!user) return
+
+        let isMounted = true
+
+        axios
+            .get(route("service.api-token"))
+            .then(({ data }) => {
+                if (isMounted) setToken(data.token)
+            })
+            .catch(() => {
+                if (isMounted) setTokenError("Your API token could not be loaded. Please refresh the page.")
+            })
+
+        return () => {
+            isMounted = false
+        }
+    }, [user])
+
+    const maskToken = (value) => {
+        if (!value) return ""
+        return `${value.substring(0, 8)}...${value.substring(value.length - 8)}`
+    }
+
+    const copyToken = async () => {
+        try {
+            await navigator.clipboard.writeText(token)
+            showToast("Copied to clipboard.", "success")
+        } catch {
+            showToast("Failed to copy token to clipboard.", "error")
+        }
+    }
+
+    const confirmTokenRegeneration = async () => {
+        setConfirmingTokenRegeneration(false)
+        setRegeneratingToken(true)
+        try {
+            const { data } = await axios.post(route("service.regenerate-token"), {})
+            showToast(data.message || "Token regenerated successfully.", "success")
+            setToken("")
+
+            try {
+                const { data: refreshedData } = await axios.get(route("service.api-token"))
+                setToken(refreshedData.token)
+                setTokenError("")
+            } catch {
+                setTokenError(
+                    "Token regenerated, but the new token could not be loaded. Please refresh the page."
+                )
+                showToast("The new token could not be loaded. Refresh the page to access it.", "error")
+            }
+        } catch (err) {
+            showToast(err.response?.data?.message || "Failed to regenerate token.", "error")
+        } finally {
+            setRegeneratingToken(false)
+        }
+    }
 
     return (
         <>
@@ -159,16 +229,72 @@ export default function ApiDocumentation() {
                                     Authorization: Bearer YOUR_ACCESS_TOKEN
                                 </CodeBlock>
                             </div>
-                            <p className="mt-5 text-sm leading-relaxed text-muted">
-                                Need a token?{" "}
-                                <Link
-                                    href={user ? route("dashboard") : route("register")}
-                                    className="font-semibold text-accent-dark underline decoration-line underline-offset-4 transition-colors hover:text-ink"
-                                >
-                                    {user ? "Find it in your dashboard" : "Create a 301 ping account"}
-                                </Link>
-                                .
-                            </p>
+                            {user ? (
+                                <div className="mt-7 border-t border-line">
+                                    <div className="flex flex-col justify-between gap-4 border-b border-line py-5 sm:flex-row sm:items-center">
+                                        <span className="font-mono text-xs text-muted">MS0_API_TOKEN</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsTokenVisible((visible) => !visible)}
+                                            disabled={!token}
+                                            className="self-start font-mono text-[11px] uppercase tracking-[0.12em] text-ink transition-colors hover:text-accent-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed disabled:opacity-50 sm:self-auto"
+                                        >
+                                            {isTokenVisible ? "Hide token" : "Show token"}
+                                        </button>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={copyToken}
+                                        disabled={!token}
+                                        className="group flex w-full items-center justify-between gap-4 py-6 text-left font-mono text-sm break-all transition-colors hover:text-accent-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed disabled:opacity-50"
+                                        aria-label="Copy API token"
+                                    >
+                                        <span>
+                                            {tokenError
+                                                ? "Unable to load token"
+                                                : token
+                                                  ? isTokenVisible
+                                                      ? token
+                                                      : maskToken(token)
+                                                  : "Loading token..."}
+                                        </span>
+                                        <span
+                                            className="shrink-0 text-muted group-hover:text-accent-dark"
+                                            aria-hidden="true"
+                                        >
+                                            ↗
+                                        </span>
+                                    </button>
+                                    {tokenError && (
+                                        <p className="text-sm text-accent-dark" role="alert">
+                                            {tokenError}
+                                        </p>
+                                    )}
+                                    <button
+                                        type="button"
+                                        onClick={() => setConfirmingTokenRegeneration(true)}
+                                        disabled={regeneratingToken}
+                                        className="group mt-4 inline-flex items-center gap-3 bg-ink px-5 py-3 font-grotesk text-sm font-semibold text-paper transition-colors hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+                                        {regeneratingToken ? "Regenerating..." : "Regenerate token"}{" "}
+                                        <ArrowIcon />
+                                    </button>
+                                    <p className="mt-5 text-sm leading-relaxed text-muted">
+                                        Keep this token private. Regenerating it invalidates your current token.
+                                    </p>
+                                </div>
+                            ) : (
+                                <p className="mt-5 text-sm leading-relaxed text-muted">
+                                    Need a token?{" "}
+                                    <Link
+                                        href={route("register")}
+                                        className="font-semibold text-accent-dark underline decoration-line underline-offset-4 transition-colors hover:text-ink"
+                                    >
+                                        Create a 301 ping account
+                                    </Link>
+                                    .
+                                </p>
+                            )}
                         </div>
                     </div>
                 </section>
@@ -331,6 +457,33 @@ export default function ApiDocumentation() {
             </main>
 
             <Footer />
+            <Modal
+                show={confirmingTokenRegeneration}
+                onClose={() => setConfirmingTokenRegeneration(false)}
+                maxWidth="md"
+            >
+                <div className="border-t-4 border-accent bg-paper p-6">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent">
+                        Confirm token regeneration
+                    </p>
+                    <h3 className="mt-2 font-editorial text-2xl text-ink">Regenerate API token?</h3>
+                    <p className="mb-6 mt-3 font-grotesk text-sm text-muted">
+                        This will invalidate the current token. Applications using it will need to be updated.
+                    </p>
+                    <div className="flex justify-end gap-3">
+                        <SecondaryButton onClick={() => setConfirmingTokenRegeneration(false)}>
+                            Keep Current Token
+                        </SecondaryButton>
+                        <button
+                            type="button"
+                            onClick={confirmTokenRegeneration}
+                            className="inline-flex items-center justify-center border border-accent bg-accent px-5 py-3 font-grotesk text-sm font-semibold uppercase tracking-[0.08em] text-paper transition-colors hover:border-accent-dark hover:bg-accent-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                        >
+                            Regenerate Token
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </>
     )
 }

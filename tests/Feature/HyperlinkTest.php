@@ -1,10 +1,14 @@
 <?php
 
+use App\Enums\Health;
 use App\Models\Hyperlink;
 use App\Models\Tag;
 use App\Models\User;
+use App\Support\Plans;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
+use Laravel\Paddle\Subscription;
+use Laravel\Paddle\SubscriptionItem;
 
 uses(RefreshDatabase::class);
 
@@ -154,6 +158,7 @@ test('authenticated user can view their links ordered by created_at descending',
     $secondLink = Hyperlink::factory()->create([
         'user_id' => $user->id,
         'created_at' => now(),
+        'health' => Health::Unhealthy,
     ]);
     Hyperlink::factory()->create(['user_id' => null]); // Guest link
     Hyperlink::factory()->create(['user_id' => User::factory()->create()->id]); // Other user's link
@@ -171,7 +176,189 @@ test('authenticated user can view their links ordered by created_at descending',
     $serviceResponse->assertStatus(200)
         ->assertJsonCount(2, 'links.data')
         ->assertJsonPath('links.data.0.id', $secondLink->id)
-        ->assertJsonPath('links.data.1.id', $firstLink->id);
+        ->assertJsonPath('links.data.0.health', Health::Unhealthy->value)
+        ->assertJsonPath('links.data.1.id', $firstLink->id)
+        ->assertJsonPath('links.data.1.health', Health::Healthy->value);
+});
+
+test('authenticated user can view link details using its short slug', function () {
+    $user = User::factory()->create();
+    $link = Hyperlink::factory()->create([
+        'user_id' => $user->id,
+        'shot_slug' => 'detail-slug',
+        'visits' => 12,
+    ]);
+    $tag = Tag::factory()->create(['user_id' => $user->id]);
+    $link->tags()->attach($tag);
+
+    $response = $this->actingAs($user)->get('/links/detail-slug');
+
+    $response->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('LinkDetails')
+            ->where('link.shot_slug', 'detail-slug')
+            ->where('link.url', $link->url)
+            ->where('link.visits', 12)
+            ->where('link.health', $link->health->value)
+            ->where('link.is_slug_edited', false)
+            ->where('link.is_destination_edited', false)
+            ->where('destinationEditsRemaining', 1)
+            ->has('link.tags', 1)
+        );
+});
+
+test('free user can edit one link destination and re-edit that same destination', function () {
+    $user = User::factory()->create();
+    $firstLink = Hyperlink::factory()->create([
+        'user_id' => $user->id,
+        'url' => 'https://example.com/first',
+    ]);
+    $secondLink = Hyperlink::factory()->create([
+        'user_id' => $user->id,
+        'url' => 'https://example.com/second',
+    ]);
+
+    $this->actingAs($user)
+        ->patchJson("/service/links/{$firstLink->id}/destination", [
+            'url' => 'https://example.com/updated-first',
+        ])
+        ->assertOk()
+        ->assertJson([
+            'status' => true,
+            'url' => 'https://example.com/updated-first',
+            'destination_edits_remaining' => 0,
+        ]);
+
+    $this->assertDatabaseHas('hyperlinks', [
+        'id' => $firstLink->id,
+        'url' => 'https://example.com/updated-first',
+        'is_destination_edited' => true,
+    ]);
+
+    $this->patchJson("/service/links/{$firstLink->id}/destination", [
+        'url' => 'https://example.com/updated-first-again',
+    ])->assertOk();
+
+    $this->patchJson("/service/links/{$secondLink->id}/destination", [
+        'url' => 'https://example.com/updated-second',
+    ])->assertForbidden()
+        ->assertJsonPath('destination_edits_remaining', 0);
+
+    $this->assertDatabaseHas('hyperlinks', [
+        'id' => $secondLink->id,
+        'url' => 'https://example.com/second',
+        'is_destination_edited' => false,
+    ]);
+});
+
+test('Redirect user can edit up to eight link destinations', function () {
+    $user = User::factory()->create();
+    $subscription = Subscription::create([
+        'billable_id' => $user->id,
+        'billable_type' => $user->getMorphClass(),
+        'type' => 'default',
+        'paddle_id' => 'sub_destination_edits',
+        'status' => Subscription::STATUS_ACTIVE,
+    ]);
+    SubscriptionItem::create([
+        'subscription_id' => $subscription->id,
+        'product_id' => 'pro_redirect',
+        'price_id' => Plans::all()['redirect_monthly']['price_id'],
+        'status' => 'active',
+        'quantity' => 1,
+    ]);
+    $firstLink = Hyperlink::factory()->create(['user_id' => $user->id]);
+    $secondLink = Hyperlink::factory()->create(['user_id' => $user->id]);
+
+    $this->actingAs($user)
+        ->patchJson("/service/links/{$firstLink->id}/destination", [
+            'url' => 'https://example.com/paid-first',
+        ])
+        ->assertOk()
+        ->assertJsonPath('destination_edits_remaining', 7);
+
+    $this->patchJson("/service/links/{$secondLink->id}/destination", [
+        'url' => 'https://example.com/paid-second',
+    ])->assertOk()
+        ->assertJsonPath('destination_edits_remaining', 6);
+
+    $remainingLinks = Hyperlink::factory()->count(6)->create(['user_id' => $user->id]);
+    foreach ($remainingLinks as $index => $link) {
+        $this->patchJson("/service/links/{$link->id}/destination", [
+            'url' => "https://example.com/redirect-{$index}",
+        ])->assertOk();
+    }
+
+    $this->assertSame(0, $user->fresh()->destinationEditsRemaining());
+
+    $extraLink = Hyperlink::factory()->create(['user_id' => $user->id]);
+    $this->patchJson("/service/links/{$extraLink->id}/destination", [
+        'url' => 'https://example.com/redirect-over-limit',
+    ])->assertForbidden()
+        ->assertJsonPath('destination_edits_remaining', 0);
+});
+
+test('Redirect Plus user can edit up to twenty-three link destinations', function () {
+    $user = User::factory()->create();
+    $subscription = Subscription::create([
+        'billable_id' => $user->id,
+        'billable_type' => $user->getMorphClass(),
+        'type' => 'default',
+        'paddle_id' => 'sub_redirect_plus_destination_edits',
+        'status' => Subscription::STATUS_ACTIVE,
+    ]);
+    SubscriptionItem::create([
+        'subscription_id' => $subscription->id,
+        'product_id' => 'pro_redirect_plus',
+        'price_id' => Plans::all()['redirect_plus_monthly']['price_id'],
+        'status' => 'active',
+        'quantity' => 1,
+    ]);
+
+    $links = Hyperlink::factory()->count(24)->create(['user_id' => $user->id]);
+
+    foreach ($links->take(23) as $index => $link) {
+        $response = $this->actingAs($user)->patchJson("/service/links/{$link->id}/destination", [
+            'url' => "https://example.com/redirect-plus-{$index}",
+        ]);
+        $response->assertOk();
+    }
+
+    $this->assertSame(0, $user->fresh()->destinationEditsRemaining());
+
+    $this->patchJson("/service/links/{$links[23]->id}/destination", [
+        'url' => 'https://example.com/redirect-plus-over-limit',
+    ])->assertForbidden()
+        ->assertJsonPath('destination_edits_remaining', 0);
+});
+
+test('destination edits validate URLs and enforce link ownership', function () {
+    $user = User::factory()->create();
+    $usersLink = Hyperlink::factory()->create(['user_id' => $user->id]);
+    $otherUsersLink = Hyperlink::factory()->create([
+        'user_id' => User::factory()->create()->id,
+    ]);
+
+    $this->actingAs($user)
+        ->patchJson("/service/links/{$usersLink->id}/destination", [
+            'url' => 'javascript:alert(1)',
+        ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['url']);
+
+    $this->patchJson("/service/links/{$otherUsersLink->id}/destination", [
+        'url' => 'https://example.com/unauthorized',
+    ])->assertForbidden();
+});
+
+test('authenticated user cannot view another users link details', function () {
+    $user = User::factory()->create();
+    $link = Hyperlink::factory()->create([
+        'user_id' => User::factory()->create()->id,
+        'shot_slug' => 'private-slug',
+    ]);
+
+    $this->actingAs($user)->get('/links/' . $link->shot_slug)->assertNotFound();
 });
 
 test('authenticated user can search and filter their links via service endpoint', function () {
@@ -275,5 +462,40 @@ test('authenticated user can detach a tag from a link using its slug', function 
     $this->assertDatabaseMissing('hyperlink_tag', [
         'hyperlink_id' => $link->id,
         'tag_id' => $tag->id,
+    ]);
+});
+
+test('hyperlink defaults to healthy health status', function () {
+    $link = Hyperlink::create([
+        'url' => 'https://example.com/test-health-default',
+        'shot_slug' => 'hlth',
+        'last_visit' => now(),
+    ]);
+
+    expect($link->health)->toBe(Health::Healthy);
+
+    $this->assertDatabaseHas('hyperlinks', [
+        'id' => $link->id,
+        'health' => 'healthy',
+    ]);
+});
+
+test('hyperlink supports unhealthy and unreachable health statuses', function () {
+    $unhealthyLink = Hyperlink::factory()->create([
+        'health' => Health::Unhealthy,
+    ]);
+    expect($unhealthyLink->health)->toBe(Health::Unhealthy);
+    $this->assertDatabaseHas('hyperlinks', [
+        'id' => $unhealthyLink->id,
+        'health' => 'unhealthy',
+    ]);
+
+    $unreachableLink = Hyperlink::factory()->create([
+        'health' => Health::Unreachable,
+    ]);
+    expect($unreachableLink->health)->toBe(Health::Unreachable);
+    $this->assertDatabaseHas('hyperlinks', [
+        'id' => $unreachableLink->id,
+        'health' => 'unreachable',
     ]);
 });

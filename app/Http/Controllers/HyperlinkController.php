@@ -2,15 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Plan;
 use App\Http\Requests\StoreHyperlinkRequest;
+use App\Http\Requests\UpdateHyperlinkDestinationRequest;
 use App\Http\Requests\UpdateHyperlinkRequest;
+use App\Http\Requests\UpdateHyperlinkSlugRequest;
+use App\Jobs\RecordAnalyticsJob;
 use App\Methods;
 use App\Models\Hyperlink;
+use App\Models\Logo;
 use App\Models\Tag;
+use App\Services\AnalyticsService;
 use App\Shortener;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Inertia\Inertia;
 use Random\RandomException;
 
 class HyperlinkController extends Controller
@@ -48,15 +56,17 @@ class HyperlinkController extends Controller
                 'total' => (clone $query)->count(),
                 'visits' => (int) (clone $query)->sum('visits'),
             ],
-            'links' => $listing->with('tags')->orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate(20)->withQueryString()->through(function ($link) {
+            'links' => $listing->with(['tags', 'logo'])->orderBy('created_at', 'desc')->orderBy('id', 'desc')->paginate(20)->withQueryString()->through(function ($link) {
                 return [
                     'id' => $link->id,
                     'url' => $link->url,
                     'shot_slug' => $link->shot_slug,
                     'visits' => $link->visits,
+                    'health' => $link->health->value,
                     'last_visit' => date('F, d Y', strtotime($link->last_visit)),
                     'shortened_url' => url('/' . $link->shot_slug),
                     'status' => 'Active',
+                    'logo_url' => $link->logo?->url(),
                     'tags' => $link->tags->map(fn ($tag) => [
                         'id' => $tag->id,
                         'name' => $tag->name,
@@ -67,17 +77,102 @@ class HyperlinkController extends Controller
         ];
     }
 
+    public function details(string $shot_slug)
+    {
+        $hyperlink = Hyperlink::query()
+            ->where('user_id', auth()->id())
+            ->where('shot_slug', $shot_slug)
+            ->with(['tags', 'logo'])
+            ->firstOrFail();
+
+        $canViewAnalytics = auth()->user()->currentPlan() !== Plan::Free;
+
+        return Inertia::render('LinkDetails', [
+            'link' => [
+                'id' => $hyperlink->id,
+                'url' => $hyperlink->url,
+                'shot_slug' => $hyperlink->shot_slug,
+                'shortened_url' => url('/' . $hyperlink->shot_slug),
+                'visits' => $hyperlink->visits,
+                'health' => $hyperlink->health->value,
+                'is_active' => $hyperlink->is_active,
+                'is_slug_edited' => (bool) $hyperlink->is_slug_edited,
+                'is_destination_edited' => (bool) $hyperlink->is_destination_edited,
+                'logo_id' => $hyperlink->logo_id,
+                'created_at' => $hyperlink->created_at?->format('F, d Y'),
+                'last_visit' => $hyperlink->last_visit ? date('F, d Y', strtotime($hyperlink->last_visit)) : null,
+                'tags' => $hyperlink->tags->map(fn ($tag) => [
+                    'id' => $tag->id,
+                    'name' => $tag->name,
+                    'slug' => $tag->slug,
+                ])->values(),
+            ],
+            'logos' => auth()->user()->logos()->latest()->get()->map->toFrontend()->values(),
+            'slugEditsRemaining' => auth()->user()->slugEditsRemaining(),
+            'destinationEditsRemaining' => auth()->user()->destinationEditsRemaining(),
+            'canViewAnalytics' => $canViewAnalytics,
+            'analytics' => $canViewAnalytics ? $this->analyticsFor($hyperlink) : null,
+        ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function analyticsFor(Hyperlink $hyperlink): array
+    {
+        $base = fn () => $hyperlink->analytics()->where('is_robot', false);
+
+        $breakdown = fn (string $column) => $base()
+            ->whereNotNull($column)
+            ->where($column, '!=', '')
+            ->selectRaw("{$column} as label, count(*) as total")
+            ->groupBy($column)
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get()
+            ->map(fn ($row) => ['label' => $row->label, 'total' => (int) $row->total])
+            ->values();
+
+        $since = now()->subDays(29)->startOfDay();
+        $perDay = $base()
+            ->where('created_at', '>=', $since)
+            ->selectRaw('date(created_at) as day, count(*) as total')
+            ->groupBy('day')
+            ->pluck('total', 'day');
+
+        $daily = collect(range(0, 29))->map(function ($i) use ($since, $perDay) {
+            $date = $since->copy()->addDays($i)->toDateString();
+
+            return ['date' => $date, 'total' => (int) ($perDay[$date] ?? 0)];
+        })->values();
+
+        return [
+            'total' => $base()->count(),
+            'bots' => $hyperlink->analytics()->where('is_robot', true)->count(),
+            'daily' => $daily,
+            'countries' => $breakdown('country'),
+            'devices' => $breakdown('device'),
+            'browsers' => $breakdown('browser'),
+            'os' => $breakdown('os'),
+            'languages' => $breakdown('language'),
+            'referrers' => $breakdown('referer_host'),
+        ];
+    }
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreHyperlinkRequest $request): JsonResponse
     {
-        $hyperlinkExists = Hyperlink::query()->where('url', $request->get('url'))->first();
+        $hyperlinkExists = Hyperlink::query()->where('url', $request->string('url'));
 
-        if ($hyperlinkExists && $hyperlinkExists->user_id === null && auth()->check()) {
-            $hyperlinkExists->user_id = auth()->id();
-            $hyperlinkExists->save();
+        if (auth()->check()) {
+            $hyperlinkExists->where('user_id', auth()->id());
+        } else {
+            $hyperlinkExists->whereNull('user_id');
         }
+
+        $hyperlinkExists = $hyperlinkExists->first();
 
         if ($hyperlinkExists) {
             return response()->json([
@@ -90,7 +185,7 @@ class HyperlinkController extends Controller
         $shotSlug = Shortener::shorten();
 
         $hyperLinkData = [
-            'url' => $request->get('url'),
+            'url' => $request->string('url'),
             'shot_slug' => $shotSlug,
             'last_visit' => now(),
         ];
@@ -129,6 +224,8 @@ class HyperlinkController extends Controller
             $hyperlink->visits = $hyperlink->visits + 1;
             $hyperlink->last_visit = now();
             $hyperlink->save();
+
+            RecordAnalyticsJob::dispatch($hyperlink, AnalyticsService::snapshotRequest($request));
 
             return redirect($hyperlink->url);
         }
@@ -171,6 +268,101 @@ class HyperlinkController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function updateSlug(UpdateHyperlinkSlugRequest $request, Hyperlink $hyperlink): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $hyperlink->is_slug_edited && $user->slugEditsRemaining() === 0) {
+            return response()->json([
+                'message' => 'Your plan allows only ' . $user->currentPlan()->slugEditLimit() . ' custom links. Upgrade to customize more.',
+                'errors' => ['shot_slug' => ['You have used all your custom links. Upgrade to customize more.']],
+                'slug_edits_remaining' => 0,
+            ], 403);
+        }
+
+        $validated = $request->validated();
+
+        if ($validated['shot_slug'] === $hyperlink->shot_slug) {
+            return response()->json([
+                'status' => true,
+                'shot_slug' => $hyperlink->shot_slug,
+                'shortened_url' => url('/' . $hyperlink->shot_slug),
+                'slug_edits_remaining' => $user->slugEditsRemaining(),
+            ]);
+        }
+
+        $hyperlink->shot_slug = $validated['shot_slug'];
+        $hyperlink->is_slug_edited = true;
+        $hyperlink->save();
+
+        return response()->json([
+            'status' => true,
+            'shot_slug' => $hyperlink->shot_slug,
+            'shortened_url' => url('/' . $hyperlink->shot_slug),
+            'slug_edits_remaining' => $user->slugEditsRemaining(),
+        ]);
+    }
+
+    public function updateDestination(UpdateHyperlinkDestinationRequest $request, Hyperlink $hyperlink): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $hyperlink->is_destination_edited && $user->destinationEditsRemaining() === 0) {
+            return response()->json([
+                'message' => 'Your plan allows up to ' . $user->currentPlan()->destinationEditLimit() . ' edited destinations. Upgrade to edit more.',
+                'errors' => ['url' => ['You have used your edited destination. Upgrade to edit more.']],
+                'destination_edits_remaining' => 0,
+            ], 403);
+        }
+
+        $validated = $request->validated();
+
+        if ($validated['url'] === $hyperlink->url) {
+            return response()->json([
+                'status' => true,
+                'url' => $hyperlink->url,
+                'destination_edits_remaining' => $user->destinationEditsRemaining(),
+            ]);
+        }
+
+        $hyperlink->url = $validated['url'];
+        $hyperlink->is_destination_edited = true;
+        $hyperlink->save();
+
+        return response()->json([
+            'status' => true,
+            'url' => $hyperlink->url,
+            'destination_edits_remaining' => $user->destinationEditsRemaining(),
+        ]);
+    }
+
+    public function updateLogo(Request $request, Hyperlink $hyperlink): JsonResponse
+    {
+        if ($hyperlink->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'logo_id' => [
+                'nullable', 'integer',
+                Rule::exists('logos', 'id')->where('user_id', auth()->id()),
+            ],
+        ]);
+
+        $hyperlink->logo_id = $validated['logo_id'] ?? null;
+        $hyperlink->save();
+
+        if ($hyperlink->logo_id) {
+            Logo::whereKey($hyperlink->logo_id)->update(['can_delete' => false]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'logo_id' => $hyperlink->logo_id,
+            'logo_url' => $hyperlink->logo?->url(),
+        ]);
     }
 
     public function attachTag(Request $request, Hyperlink $hyperlink): JsonResponse

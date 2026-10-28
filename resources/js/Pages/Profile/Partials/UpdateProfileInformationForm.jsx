@@ -49,11 +49,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
 
             <form onSubmit={submit} className="space-y-6">
                 <div>
-                    <InputLabel
-                        htmlFor="name"
-                        value="Name"
-                        className="font-grotesk text-[11px] uppercase tracking-[0.18em] text-muted"
-                    />
+                    <InputLabel htmlFor="name" value="Name" />
                     <TextInput
                         id="name"
                         className="mt-2"
@@ -67,11 +63,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                 </div>
 
                 <div>
-                    <InputLabel
-                        htmlFor="email"
-                        value="Email"
-                        className="font-grotesk text-[11px] uppercase tracking-[0.18em] text-muted"
-                    />
+                    <InputLabel htmlFor="email" value="Email" />
                     <TextInput
                         id="email"
                         type="email"
@@ -125,10 +117,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                 )}
 
                 <div className="flex items-center gap-4 pt-2">
-                    <PrimaryButton
-                        disabled={processing}
-                        className="border border-ink bg-ink px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-paper hover:bg-accent hover:text-paper focus:ring-accent"
-                    >
+                    <PrimaryButton disabled={processing}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="mr-2 h-4 w-4"

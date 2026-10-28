@@ -28,7 +28,6 @@
         "printWidth": 112
     },
     "dependencies": {
-        "alertifyjs": "^1.14.0",
         "prettier": "^3.3.3",
         "qrcode": "^1.5.4"
     }

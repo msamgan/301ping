@@ -11,6 +11,7 @@
         "php": "^8.4",
         "darkaonline/l5-swagger": "^11.2",
         "inertiajs/inertia-laravel": "^3.5",
+        "laravel/cashier-paddle": "^2.8",
         "laravel/framework": "^13.0",
         "laravel/sanctum": "^4.3",
         "laravel/tinker": "^3.0",

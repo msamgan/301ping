@@ -72,10 +72,7 @@ export default function DeleteUserForm({ className = "" }) {
             </header>
 
             <div>
-                <DangerButton
-                    onClick={confirmUserDeletion}
-                    className="flex items-center border border-accent bg-accent px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-paper hover:bg-accent-dark focus:ring-accent"
-                >
+                <DangerButton onClick={confirmUserDeletion}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="mr-2 h-4 w-4"
@@ -94,10 +91,10 @@ export default function DeleteUserForm({ className = "" }) {
                 </DangerButton>
             </div>
 
-            <Modal show={confirmingUserDeletion} onClose={closeModal}>
+            <Modal show={confirmingUserDeletion} onClose={closeModal} maxWidth="md">
                 <div className="border-t-4 border-accent bg-paper p-6">
                     <div className="mb-4 flex items-center gap-3">
-                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center border border-accent bg-paper">
+                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center border border-accent bg-paper text-accent">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="h-5 w-5 text-accent"
@@ -113,21 +110,22 @@ export default function DeleteUserForm({ className = "" }) {
                                 />
                             </svg>
                         </div>
-                        <h2 className="font-editorial text-3xl text-ink">Are you sure?</h2>
+                        <div>
+                            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent">
+                                Confirm deletion
+                            </p>
+                            <h3 className="font-editorial text-2xl text-ink">Are you sure?</h3>
+                        </div>
                     </div>
 
-                    <p className="mb-4 border border-line bg-paper p-3 text-sm text-muted">
-                        Once your account is deleted, all of its resources and data will be permanently deleted.
-                        This action cannot be undone.
+                    <p className="mb-6 font-grotesk text-sm text-muted">
+                        Once your account is deleted, all of its resources and data will be permanently removed.
+                        Please enter your password to confirm you would like to permanently delete your account.
                     </p>
 
                     <form onSubmit={deleteUser}>
-                        <div className="mb-4">
-                            <InputLabel
-                                htmlFor="password"
-                                value="Password"
-                                className="font-grotesk text-[11px] uppercase tracking-[0.18em] text-muted"
-                            />
+                        <div className="mb-6">
+                            <InputLabel htmlFor="password" value="Password" />
                             <TextInput
                                 id="password"
                                 type="password"
@@ -143,17 +141,11 @@ export default function DeleteUserForm({ className = "" }) {
                         </div>
 
                         <div className="flex justify-end gap-3">
-                            <SecondaryButton
-                                onClick={closeModal}
-                                className="border border-line bg-paper px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-ink hover:bg-ink hover:text-paper"
-                            >
+                            <SecondaryButton onClick={closeModal} disabled={processing}>
                                 Cancel
                             </SecondaryButton>
 
-                            <DangerButton
-                                className="border border-accent bg-accent px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-paper hover:bg-accent-dark focus:ring-accent"
-                                disabled={processing}
-                            >
+                            <DangerButton disabled={processing}>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="mr-2 h-4 w-4"
@@ -168,7 +160,7 @@ export default function DeleteUserForm({ className = "" }) {
                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                                     />
                                 </svg>
-                                Delete Account
+                                {processing ? "Deleting…" : "Delete Account"}
                             </DangerButton>
                         </div>
                     </form>

@@ -4,6 +4,7 @@ import Dropdown from "@/Components/Dropdown"
 
 export default function Header({ isAuthenticated = false, user = null }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [servicesOpen, setServicesOpen] = useState(false)
 
     const linkClass = "relative py-2 font-grotesk text-sm text-muted hover:text-ink transition-colors"
     const linkActiveClass =
@@ -17,6 +18,39 @@ export default function Header({ isAuthenticated = false, user = null }) {
         { key: "dashboard", href: route("dashboard"), label: "Dashboard", show: isAuthenticated },
         { key: "links", href: route("links"), label: "Links", show: isAuthenticated },
         { key: "tags", href: route("tags"), label: "Tags", show: isAuthenticated },
+        {
+            key: "services",
+            label: "Services",
+            show: true,
+            children: [
+                {
+                    key: "services.qr-code-logo",
+                    href: route("services.qr-code-logo"),
+                    label: "QR codes with your logo"
+                },
+                {
+                    key: "services.link-tags",
+                    href: route("services.link-tags"),
+                    label: "Link tags"
+                },
+                {
+                    key: "services.custom-links",
+                    href: route("services.custom-links"),
+                    label: "Custom links"
+                },
+                {
+                    key: "services.broken-destinations",
+                    href: route("services.broken-destinations"),
+                    label: "Broken destination monitoring"
+                },
+                {
+                    key: "services.edit-destination",
+                    href: route("services.edit-destination"),
+                    label: "Edit destination"
+                }
+            ]
+        },
+        { key: "pricing", href: route("pricing"), label: "Pricing", show: true },
         { key: "register", href: route("register"), label: "Register", show: !isAuthenticated },
         { key: "login", href: route("login"), label: "Login", show: !isAuthenticated },
         {
@@ -37,7 +71,52 @@ export default function Header({ isAuthenticated = false, user = null }) {
 
                 <nav className="hidden md:flex items-center gap-8" aria-label="Primary">
                     {navItems.map((item) =>
-                        item.external ? (
+                        item.children ? (
+                            <div
+                                key={item.key}
+                                className="relative"
+                                onBlur={(event) => {
+                                    if (!event.currentTarget.contains(event.relatedTarget)) {
+                                        setServicesOpen(false)
+                                    }
+                                }}
+                                onKeyDown={(event) => {
+                                    if (event.key === "Escape") setServicesOpen(false)
+                                }}
+                            >
+                                <button
+                                    type="button"
+                                    className={`${route().current("services.*") ? linkActiveClass : linkClass} inline-flex items-center gap-1.5`}
+                                    aria-haspopup="true"
+                                    aria-expanded={servicesOpen}
+                                    onClick={() => setServicesOpen((open) => !open)}
+                                >
+                                    {item.label}
+                                    <svg
+                                        className="h-3.5 w-3.5"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                        aria-hidden="true"
+                                    >
+                                        <path d="M5.25 7.5 10 12.25 14.75 7.5" />
+                                    </svg>
+                                </button>
+                                {servicesOpen && (
+                                    <div className="absolute left-0 top-full z-50 mt-2 min-w-56 border border-line bg-paper py-2">
+                                        {item.children.map((child) => (
+                                            <Link
+                                                key={child.key}
+                                                href={child.href}
+                                                className="block px-4 py-2.5 font-grotesk text-sm text-ink transition-colors hover:bg-ink/5 hover:text-accent-dark"
+                                                onClick={() => setServicesOpen(false)}
+                                            >
+                                                {child.label}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ) : item.external ? (
                             <a key={item.key} href={item.href} className={linkClass}>
                                 {item.label}
                             </a>
@@ -76,6 +155,8 @@ export default function Header({ isAuthenticated = false, user = null }) {
                             </Dropdown.Trigger>
                             <Dropdown.Content contentClasses="bg-paper">
                                 <Dropdown.Link href={route("profile.edit")}>Profile</Dropdown.Link>
+                                <Dropdown.Link href={route("billing")}>Billing</Dropdown.Link>
+                                <Dropdown.Link href={route("branding")}>Branding</Dropdown.Link>
                                 <Dropdown.Link href={route("logout")} method="post" as="button">
                                     Log out
                                 </Dropdown.Link>
@@ -119,7 +200,23 @@ export default function Header({ isAuthenticated = false, user = null }) {
             {mobileMenuOpen && (
                 <div className="md:hidden bg-paper border-t border-line">
                     {navItems.map((item) =>
-                        item.external ? (
+                        item.children ? (
+                            <div key={item.key}>
+                                <p className="px-6 pt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">
+                                    {item.label}
+                                </p>
+                                {item.children.map((child) => (
+                                    <Link
+                                        key={child.key}
+                                        href={child.href}
+                                        className={`${mobileLinkClass} pl-9 ${route().current(child.key) ? "text-accent-dark" : ""}`}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        {child.label}
+                                    </Link>
+                                ))}
+                            </div>
+                        ) : item.external ? (
                             <a
                                 key={item.key}
                                 href={item.href}
@@ -147,6 +244,20 @@ export default function Header({ isAuthenticated = false, user = null }) {
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 Profile
+                            </Link>
+                            <Link
+                                href={route("billing")}
+                                className={mobileLinkClass}
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                Billing
+                            </Link>
+                            <Link
+                                href={route("branding")}
+                                className={mobileLinkClass}
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                Branding
                             </Link>
                             <Link
                                 href={route("logout")}

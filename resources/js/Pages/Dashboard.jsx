@@ -2,35 +2,39 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout"
 import { Head, Link } from "@inertiajs/react"
 import { useEffect, useState } from "react"
 import axios from "axios"
-import alertify from "alertifyjs"
-import ArrowIcon from "@/Components/Home/ArrowIcon"
 
-const StatIcon = ({ type }) => {
-    const paths = {
-        links: "M9.5 14.5l5-5m-7.5-2h-2a4 4 0 000 8h2m6-6h2a4 4 0 010 8h-2",
-        visits: "M2.5 12s3.2-5 9.5-5 9.5 5 9.5 5-3.2 5-9.5 5-9.5-5-9.5-5z M12 9.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z",
-        average: "M4 17l5-5 3 3 7-8 M15 7h4v4",
-        activity: "M12 7v5l3 2"
-    }
+const formatNumber = (value) => (value === undefined ? "—" : Number(value).toLocaleString())
+
+const healthStyles = {
+    healthy: "border-green-200 bg-green-50 text-green-800",
+    unhealthy: "border-accent/30 bg-accent/10 text-accent-dark",
+    unreachable: "border-line bg-ink/5 text-muted"
+}
+
+function HealthBadge({ health }) {
+    const label = health ? health.charAt(0).toUpperCase() + health.slice(1) : "Unknown"
 
     return (
-        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-            <path d={paths[type]} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            {type === "activity" && <circle cx="12" cy="12" r="9" strokeWidth="1.5" />}
-        </svg>
+        <span
+            className={`inline-flex items-center gap-2 border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] ${
+                healthStyles[health] || healthStyles.unreachable
+            }`}
+        >
+            <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true" />
+            {label}
+        </span>
     )
+}
+
+function SectionLabel({ children }) {
+    return <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">{children}</p>
 }
 
 export default function Dashboard({ auth }) {
     const [dashboardData, setDashboardData] = useState(null)
     const [dashboardError, setDashboardError] = useState("")
-    const [notification, setNotification] = useState("Click to copy token")
-    const [isTokenVisible, setIsTokenVisible] = useState(false)
-    const [animateStats, setAnimateStats] = useState(false)
 
     useEffect(() => {
-        setAnimateStats(true)
-
         let isMounted = true
 
         axios
@@ -40,7 +44,7 @@ export default function Dashboard({ auth }) {
             })
             .catch(() => {
                 if (isMounted) {
-                    setDashboardError("Dashboard data could not be loaded. Please refresh the page.")
+                    setDashboardError("Your workspace summary could not be loaded. Please refresh the page.")
                 }
             })
 
@@ -49,83 +53,60 @@ export default function Dashboard({ auth }) {
         }
     }, [])
 
-    const token = dashboardData?.token ?? ""
-    const linkCount = dashboardData?.linkCount
-    const visits = dashboardData?.visits
-
-    const maskToken = (value) => {
-        if (!value) return ""
-        return `${value.substring(0, 8)}...${value.substring(value.length - 8)}`
-    }
-
-    const copyToken = async () => {
-        await navigator.clipboard.writeText(token)
-        setNotification("Copied to clipboard")
-        window.setTimeout(() => setNotification("Click to copy token"), 2000)
-    }
-
-    const regenerateToken = () => {
-        alertify
-            .confirm(
-                "Regenerate API token",
-                "This will invalidate the current token. Applications using it will need to be updated.",
-                () => {
-                    axios.post(route("service.regenerate-token"), {}).then(() => window.location.reload())
-                },
-                () => {}
-            )
-            .set("labels", { ok: "Regenerate", cancel: "Cancel" })
-    }
-
+    const healthSummary = dashboardData?.healthSummary || {}
+    const needsAttention = (healthSummary.unhealthy || 0) + (healthSummary.unreachable || 0)
     const stats = [
-        { label: "Active links", value: linkCount ?? "--", suffix: "total", type: "links" },
-        { label: "Total visits", value: visits ?? "--", suffix: "clicks", type: "visits" },
+        { label: "Short links", value: dashboardData?.linkCount },
+        { label: "Total visits", value: dashboardData?.visits },
+        { label: "Visits · 24 hours", value: dashboardData?.last24Hours },
         {
-            label: "Average reach",
-            value:
-                linkCount === undefined || visits === undefined
-                    ? "--"
-                    : linkCount > 0
-                      ? Math.round((visits / linkCount) * 10) / 10
-                      : 0,
-            suffix: "per link",
-            type: "average"
+            label: "Need attention",
+            value: dashboardData ? needsAttention : undefined,
+            accent: needsAttention > 0
+        }
+    ]
+    const shortcuts = [
+        {
+            index: "01",
+            title: "Short links",
+            description: "Create links, edit destinations, and explore click analytics.",
+            href: route("links"),
+            action: "Manage links"
         },
-        { label: "Last 24 hours", value: "--", suffix: "visits", type: "activity" }
+        {
+            index: "02",
+            title: "Tags",
+            description: "Group links into campaigns and keep your workspace organized.",
+            href: route("tags"),
+            action: "Organize links"
+        },
+        {
+            index: "03",
+            title: "QR branding",
+            description: "Add your logo to branded QR codes for your short links.",
+            href: route("branding"),
+            action: "Manage branding"
+        },
+        {
+            index: "04",
+            title: "API access",
+            description: "Connect your tools and create short links programmatically.",
+            href: route("documentation.api"),
+            action: "Explore the API"
+        }
     ]
 
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
-                <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center border border-line bg-paper">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5 text-ink"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M4 18h16M7 15V9m5 6V5m5 10v-8"
-                                />
-                            </svg>
-                        </div>
-                        <div>
-                            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
-                                Workspace
-                            </p>
-                            <h2 className="font-editorial text-3xl text-ink">Dashboard</h2>
-                        </div>
+                <div className="flex items-center justify-between gap-4">
+                    <div>
+                        <SectionLabel>Your workspace</SectionLabel>
+                        <h2 className="mt-1 font-editorial text-3xl text-ink">Dashboard</h2>
                     </div>
-
-                    <span className="hidden sm:inline font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
-                        01 / Overview
+                    <span className="hidden font-mono text-[10px] uppercase tracking-[0.16em] text-muted sm:block">
+                        301p.ing / overview
                     </span>
                 </div>
             }
@@ -134,154 +115,240 @@ export default function Dashboard({ auth }) {
 
             <div className="bg-paper font-grotesk text-ink">
                 <section className="border-b border-line" aria-labelledby="dashboard-heading">
-                    <div className="mx-auto max-w-grid px-6 md:px-10 lg:px-16 pt-14 md:pt-20 pb-16 md:pb-24">
-                        <div className="flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.18em] text-muted mb-8 md:mb-12">
-                            <span>01 / Workspace</span>
-                            <span className="hidden sm:inline">301p.ing / dashboard</span>
-                        </div>
-
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-10 items-end">
+                    <div className="mx-auto max-w-grid px-6 pb-12 pt-12 md:px-10 md:pb-16 md:pt-16 lg:px-16">
+                        <div className="grid items-end gap-8 lg:grid-cols-12 lg:gap-10">
                             <div className="lg:col-span-7">
-                                <p className="font-mono text-xs text-accent mb-5">
-                                    Good to see you, {auth.user?.name}
-                                </p>
+                                <SectionLabel>Good to see you, {auth.user?.name}</SectionLabel>
                                 <h1
                                     id="dashboard-heading"
-                                    className="font-editorial text-6xl sm:text-7xl lg:text-8xl leading-[0.98]"
+                                    className="mt-5 max-w-3xl font-editorial text-5xl leading-[0.98] text-ink sm:text-6xl lg:text-7xl"
                                 >
-                                    Make sense
+                                    Every link.
                                     <br />
-                                    of your links.
+                                    <span className="text-accent-dark">One clear view.</span>
                                 </h1>
                             </div>
-                            <div className="lg:col-span-5 lg:pl-6 lg:border-l lg:border-line">
-                                <p className="text-lg text-muted max-w-md leading-relaxed">
-                                    A focused view of your short links, their reach, and the tools you use to
-                                    build with 301 ping.
+                            <div className="lg:col-span-5 lg:border-l lg:border-line lg:pl-8">
+                                <p className="max-w-md text-base leading-relaxed text-muted">
+                                    Keep redirects healthy, understand what gets clicked, and get to the tools
+                                    that keep your links moving.
                                 </p>
                                 <Link
                                     href={route("links")}
-                                    className="group inline-flex items-center gap-3 mt-7 font-mono text-xs uppercase tracking-[0.12em] text-ink hover:text-accent-dark transition-colors"
+                                    className="mt-6 inline-flex items-center gap-3 border border-ink bg-ink px-5 py-3 font-mono text-[10px] uppercase tracking-[0.14em] text-paper transition-colors hover:bg-paper hover:text-ink"
                                 >
-                                    Manage links <ArrowIcon />
+                                    Open link manager
+                                    <span aria-hidden="true">↗</span>
                                 </Link>
                             </div>
                         </div>
-                    </div>
-                </section>
 
-                <section className="border-b border-line" aria-labelledby="analytics-heading">
-                    <div className="mx-auto max-w-grid px-6 md:px-10 lg:px-16 py-16 md:py-24">
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-10">
-                            <div className="lg:col-span-4">
-                                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted mb-6">
-                                    02 / Signals
-                                </p>
-                                <h2
-                                    id="analytics-heading"
-                                    className="font-grotesk font-extrabold text-4xl sm:text-5xl leading-[1.02] max-w-sm"
+                        {dashboardError && (
+                            <p
+                                className="mt-8 border-l-2 border-accent bg-white px-4 py-3 text-sm text-accent-dark"
+                                role="alert"
+                            >
+                                {dashboardError}
+                            </p>
+                        )}
+
+                        <div className="mt-12 grid grid-cols-2 border-l border-t border-line sm:grid-cols-4">
+                            {stats.map((stat) => (
+                                <article
+                                    key={stat.label}
+                                    className="border-b border-r border-line bg-white/40 p-4 sm:p-5"
                                 >
-                                    The useful numbers.
-                                </h2>
-                            </div>
-
-                            <div className="lg:col-span-8 border-t border-line">
-                                {dashboardError && (
-                                    <p
-                                        className="border-b border-line py-4 text-sm text-accent-dark"
-                                        role="alert"
-                                    >
-                                        {dashboardError}
+                                    <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted sm:text-[10px]">
+                                        {stat.label}
                                     </p>
-                                )}
-                                {stats.map((stat, index) => (
-                                    <div
-                                        key={stat.label}
-                                        className={`grid grid-cols-[auto_1fr_auto] items-center gap-4 sm:gap-6 py-5 border-b border-line transition-all duration-500 ${
-                                            animateStats
-                                                ? "translate-y-0 opacity-100"
-                                                : "translate-y-3 opacity-0"
+                                    <p
+                                        className={`mt-3 font-mono text-3xl tabular-nums sm:text-4xl ${
+                                            stat.accent ? "text-accent-dark" : "text-ink"
                                         }`}
-                                        style={{ transitionDelay: `${index * 80}ms` }}
                                     >
-                                        <span className={index === 0 ? "text-accent" : "text-muted"}>
-                                            <StatIcon type={stat.type} />
-                                        </span>
-                                        <p className="font-grotesk font-semibold text-base">{stat.label}</p>
-                                        <div className="flex items-baseline gap-2 text-right">
-                                            <span className="font-mono text-2xl sm:text-3xl tabular-nums">
-                                                {stat.value}
-                                            </span>
-                                            <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
-                                                {stat.suffix}
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                                        {formatNumber(stat.value)}
+                                    </p>
+                                </article>
+                            ))}
                         </div>
                     </div>
                 </section>
 
-                <section aria-labelledby="token-heading">
-                    <div className="mx-auto max-w-grid px-6 md:px-10 lg:px-16 py-16 md:py-24">
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-10">
-                            <div className="lg:col-span-4">
-                                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted mb-6">
-                                    03 / Developer access
-                                </p>
-                                <h2
-                                    id="token-heading"
-                                    className="font-grotesk font-extrabold text-4xl sm:text-5xl leading-[1.02] max-w-sm"
-                                >
-                                    Your key to the API.
-                                </h2>
-                                <p className="text-muted mt-6 max-w-sm">
-                                    Keep this token private. Use it to authenticate requests from your
-                                    applications.
-                                </p>
+                <section className="border-b border-line" aria-labelledby="recent-links-heading">
+                    <div className="mx-auto grid max-w-grid gap-10 px-6 py-12 md:px-10 md:py-16 lg:grid-cols-12 lg:gap-12 lg:px-16">
+                        <div className="lg:col-span-4">
+                            <SectionLabel>01 / Link health &amp; activity</SectionLabel>
+                            <h2
+                                id="recent-links-heading"
+                                className="mt-4 max-w-sm font-grotesk text-3xl font-extrabold leading-tight sm:text-4xl"
+                            >
+                                Recent redirects.
+                            </h2>
+                            <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">
+                                A quick read on your latest links. Open any link for its analytics, QR code,
+                                tags, and editing controls.
+                            </p>
+
+                            <div className="mt-8 border-t border-line">
+                                {["healthy", "unhealthy", "unreachable"].map((health) => (
+                                    <div
+                                        key={health}
+                                        className="flex items-center justify-between border-b border-line py-3"
+                                    >
+                                        <span className="text-sm capitalize text-muted">{health}</span>
+                                        <span className="font-mono text-sm tabular-nums">
+                                            {dashboardData ? formatNumber(healthSummary[health] || 0) : "—"}
+                                        </span>
+                                    </div>
+                                ))}
                             </div>
 
-                            <div className="lg:col-span-8 lg:pl-6 lg:border-l lg:border-line">
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-line border-b py-5">
-                                    <span className="font-mono text-xs text-muted">MS0_API_TOKEN</span>
-                                    <button
-                                        type="button"
-                                        onClick={() => setIsTokenVisible((visible) => !visible)}
-                                        disabled={!token}
-                                        className="self-start sm:self-auto font-mono text-[11px] uppercase tracking-[0.12em] text-ink hover:text-accent-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-accent transition-colors"
-                                    >
-                                        {isTokenVisible ? "Hide token" : "Show token"}
-                                    </button>
+                            {needsAttention > 0 && (
+                                <p className="mt-4 border-l-2 border-accent bg-accent/5 px-3 py-2 text-xs leading-relaxed text-accent-dark">
+                                    {needsAttention}{" "}
+                                    {needsAttention === 1 ? "redirect needs" : "redirects need"} a closer look.
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="lg:col-span-8">
+                            <div className="flex items-end justify-between gap-4 border-b border-ink pb-3">
+                                <div>
+                                    <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+                                        Your latest
+                                    </p>
+                                    <p className="mt-1 text-sm font-semibold">Short links</p>
                                 </div>
-
-                                <button
-                                    type="button"
-                                    onClick={copyToken}
-                                    disabled={!token}
-                                    className="group w-full flex items-center justify-between gap-4 py-6 text-left font-mono text-sm break-all hover:text-accent-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-accent transition-colors"
-                                    aria-label="Copy API token"
+                                <Link
+                                    href={route("links")}
+                                    className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink underline decoration-line underline-offset-4 transition-colors hover:text-accent-dark"
                                 >
-                                    <span>{isTokenVisible ? token : maskToken(token)}</span>
-                                    <span
-                                        className="shrink-0 text-muted group-hover:text-accent-dark"
-                                        aria-hidden="true"
-                                    >
-                                        ↗
-                                    </span>
-                                </button>
-                                <p className="font-mono text-[11px] text-muted border-t border-line pt-4">
-                                    {notification}
-                                </p>
-
-                                <button
-                                    type="button"
-                                    onClick={regenerateToken}
-                                    className="group inline-flex items-center gap-3 mt-8 bg-ink px-5 py-3 font-grotesk text-sm font-semibold text-paper hover:bg-accent transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
-                                >
-                                    Regenerate token <ArrowIcon />
-                                </button>
+                                    View all
+                                </Link>
                             </div>
+
+                            {dashboardData?.recentLinks?.length ? (
+                                <ul>
+                                    {dashboardData.recentLinks.map((link) => (
+                                        <li key={link.id} className="border-b border-line">
+                                            <Link
+                                                href={route("links.show", link.shot_slug)}
+                                                className="group block py-5 transition-colors hover:bg-white/50 sm:px-3"
+                                            >
+                                                <div className="flex flex-wrap items-start justify-between gap-3">
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="truncate font-mono text-sm font-semibold text-ink group-hover:text-accent-dark">
+                                                            {link.shortened_url}
+                                                        </p>
+                                                        <p className="mt-1 truncate text-xs text-muted">
+                                                            {link.url}
+                                                        </p>
+                                                    </div>
+                                                    <HealthBadge health={link.health} />
+                                                </div>
+                                                <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                                                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                                                        <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted">
+                                                            {formatNumber(link.visits)} visits
+                                                        </span>
+                                                        {link.tags?.length > 0 && (
+                                                            <span className="flex flex-wrap gap-1.5">
+                                                                {link.tags.map((tag) => (
+                                                                    <span
+                                                                        key={tag.slug}
+                                                                        className="border border-line px-2 py-0.5 font-mono text-[9px] text-muted"
+                                                                    >
+                                                                        {tag.name}
+                                                                    </span>
+                                                                ))}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <span
+                                                        className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted"
+                                                        title={new Date(link.created_at).toLocaleString()}
+                                                    >
+                                                        {new Date(link.created_at).toLocaleDateString()}
+                                                    </span>
+                                                </div>
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : dashboardData ? (
+                                <div className="border-b border-line py-10 text-center">
+                                    <p className="font-editorial text-2xl">Start with one good link.</p>
+                                    <p className="mt-2 text-sm text-muted">
+                                        Your newest short links and their activity will show up here.
+                                    </p>
+                                    <Link
+                                        href={route("links")}
+                                        className="mt-5 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-accent-dark underline underline-offset-4"
+                                    >
+                                        Create your first short link
+                                    </Link>
+                                </div>
+                            ) : (
+                                <div className="space-y-5 py-6" aria-label="Loading recent links">
+                                    {[0, 1, 2].map((item) => (
+                                        <div
+                                            key={item}
+                                            className="h-16 animate-pulse border-b border-line bg-white/40"
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </section>
+
+                <section aria-labelledby="workspace-tools-heading">
+                    <div className="mx-auto max-w-grid px-6 py-12 md:px-10 md:py-16 lg:px-16">
+                        <div className="flex flex-wrap items-end justify-between gap-6">
+                            <div>
+                                <SectionLabel>02 / Built for your workflow</SectionLabel>
+                                <h2
+                                    id="workspace-tools-heading"
+                                    className="mt-4 font-grotesk text-3xl font-extrabold leading-tight sm:text-4xl"
+                                >
+                                    More than a short link.
+                                </h2>
+                            </div>
+                            <Link
+                                href={route("services.broken-destinations")}
+                                className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted underline decoration-line underline-offset-4 transition-colors hover:text-accent-dark"
+                            >
+                                How link monitoring works
+                            </Link>
+                        </div>
+
+                        <div className="mt-8 grid grid-cols-1 border-l border-t border-line sm:grid-cols-2 lg:grid-cols-4">
+                            {shortcuts.map((shortcut) => (
+                                <Link
+                                    key={shortcut.index}
+                                    href={shortcut.href}
+                                    className="group flex min-h-52 flex-col border-b border-r border-line bg-white/30 p-5 transition-colors hover:bg-white sm:p-6"
+                                >
+                                    <span className="font-mono text-[10px] tracking-[0.16em] text-accent-dark">
+                                        {shortcut.index} /
+                                    </span>
+                                    <h3 className="mt-7 font-grotesk text-lg font-bold text-ink">
+                                        {shortcut.title}
+                                    </h3>
+                                    <p className="mt-2 flex-1 text-xs leading-relaxed text-muted">
+                                        {shortcut.description}
+                                    </p>
+                                    <span className="mt-5 flex items-center justify-between border-t border-line pt-3 font-mono text-[9px] uppercase tracking-[0.12em] text-ink">
+                                        {shortcut.action}
+                                        <span
+                                            className="transition-transform group-hover:translate-x-1"
+                                            aria-hidden="true"
+                                        >
+                                            →
+                                        </span>
+                                    </span>
+                                </Link>
+                            ))}
                         </div>
                     </div>
                 </section>

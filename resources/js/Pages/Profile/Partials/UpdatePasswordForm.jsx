@@ -66,11 +66,7 @@ export default function UpdatePasswordForm({ className = "" }) {
 
             <form onSubmit={updatePassword} className="space-y-6">
                 <div>
-                    <InputLabel
-                        htmlFor="current_password"
-                        value="Current Password"
-                        className="font-grotesk text-[11px] uppercase tracking-[0.18em] text-muted"
-                    />
+                    <InputLabel htmlFor="current_password" value="Current Password" />
                     <TextInput
                         id="current_password"
                         ref={currentPasswordInput}
@@ -84,11 +80,7 @@ export default function UpdatePasswordForm({ className = "" }) {
                 </div>
 
                 <div>
-                    <InputLabel
-                        htmlFor="password"
-                        value="New Password"
-                        className="font-grotesk text-[11px] uppercase tracking-[0.18em] text-muted"
-                    />
+                    <InputLabel htmlFor="password" value="New Password" />
                     <TextInput
                         id="password"
                         ref={passwordInput}
@@ -102,11 +94,7 @@ export default function UpdatePasswordForm({ className = "" }) {
                 </div>
 
                 <div>
-                    <InputLabel
-                        htmlFor="password_confirmation"
-                        value="Confirm Password"
-                        className="font-grotesk text-[11px] uppercase tracking-[0.18em] text-muted"
-                    />
+                    <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
                     <TextInput
                         id="password_confirmation"
                         value={data.password_confirmation}
@@ -119,10 +107,7 @@ export default function UpdatePasswordForm({ className = "" }) {
                 </div>
 
                 <div className="flex items-center gap-4 pt-2">
-                    <PrimaryButton
-                        disabled={processing}
-                        className="border border-ink bg-ink px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-paper hover:bg-accent hover:text-paper focus:ring-accent"
-                    >
+                    <PrimaryButton disabled={processing}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="mr-2 h-4 w-4"

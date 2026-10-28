@@ -7,11 +7,25 @@ import { useState, useEffect } from "react"
 
 export default function Edit({ auth, mustVerifyEmail, status }) {
     const [animateSections, setAnimateSections] = useState(false)
-    const [activeTab, setActiveTab] = useState("profile")
+    const [activeTab, setActiveTab] = useState(() => {
+        if (typeof window !== "undefined") {
+            const savedTab = localStorage.getItem("profile_active_tab")
+            if (["profile", "password", "danger"].includes(savedTab)) {
+                return savedTab
+            }
+        }
+        return "profile"
+    })
 
     useEffect(() => {
         setAnimateSections(true)
     }, [])
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            localStorage.setItem("profile_active_tab", activeTab)
+        }
+    }, [activeTab])
 
     const tabs = [
         {
