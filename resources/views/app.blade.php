@@ -19,6 +19,8 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
 
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="3c509567-0d86-4a80-bf53-a796c06d390a"></script>
+
     <!-- Scripts -->
     @routes
     @viteReactRefresh
