@@ -1,34 +1,14 @@
-const linkGroups = [
-    {
-        title: "Explore",
-        links: [
-            { label: "Home", href: () => route("home") },
-            { label: "Pricing", href: () => route("pricing") },
-            { label: "Sitemap", href: () => route("sitemap") },
-            { label: "API documentation", href: () => route("documentation.api") },
-            { label: "Privacy policy", href: () => route("privacy") },
-            { label: "Terms of service", href: () => route("terms") },
-            { label: "Refund policy", href: () => route("refund-policy") }
-        ]
-    },
-    {
-        title: "Tools",
-        links: [
-            { label: "Custom links", href: () => route("services.custom-links") },
-            { label: "Link tags", href: () => route("services.link-tags") },
-            { label: "QR codes with your logo", href: () => route("services.qr-code-logo") },
-            { label: "Broken destination monitoring", href: () => route("services.broken-destinations") },
-            { label: "Edit destination", href: () => route("services.edit-destination") }
-        ]
-    },
-    {
-        title: "Account",
-        links: [
-            { label: "Create an account", href: () => route("register") },
-            { label: "Sign in", href: () => route("login") },
-            { label: "GitHub", href: () => "https://github.com/msamgan/ms0" }
-        ]
-    }
+const footerLinks = [
+    { label: "Pricing", href: () => route("pricing") },
+    { label: "API docs", href: () => route("documentation.api") },
+    { label: "Sitemap", href: () => route("sitemap") },
+    { label: "GitHub", href: () => "https://github.com/msamgan/ms0" }
+]
+
+const legalLinks = [
+    { label: "Privacy", href: () => route("privacy") },
+    { label: "Terms", href: () => route("terms") },
+    { label: "Refunds", href: () => route("refund-policy") }
 ]
 
 export default function Footer() {
@@ -75,8 +55,8 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-x-8 gap-y-10 py-12 sm:grid-cols-3 lg:grid-cols-12 lg:gap-x-10 lg:py-14">
-                    <div className="col-span-2 sm:col-span-3 lg:col-span-3">
+                <div className="flex flex-col gap-8 border-b border-paper/20 py-10 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
                         <a
                             href={route("home")}
                             aria-label="301 Ping home"
@@ -85,57 +65,18 @@ export default function Footer() {
                             301<span className="text-accent">Ping</span>
                             <span className="ml-1.5 h-2 w-2 self-center bg-accent" aria-hidden="true" />
                         </a>
-                        <p className="mt-4 max-w-xs font-grotesk text-sm leading-relaxed text-paper/60">
+                        <p className="mt-2 max-w-xs font-grotesk text-sm leading-relaxed text-paper/60">
                             Clear, useful links that get people where they&apos;re going.
                         </p>
                     </div>
 
-                    <nav className="col-span-1 lg:col-span-3" aria-label="Explore">
-                        <h3 className="mb-4 font-mono text-[10px] uppercase tracking-[0.18em] text-paper/50">
-                            {linkGroups[0].title}
-                        </h3>
-                        <ul className="space-y-3">
-                            {linkGroups[0].links.map((link) => (
+                    <nav aria-label="Footer">
+                        <ul className="flex flex-wrap gap-x-6 gap-y-3">
+                            {footerLinks.map((link) => (
                                 <li key={link.label}>
                                     <a
                                         href={link.href()}
-                                        className="font-grotesk text-sm text-paper/80 transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-                                    >
-                                        {link.label}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </nav>
-
-                    <nav className="col-span-1 lg:col-span-3" aria-label="Tools">
-                        <h3 className="mb-4 font-mono text-[10px] uppercase tracking-[0.18em] text-paper/50">
-                            {linkGroups[1].title}
-                        </h3>
-                        <ul className="space-y-3">
-                            {linkGroups[1].links.map((link) => (
-                                <li key={link.label}>
-                                    <a
-                                        href={link.href()}
-                                        className="font-grotesk text-sm text-paper/80 transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-                                    >
-                                        {link.label}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </nav>
-
-                    <nav className="col-span-1 lg:col-span-3" aria-label="Account">
-                        <h3 className="mb-4 font-mono text-[10px] uppercase tracking-[0.18em] text-paper/50">
-                            {linkGroups[2].title}
-                        </h3>
-                        <ul className="space-y-3">
-                            {linkGroups[2].links.map((link) => (
-                                <li key={link.label}>
-                                    <a
-                                        href={link.href()}
-                                        className="font-grotesk text-sm text-paper/80 transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                                        className="font-grotesk text-sm text-paper/80 transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
                                     >
                                         {link.label}
                                     </a>
@@ -145,9 +86,22 @@ export default function Footer() {
                     </nav>
                 </div>
 
-                <div className="flex flex-col gap-3 border-t border-paper/20 pt-6 font-mono text-[10px] uppercase tracking-[0.12em] text-paper/50 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-4 pt-6 font-mono text-[10px] uppercase tracking-[0.12em] text-paper/50 sm:flex-row sm:items-center sm:justify-between">
                     <p>© {new Date().getFullYear()} 301 Ping</p>
-                    <p>Every click has somewhere to go.</p>
+                    <nav aria-label="Legal">
+                        <ul className="flex flex-wrap gap-x-5 gap-y-2">
+                            {legalLinks.map((link) => (
+                                <li key={link.label}>
+                                    <a
+                                        href={link.href()}
+                                        className="transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+                                    >
+                                        {link.label}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </footer>
