@@ -1,6 +1,7 @@
-import { Head, Link, usePage } from "@inertiajs/react"
+import { Link, usePage } from "@inertiajs/react"
 import Footer from "@/Components/Footer"
 import Header from "@/Components/Header"
+import SeoHead from "@/Components/SeoHead"
 
 const QR_SIZE = 25
 
@@ -102,9 +103,9 @@ export default function QrCodeLogo() {
 
     return (
         <div className="min-h-screen bg-paper">
-            <Head
-                title="QR Codes with Your Logo"
-                description="Create branded QR codes for your short links. Add your logo, download a high-resolution PNG, and share it online or in print."
+            <SeoHead
+                title="Branded QR Codes for Short Links"
+                description="Create branded QR codes for short links, add your logo, and download a high-resolution PNG for print or digital sharing."
             />
             <Header isAuthenticated={isAuthenticated} user={user} />
 
@@ -116,7 +117,7 @@ export default function QrCodeLogo() {
                                 Services / Branded QR codes
                             </p>
                             <h1 className="max-w-2xl font-editorial text-5xl font-normal leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
-                                A QR code that looks like <span className="text-accent">you.</span>
+                                Branded QR codes <span className="text-accent">with your logo.</span>
                             </h1>
                             <p className="mt-7 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
                                 Turn any 301 Ping short link into a scan-ready QR code with your logo at the

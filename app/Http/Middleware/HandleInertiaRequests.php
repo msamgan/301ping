@@ -33,6 +33,7 @@ class HandleInertiaRequests extends Middleware
 
         return [
             ...parent::share($request),
+            'siteUrl' => config('app.url'),
             'auth' => [
                 'user' => $user ? array_merge($user->toArray(), [
                     'subscription' => $user->subscriptionSummary(),

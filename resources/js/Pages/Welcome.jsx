@@ -1,6 +1,7 @@
-import { Head, usePage } from "@inertiajs/react"
+import { usePage } from "@inertiajs/react"
 import Header from "@/Components/Header.jsx"
 import Footer from "@/Components/Footer.jsx"
+import SeoHead from "@/Components/SeoHead"
 import Hero from "@/Components/Home/Hero"
 import BrowserExtension from "@/Components/Home/BrowserExtension"
 import Features from "@/Components/Home/Features"
@@ -26,7 +27,24 @@ export default function Welcome() {
 
     return (
         <>
-            <Head title="Welcome" />
+            <SeoHead
+                title="URL Shortener & Short Links"
+                description="Shorten long URLs, create memorable custom links, track clicks, and make branded QR codes with 301 Ping."
+                structuredData={{
+                    "@context": "https://schema.org",
+                    "@type": "SoftwareApplication",
+                    name: "301 Ping",
+                    applicationCategory: "BusinessApplication",
+                    operatingSystem: "Web",
+                    description:
+                        "A URL shortener for creating and managing short links, custom URLs, click analytics, and branded QR codes.",
+                    offers: {
+                        "@type": "Offer",
+                        price: "0",
+                        priceCurrency: "USD"
+                    }
+                }}
+            />
             <Header isAuthenticated={isAuthenticated} user={user} />
 
             <main className="bg-paper font-grotesk">

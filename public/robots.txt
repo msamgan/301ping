@@ -1,2 +1,4 @@
 User-agent: *
 Disallow:
+
+Sitemap: https://301p.ing/sitemap.xml

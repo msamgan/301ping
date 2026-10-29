@@ -1,6 +1,7 @@
-import { Head, Link, usePage } from "@inertiajs/react"
+import { Link, usePage } from "@inertiajs/react"
 import Footer from "@/Components/Footer"
 import Header from "@/Components/Header"
+import SeoHead from "@/Components/SeoHead"
 
 const comparison = [
     { label: "Auto-generated", slug: "301p.ing/x7Kq2", muted: true },
@@ -139,9 +140,9 @@ export default function CustomLinks() {
 
     return (
         <div className="min-h-screen bg-paper">
-            <Head
-                title="Custom Links"
-                description="Customize the back-half of your short links. Replace random characters with a memorable word that builds trust, boosts clicks, and is easy to share."
+            <SeoHead
+                title="Custom Short Links"
+                description="Create custom short links with memorable words instead of random characters. Make URLs easier to read, share, and recognize."
             />
             <Header isAuthenticated={isAuthenticated} user={user} />
 
@@ -153,7 +154,7 @@ export default function CustomLinks() {
                                 Services / Custom links
                             </p>
                             <h1 className="max-w-2xl font-editorial text-5xl font-normal leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
-                                Your link, <span className="text-accent">your words.</span>
+                                Custom short links, <span className="text-accent">your words.</span>
                             </h1>
                             <p className="mt-7 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
                                 Customize the back-half of any short link. Swap a random string for something

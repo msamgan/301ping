@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react"
-import { Head, usePage } from "@inertiajs/react"
+import { usePage } from "@inertiajs/react"
 import axios from "axios"
 import Header from "@/Components/Header.jsx"
 import Footer from "@/Components/Footer.jsx"
+import SeoHead from "@/Components/SeoHead"
 import Reveal from "@/Components/Home/Reveal"
 import ContactModal from "@/Components/ContactModal.jsx"
 import { useToast } from "@/Components/ToastProvider"
@@ -197,7 +198,10 @@ export default function Pricing({ plans: serverPlans = null }) {
 
     return (
         <>
-            <Head title="Pricing" />
+            <SeoHead
+                title="URL Shortener Pricing"
+                description="Compare 301 Ping plans for custom short links, click analytics, QR codes, link tags, and destination monitoring. Start free and upgrade anytime."
+            />
             <Header isAuthenticated={!!user} user={user} />
 
             <main className="bg-paper font-grotesk text-ink">
@@ -212,7 +216,7 @@ export default function Pricing({ plans: serverPlans = null }) {
                             id="pricing-heading"
                             className="font-editorial text-6xl leading-[1.05] sm:text-7xl lg:text-8xl"
                         >
-                            Simple pricing.
+                            Simple short link pricing.
                         </Reveal>
                         <Reveal delay={80} className="mt-6 max-w-md text-lg text-muted">
                             Start free. Upgrade when your links need more.

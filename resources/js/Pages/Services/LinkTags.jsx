@@ -1,6 +1,7 @@
-import { Head, Link, usePage } from "@inertiajs/react"
+import { Link, usePage } from "@inertiajs/react"
 import Footer from "@/Components/Footer"
 import Header from "@/Components/Header"
+import SeoHead from "@/Components/SeoHead"
 
 const sampleTags = [
     { name: "campaign-spring", count: 14 },
@@ -163,9 +164,9 @@ export default function LinkTags() {
 
     return (
         <div className="min-h-screen bg-paper">
-            <Head
-                title="Link Tags"
-                description="Organize your short links with tags. Group links by campaign, client, or channel, filter your library instantly, and keep everything easy to find."
+            <SeoHead
+                title="Organize Short Links with Tags"
+                description="Organize short links with reusable tags. Group URLs by campaign, client, or channel, then filter your link library to find what you need."
             />
             <Header isAuthenticated={isAuthenticated} user={user} />
 
@@ -177,7 +178,7 @@ export default function LinkTags() {
                                 Services / Link tags
                             </p>
                             <h1 className="max-w-2xl font-editorial text-5xl font-normal leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
-                                Every link, <span className="text-accent">in its place.</span>
+                                Organize short links <span className="text-accent">with tags.</span>
                             </h1>
                             <p className="mt-7 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
                                 Tags turn a growing pile of short links into an organized library. Label links

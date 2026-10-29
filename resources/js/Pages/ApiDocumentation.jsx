@@ -1,8 +1,9 @@
-import { Head, Link, usePage } from "@inertiajs/react"
+import { Link, usePage } from "@inertiajs/react"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import Header from "@/Components/Header.jsx"
 import Footer from "@/Components/Footer.jsx"
+import SeoHead from "@/Components/SeoHead"
 import Reveal from "@/Components/Home/Reveal"
 import ArrowIcon from "@/Components/Home/ArrowIcon"
 import Modal from "@/Components/Modal"
@@ -148,7 +149,10 @@ export default function ApiDocumentation() {
 
     return (
         <>
-            <Head title="API Documentation" />
+            <SeoHead
+                title="URL Shortener API Documentation"
+                description="Learn how to create short links with the 301 Ping API. Explore authentication, request parameters, response examples, and integration steps."
+            />
             <Header isAuthenticated={!!user} user={user} />
 
             <main className="bg-paper font-grotesk text-ink">
@@ -165,9 +169,7 @@ export default function ApiDocumentation() {
                                 id="api-docs-heading"
                                 className="font-editorial text-6xl leading-[1.05] sm:text-7xl lg:col-span-7 lg:text-8xl"
                             >
-                                Short links,
-                                <br />
-                                by request.
+                                Create short links with the 301 Ping API.
                             </Reveal>
                             <Reveal delay={80} className="lg:col-span-5 lg:border-l lg:border-line lg:pl-6">
                                 <p className="max-w-md text-lg text-muted">

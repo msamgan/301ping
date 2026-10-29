@@ -1,6 +1,7 @@
-import { Head, Link, usePage } from "@inertiajs/react"
+import { Link, usePage } from "@inertiajs/react"
 import Footer from "@/Components/Footer"
 import Header from "@/Components/Header"
+import SeoHead from "@/Components/SeoHead"
 
 const comparison = [
     { label: "Before", slug: "oldsite.com/spring-sale-2025", muted: true },
@@ -139,9 +140,9 @@ export default function EditDestination() {
 
     return (
         <div className="min-h-screen bg-paper">
-            <Head
-                title="Edit Destination"
-                description="Change where a short link points without changing the link itself. Fix typos, rotate campaigns, and survive migrations. Free plan includes one edit; paid plans are unlimited."
+            <SeoHead
+                title="Edit Short Link Destinations"
+                description="Change the destination behind a short link without changing its URL. Fix mistakes, rotate campaigns, and update old links without reprinting."
             />
             <Header isAuthenticated={isAuthenticated} user={user} />
 
@@ -153,7 +154,7 @@ export default function EditDestination() {
                                 Services / Edit destination
                             </p>
                             <h1 className="max-w-2xl font-editorial text-5xl font-normal leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
-                                Same link, <span className="text-accent">new destination.</span>
+                                Change a short link destination, <span className="text-accent">not the link.</span>
                             </h1>
                             <p className="mt-7 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
                                 Change where a short link sends people without touching the link itself. Fix a

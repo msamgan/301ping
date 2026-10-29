@@ -1,14 +1,15 @@
-import { Head, usePage } from "@inertiajs/react"
+import { usePage } from "@inertiajs/react"
 import Header from "@/Components/Header.jsx"
 import Footer from "@/Components/Footer.jsx"
 import Reveal from "@/Components/Home/Reveal"
+import SeoHead from "@/Components/SeoHead"
 
-export default function LegalPage({ title, eyebrow, heading, introduction, sections }) {
+export default function LegalPage({ title, description, eyebrow, heading, introduction, sections }) {
     const user = usePage().props.auth?.user
 
     return (
         <>
-            <Head title={title} />
+            <SeoHead title={title} description={description} />
             <Header isAuthenticated={!!user} user={user} />
 
             <main className="bg-paper font-grotesk text-ink">

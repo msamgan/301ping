@@ -5,6 +5,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HyperlinkController;
 use App\Http\Controllers\LogoController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,7 @@ Route::inertia('/services/edit-destination', 'Services/EditDestination')->name('
 Route::inertia('/privacy', 'Privacy')->name('privacy');
 Route::inertia('/terms', 'Terms')->name('terms');
 Route::inertia('/refund-policy', 'RefundPolicy')->name('refund-policy');
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 // this is the route that redirects the user to the original URL; this has to be the last route
 Route::get('/{shot_slug}', [HyperlinkController::class, 'show'])->name('show');

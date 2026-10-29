@@ -16,14 +16,14 @@ export default function Hero() {
                         id="hero-heading"
                         className="lg:col-span-7 font-editorial text-ink leading-[1.05] text-6xl sm:text-7xl lg:text-8xl"
                     >
-                        Links
+                        Short links
                         <br />
                         that move.
                     </Reveal>
 
                     <Reveal delay={80} className="lg:col-span-5 lg:pl-6 lg:border-l lg:border-line">
                         <p className="font-grotesk text-lg text-muted max-w-md mb-8">
-                            Paste a long URL below and get back a short, shareable one in an instant.
+                            Paste a long URL below to create a short, shareable link in an instant.
                         </p>
                         <UrlShortener />
                     </Reveal>

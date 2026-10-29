@@ -1,4 +1,4 @@
-import { Link, usePage } from "@inertiajs/react"
+import { Head, Link, usePage } from "@inertiajs/react"
 import Footer from "@/Components/Footer"
 import Header from "@/Components/Header"
 
@@ -11,6 +11,9 @@ export default function Guest({
 
     return (
         <div className="min-h-screen flex flex-col bg-paper">
+            <Head>
+                <meta name="robots" content="noindex,follow" head-key="robots" />
+            </Head>
             <Header isAuthenticated={!!auth.user} user={auth.user} />
             <main className="flex-grow border-b border-line">
                 <div className="mx-auto grid min-h-[calc(100dvh-136px)] max-w-grid grid-cols-1 gap-x-16 px-6 py-14 md:px-10 md:py-20 lg:grid-cols-12 lg:px-16 lg:py-24">

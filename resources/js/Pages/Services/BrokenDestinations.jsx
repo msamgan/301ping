@@ -1,6 +1,7 @@
-import { Head, Link, usePage } from "@inertiajs/react"
+import { Link, usePage } from "@inertiajs/react"
 import Footer from "@/Components/Footer"
 import Header from "@/Components/Header"
+import SeoHead from "@/Components/SeoHead"
 
 const benefits = [
     {
@@ -159,9 +160,9 @@ export default function BrokenDestinations() {
 
     return (
         <div className="min-h-screen bg-paper">
-            <Head
-                title="Broken Destination Monitoring"
-                description="Monitor the destinations behind your short links, catch broken pages earlier, and keep campaigns, QR codes, and shared links working."
+            <SeoHead
+                title="Broken Link Monitoring for Short URLs"
+                description="Monitor destinations behind your short links, catch broken pages earlier, and keep campaigns, QR codes, and shared URLs working."
             />
             <Header isAuthenticated={isAuthenticated} user={user} />
 
@@ -173,7 +174,7 @@ export default function BrokenDestinations() {
                                 Services / Broken destination monitoring
                             </p>
                             <h1 className="max-w-2xl font-editorial text-5xl font-normal leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
-                                Find the dead ends. <span className="text-accent">Keep links alive.</span>
+                                Monitor broken links. <span className="text-accent">Keep short URLs working.</span>
                             </h1>
                             <p className="mt-7 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
                                 A short link is only useful when it leads somewhere. Monitor the pages behind
