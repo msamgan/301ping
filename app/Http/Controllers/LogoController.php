@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class LogoController extends Controller
 {
@@ -18,6 +20,17 @@ class LogoController extends Controller
     public const int MAX_SIZE = 4000;
 
     public const int MAX_KB = 2048;
+
+    /**
+     * Display the branding page with user logos and limits.
+     */
+    public function index(Request $request): Response
+    {
+        return Inertia::render('Branding', [
+            'logos' => $request->user()->logos()->latest()->get()->map->toFrontend()->values(),
+            'logoLimit' => $request->user()->logoLimit(),
+        ]);
+    }
 
     /**
      * @throws \Throwable

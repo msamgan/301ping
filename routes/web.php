@@ -3,24 +3,17 @@
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HyperlinkController;
-use App\Support\Plans;
+use App\Http\Controllers\LogoController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'Welcome', [
-    'isAuthenticated' => auth()->check(),
-    'user' => auth()->user() ?? null,
-])->name('home');
+Route::inertia('/', 'Welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('/dashboard', 'Dashboard')->name('dashboard');
-    Route::inertia('/profile', 'Profile/Edit', [
-        'mustVerifyEmail' => true,
-        'status' => session('status'),
-    ])->name('profile.edit');
-    Route::inertia('/branding', 'Branding', [
-        'logos' => fn () => auth()->user()->logos()->latest()->get()->map->toFrontend()->values(),
-        'logoLimit' => fn () => auth()->user()->logoLimit(),
-    ])->name('branding');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/branding', [LogoController::class, 'index'])->name('branding');
     Route::get('/billing', [BillingController::class, 'index'])->name('billing');
     Route::get('/billing/invoices/{transaction}/download', [BillingController::class, 'downloadInvoice'])
         ->name('billing.invoices.download');
@@ -33,9 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 require __DIR__ . '/auth.php';
 
 Route::inertia('/documentation/api', 'ApiDocumentation')->name('documentation.api');
-Route::inertia('/pricing', 'Pricing', [
-    'plans' => fn () => Plans::all(),
-])->name('pricing');
+Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('pricing');
 Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
 Route::inertia('/services/qr-code-logo', 'Services/QrCodeLogo')->name('services.qr-code-logo');
 Route::inertia('/services/link-tags', 'Services/LinkTags')->name('services.link-tags');

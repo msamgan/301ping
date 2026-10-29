@@ -5,10 +5,22 @@ namespace App\Http\Controllers;
 use App\Support\Plans;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 use Throwable;
 
 class SubscriptionController extends Controller
 {
+    /**
+     * Display the pricing page with available subscription plans.
+     */
+    public function pricing(): Response
+    {
+        return Inertia::render('Pricing', [
+            'plans' => Plans::all(),
+        ]);
+    }
+
     /**
      * Get all available subscription plans and their price IDs.
      */
