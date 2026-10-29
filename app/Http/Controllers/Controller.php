@@ -8,7 +8,7 @@ use OpenApi\Attributes as OA;
     version: '1.0.0',
     description: 'API documentation for URL shortening service',
     title: '301 ping API',
-    contact: new OA\Contact(email: 'support@ms0.io')
+    contact: new OA\Contact(email: 'hello@301p.ing')
 )]
 #[OA\Server(
     url: '/',

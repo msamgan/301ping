@@ -5,7 +5,9 @@ const linkGroups = [
             { label: "Home", href: () => route("home") },
             { label: "Pricing", href: () => route("pricing") },
             { label: "API documentation", href: () => route("documentation.api") },
-            { label: "Privacy policy", href: () => route("privacy") }
+            { label: "Privacy policy", href: () => route("privacy") },
+            { label: "Terms of service", href: () => route("terms") },
+            { label: "Refund policy", href: () => route("refund-policy") }
         ]
     },
     {

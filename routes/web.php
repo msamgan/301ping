@@ -34,6 +34,8 @@ Route::inertia('/services/custom-links', 'Services/CustomLinks')->name('services
 Route::inertia('/services/broken-destinations', 'Services/BrokenDestinations')->name('services.broken-destinations');
 Route::inertia('/services/edit-destination', 'Services/EditDestination')->name('services.edit-destination');
 Route::inertia('/privacy', 'Privacy')->name('privacy');
+Route::inertia('/terms', 'Terms')->name('terms');
+Route::inertia('/refund-policy', 'RefundPolicy')->name('refund-policy');
 
 // this is the route that redirects the user to the original URL; this has to be the last route
 Route::get('/{shot_slug}', [HyperlinkController::class, 'show'])->name('show');
