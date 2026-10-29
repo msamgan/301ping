@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreHyperlinkRequest;
 use App\Http\Resources\HyperlinkResource;
+use App\Jobs\CheckHyperlinkHealthJob;
 use App\Models\Hyperlink;
 use App\Shortener;
 use Illuminate\Http\JsonResponse;
@@ -112,7 +113,9 @@ class HyperlinkController extends Controller
             'user_id' => $request->user->id,
         ];
 
-        Hyperlink::create($hyperLinkData);
+        $hyperlink = Hyperlink::create($hyperLinkData);
+
+        CheckHyperlinkHealthJob::dispatch($hyperlink);
 
         return new HyperlinkResource([
             'message' => 'Shortened Url created successfully',

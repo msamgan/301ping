@@ -7,6 +7,7 @@ use App\Http\Requests\StoreHyperlinkRequest;
 use App\Http\Requests\UpdateHyperlinkDestinationRequest;
 use App\Http\Requests\UpdateHyperlinkRequest;
 use App\Http\Requests\UpdateHyperlinkSlugRequest;
+use App\Jobs\CheckHyperlinkHealthJob;
 use App\Jobs\RecordAnalyticsJob;
 use App\Methods;
 use App\Models\Hyperlink;
@@ -194,7 +195,11 @@ class HyperlinkController extends Controller
             $hyperLinkData['user_id'] = auth()->id();
         }
 
-        Hyperlink::create($hyperLinkData);
+        $hyperlink = Hyperlink::create($hyperLinkData);
+
+        if (auth()->check()) {
+            CheckHyperlinkHealthJob::dispatch($hyperlink);
+        }
 
         return response()->json([
             'status' => true,
