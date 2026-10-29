@@ -4,6 +4,7 @@ const linkGroups = [
         links: [
             { label: "Home", href: () => route("home") },
             { label: "Pricing", href: () => route("pricing") },
+            { label: "Sitemap", href: () => route("sitemap") },
             { label: "API documentation", href: () => route("documentation.api") },
             { label: "Privacy policy", href: () => route("privacy") },
             { label: "Terms of service", href: () => route("terms") },
