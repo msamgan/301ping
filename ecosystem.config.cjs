@@ -14,7 +14,7 @@ module.exports = {
             error_file: "./storage/logs/queue.error.log",
             out_file: "./storage/logs/queue.out.log",
             pid_file: "./storage/logs/queue.pid.log",
-            cwd: "/home/ping301/htdocs/301p.ing/current/public"
+            cwd: "/home/ping301/htdocs/301p.ing/current"
         }
     ]
 }
