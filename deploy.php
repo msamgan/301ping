@@ -21,13 +21,12 @@ host('146.190.32.125')
 desc('Build the assets');
 task('deploy:build', function () {
     cd('{{release_path}}');
-    run('npm install');
+    run('npm install --no-audit --no-fund --loglevel=error --progress=false');
     run('npm run build');
 });
 
-task('deploy:optimize', function () {
+task('deploy:apiDocumentation', function () {
     cd('{{release_path}}');
-    run('php artisan optimize');
     run('php artisan l5-swagger:generate');
 });
 
@@ -38,7 +37,7 @@ task('deploy:restartQueue', function () {
 
 // Hooks
 after('deploy:update_code', 'deploy:build');
-after('deploy:symlink', 'deploy:optimize');
+after('deploy:symlink', 'deploy:apiDocumentation');
 after('deploy:optimize', 'deploy:restartQueue');
 
 after('deploy:failed', 'deploy:unlock');
