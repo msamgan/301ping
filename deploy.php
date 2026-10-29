@@ -38,6 +38,6 @@ task('deploy:restartQueue', function () {
 // Hooks
 after('deploy:update_code', 'deploy:build');
 after('deploy:symlink', 'deploy:apiDocumentation');
-after('deploy:optimize', 'deploy:restartQueue');
+after('deploy:apiDocumentation', 'deploy:restartQueue');
 
 after('deploy:failed', 'deploy:unlock');
