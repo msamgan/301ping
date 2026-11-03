@@ -4,6 +4,7 @@ import Footer from "@/Components/Footer.jsx"
 import SeoHead from "@/Components/SeoHead"
 import Reveal from "@/Components/Home/Reveal"
 import ArrowIcon from "@/Components/Home/ArrowIcon"
+import CopyLinkButton from "@/Components/CopyLinkButton"
 
 export default function Show({ post }) {
     const { props } = usePage()
@@ -66,7 +67,10 @@ export default function Show({ post }) {
                     <header className="border-b border-line">
                         <div className="mx-auto max-w-grid px-6 pb-12 pt-16 md:px-10 md:pt-20 lg:px-16">
                             <Reveal className="mb-8 flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.18em] text-muted md:mb-12">
-                                <Link href={route("blog.index")} className="transition-colors hover:text-accent-dark">
+                                <Link
+                                    href={route("blog.index")}
+                                    className="transition-colors hover:text-accent-dark"
+                                >
                                     ← 01 / Blog
                                 </Link>
                                 <span className="hidden sm:inline">301 ping / Article</span>
@@ -86,35 +90,43 @@ export default function Show({ post }) {
                     <div className="mx-auto max-w-grid px-6 py-12 md:px-10 md:py-16 lg:px-16">
                         <div className="grid grid-cols-1 gap-x-10 gap-y-10 lg:grid-cols-12">
                             <aside className="lg:col-span-3">
-                                <dl className="border-t border-ink font-mono text-[11px] uppercase tracking-[0.16em] lg:sticky lg:top-8">
-                                    {[
-                                        ["Author", post.author],
-                                        [
-                                            "Published",
-                                            <time key="d" dateTime={post.date}>
-                                                {post.date_formatted}
-                                            </time>
-                                        ],
-                                        ["Reading time", `${post.reading_time} min`]
-                                    ].map(([label, value]) => (
-                                        <div key={label} className="border-b border-line py-4">
-                                            <dt className="text-muted">{label}</dt>
-                                            <dd className="mt-1 text-ink">{value}</dd>
-                                        </div>
-                                    ))}
-                                    {post.tags.length > 0 && (
-                                        <div className="border-b border-line py-4">
-                                            <dt className="text-muted">Tags</dt>
-                                            <dd className="mt-2 flex flex-wrap gap-2">
-                                                {post.tags.map((tag) => (
-                                                    <span key={tag} className="border border-line px-2 py-1 normal-case tracking-normal">
-                                                        #{tag}
-                                                    </span>
-                                                ))}
-                                            </dd>
-                                        </div>
-                                    )}
-                                </dl>
+                                <div className="lg:sticky lg:top-8">
+                                    <dl className="border-t border-ink font-mono text-[11px] uppercase tracking-[0.16em]">
+                                        {[
+                                            ["Author", post.author],
+                                            [
+                                                "Published",
+                                                <time key="d" dateTime={post.date}>
+                                                    {post.date_formatted}
+                                                </time>
+                                            ],
+                                            ["Reading time", `${post.reading_time} min`]
+                                        ].map(([label, value]) => (
+                                            <div key={label} className="border-b border-line py-4">
+                                                <dt className="text-muted">{label}</dt>
+                                                <dd className="mt-1 text-ink">{value}</dd>
+                                            </div>
+                                        ))}
+                                        {post.tags.length > 0 && (
+                                            <div className="border-b border-line py-4">
+                                                <dt className="text-muted">Tags</dt>
+                                                <dd className="mt-2 flex flex-wrap gap-2">
+                                                    {post.tags.map((tag) => (
+                                                        <span
+                                                            key={tag}
+                                                            className="border border-line px-2 py-1 normal-case tracking-normal"
+                                                        >
+                                                            #{tag}
+                                                        </span>
+                                                    ))}
+                                                </dd>
+                                            </div>
+                                        )}
+                                    </dl>
+                                    <div className="mt-5">
+                                        <CopyLinkButton url={url} primary />
+                                    </div>
+                                </div>
                             </aside>
 
                             <div className="lg:col-span-8 lg:col-start-5">
