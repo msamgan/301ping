@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BillingController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HyperlinkController;
 use App\Http\Controllers\LogoController;
@@ -37,6 +38,8 @@ Route::inertia('/services/edit-destination', 'Services/EditDestination')->name('
 Route::inertia('/privacy', 'Privacy')->name('privacy');
 Route::inertia('/terms', 'Terms')->name('terms');
 Route::inertia('/refund-policy', 'RefundPolicy')->name('refund-policy');
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 // this is the route that redirects the user to the original URL; this has to be the last route

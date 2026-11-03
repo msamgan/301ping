@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\BlogService;
 use Illuminate\Http\Response;
 
 class SitemapController extends Controller
 {
+    public function __construct(private readonly BlogService $blog) {}
+
     public function __invoke(): Response
     {
         $baseUrl = rtrim(config('app.url'), '/');
         $pageRoutes = [
             'home',
             'pricing',
+            'blog.index',
             'documentation.api',
             'services.qr-code-logo',
             'services.link-tags',
@@ -27,6 +31,10 @@ class SitemapController extends Controller
             fn (string $routeName): string => $baseUrl . route($routeName, absolute: false),
             $pageRoutes,
         );
+
+        $urls = array_merge($urls, $this->blog->all()
+            ->map(fn (array $post): string => $baseUrl . route('blog.show', $post['slug'], false))
+            ->all());
 
         return response()->view('sitemap', ['urls' => $urls])
             ->header('Content-Type', 'application/xml; charset=UTF-8');

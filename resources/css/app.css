@@ -39,3 +39,32 @@
         whitespace-nowrap;
     }
 }
+
+.blog-content { @apply font-grotesk text-ink; font-size: 1.0625rem; line-height: 1.8; }
+.blog-content > * + * { margin-top: 1.25rem; }
+.blog-content > :first-child { margin-top: 0; }
+.blog-content p, .blog-content li { @apply text-muted; }
+.blog-content li + li { margin-top: 0.5rem; }
+.blog-content li::marker { @apply text-accent-dark; }
+.blog-content h2, .blog-content h3, .blog-content h4 { @apply font-grotesk text-ink; letter-spacing: normal; }
+.blog-content h2 { margin-top: 3rem; padding-top: 1.5rem; @apply border-t border-line; font-size: 1.875rem; font-weight: 800; line-height: 1.15; }
+.blog-content h3 { margin-top: 2.25rem; font-size: 1.375rem; font-weight: 800; line-height: 1.25; }
+.blog-content h4 { margin-top: 2rem; @apply font-mono text-muted; font-size: 0.75rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; }
+.blog-content strong { @apply text-ink; font-weight: 700; }
+.blog-content a { @apply text-ink; text-decoration: underline; text-decoration-color: #E66054; text-decoration-thickness: 1px; text-underline-offset: 4px; font-weight: 600; transition: color .2s; }
+.blog-content a:hover { @apply text-accent-dark; }
+.blog-content ul { list-style: square; padding-left: 1.25rem; }
+.blog-content ol { list-style: decimal-leading-zero; padding-left: 1.75rem; @apply font-mono; }
+.blog-content ol li { @apply font-grotesk; }
+.blog-content ol li::marker { font-size: 0.8em; }
+.blog-content blockquote { @apply border-ink font-editorial text-ink; border-left-width: 2px; padding-left: 1.5rem; font-size: 1.5rem; line-height: 1.35; }
+.blog-content blockquote p { @apply text-ink; }
+.blog-content hr { @apply border-line; margin: 2.5rem 0; }
+.blog-content img { max-width: 100%; height: auto; @apply border border-line; }
+.blog-content code, .blog-content pre { @apply font-mono; }
+.blog-content code { font-size: 0.85em; @apply border border-line bg-white text-ink; padding: 0.1em 0.35em; white-space: normal; border-radius: 0; }
+.blog-content pre { @apply bg-ink text-paper; overflow-x: auto; padding: 1.25rem; font-size: 0.875rem; line-height: 1.7; border-radius: 0; }
+.blog-content pre code { @apply text-paper; background: none; border: 0; padding: 0; white-space: pre; }
+.blog-content table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+.blog-content th, .blog-content td { @apply border-b border-line; padding: 0.75rem 0.5rem; text-align: left; }
+.blog-content th { @apply font-mono text-muted border-ink; font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; }
