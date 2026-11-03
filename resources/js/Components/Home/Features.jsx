@@ -20,6 +20,10 @@ const FEATURES = [
     {
         title: "Link tags",
         body: "Keep related short links organized with simple, reusable tags."
+    },
+    {
+        title: "Query param passthrough",
+        body: "Query parameters added to your short link are automatically preserved in the destination URL."
     }
 ]
 
@@ -39,12 +43,12 @@ export default function Features() {
                     Built for the essentials, nothing else.
                 </Reveal>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 border-t border-line divide-y divide-line sm:divide-y-0 lg:divide-x">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-line divide-y divide-line sm:divide-y-0">
                     {FEATURES.map((feature, index) => (
                         <Reveal
                             key={feature.title}
                             delay={index * 60}
-                            className="py-8 sm:py-0 sm:pt-8 lg:px-8 first:lg:pl-0 last:lg:pr-0"
+                            className="py-8 sm:pt-8 sm:pb-10 sm:pr-8"
                         >
                             <span className="block font-mono text-xs text-muted mb-4">
                                 {String(index + 1).padStart(2, "0")}

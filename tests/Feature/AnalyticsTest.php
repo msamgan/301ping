@@ -31,7 +31,7 @@ test('visiting a shortened url captures analytics record in the database', funct
         'CF-Timezone' => 'America/Los_Angeles',
     ])->get('/testslug?utm_source=twitter&utm_medium=social&utm_campaign=spring_promo&custom_ref=123');
 
-    $response->assertRedirect('https://example.com/target-page');
+    $response->assertRedirect('https://example.com/target-page?utm_source=twitter&utm_medium=social&utm_campaign=spring_promo&custom_ref=123');
 
     $this->assertDatabaseHas('analytics', [
         'hyperlink_id' => $hyperlink->id,
