@@ -1,5 +1,6 @@
 const footerLinks = [
     { label: "Pricing", href: () => route("pricing") },
+    { label: "Blog", href: () => route("blog.index") },
     { label: "API docs", href: () => route("documentation.api") },
     { label: "Sitemap", href: () => route("sitemap") },
     { label: "GitHub", href: () => "https://github.com/msamgan/ms0" }
