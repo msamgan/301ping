@@ -28,6 +28,61 @@ test('it can redirect to original URL from shortened URL', function () {
         ->and($hyperlink->last_visit)->not->toBeNull();
 });
 
+test('it preserves query parameters when redirecting to destination URL', function () {
+    $url = 'https://example.com/target';
+    $hyperlink = Hyperlink::factory()->create([
+        'url' => $url,
+        'shot_slug' => 'abcd',
+        'visits' => 0,
+    ]);
+
+    $response = $this->get('/abcd?utm_source=twitter&ref=123');
+
+    $response->assertRedirect('https://example.com/target?utm_source=twitter&ref=123');
+    $hyperlink->refresh();
+    expect($hyperlink->visits)->toBe(1)
+        ->and($hyperlink->last_visit)->not->toBeNull();
+});
+
+test('it preserves and merges query parameters when destination URL already has query parameters', function () {
+    $url = 'https://example.com/target?existing=1&tag=php';
+    $hyperlink = Hyperlink::factory()->create([
+        'url' => $url,
+        'shot_slug' => 'abcd',
+        'visits' => 0,
+    ]);
+
+    $response = $this->get('/abcd?utm_source=newsletter&tag=laravel');
+
+    $response->assertRedirect('https://example.com/target?existing=1&tag=laravel&utm_source=newsletter');
+});
+
+test('it preserves query parameters when destination URL has a fragment', function () {
+    $url = 'https://example.com/docs#installation';
+    $hyperlink = Hyperlink::factory()->create([
+        'url' => $url,
+        'shot_slug' => 'abcd',
+        'visits' => 0,
+    ]);
+
+    $response = $this->get('/abcd?v=2');
+
+    $response->assertRedirect('https://example.com/docs?v=2#installation');
+});
+
+test('it preserves query parameters when destination URL has both query and fragment', function () {
+    $url = 'https://example.com/search?q=test#results';
+    $hyperlink = Hyperlink::factory()->create([
+        'url' => $url,
+        'shot_slug' => 'abcd',
+        'visits' => 0,
+    ]);
+
+    $response = $this->get('/abcd?page=2');
+
+    $response->assertRedirect('https://example.com/search?q=test&page=2#results');
+});
+
 test('it returns 404 for non-existent shortened URL', function () {
     $response = $this->get('/nonexistent');
     $response->assertStatus(404);

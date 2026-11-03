@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\BuildDestinationUrl;
 use App\Enums\Plan;
 use App\Http\Requests\StoreHyperlinkRequest;
 use App\Http\Requests\UpdateHyperlinkDestinationRequest;
@@ -219,7 +220,7 @@ class HyperlinkController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
+    public function show(Request $request, BuildDestinationUrl $buildDestinationUrl)
     {
         $shortSlug = $request->shot_slug;
 
@@ -232,7 +233,7 @@ class HyperlinkController extends Controller
 
             RecordAnalyticsJob::dispatch($hyperlink, AnalyticsService::snapshotRequest($request));
 
-            return redirect($hyperlink->url);
+            return redirect($buildDestinationUrl($hyperlink->url, $request));
         }
 
         abort(404);
