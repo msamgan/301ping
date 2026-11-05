@@ -37,6 +37,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $user ? array_merge($user->toArray(), [
                     'subscription' => $user->subscriptionSummary(),
+                    'is_admin' => $user->isAdmin(),
                 ]) : null,
             ],
             'paddle' => [

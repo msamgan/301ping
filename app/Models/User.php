@@ -51,6 +51,11 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    public function isAdmin(): bool
+    {
+        return in_array($this->getKey(), config('admin.user_ids'), true);
+    }
+
     /**
      * Determine if the user has an active or valid subscription.
      */
