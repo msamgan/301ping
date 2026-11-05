@@ -11,11 +11,14 @@ export default function AdminLayout({ user, header, children }) {
         <div className="min-h-screen flex flex-col bg-paper">
             <Header isAuthenticated={true} user={user} />
 
-            <div className="flex flex-1 flex-col md:flex-row">
+            <div className="mx-auto flex w-full max-w-grid flex-1 flex-col md:flex-row">
                 <aside className="border-b border-line bg-paper md:w-60 md:shrink-0 md:border-b-0 md:border-r">
-                    <nav className="flex gap-1 overflow-x-auto px-6 py-4 md:sticky md:top-0 md:flex-col md:gap-0 md:px-0 md:py-8">
+                    <nav
+                        aria-label="Admin navigation"
+                        className="flex gap-1 overflow-x-auto px-6 py-4 md:sticky md:top-[72px] md:h-[calc(100vh-72px)] md:flex-col md:gap-0 md:overflow-visible md:px-0 md:py-8"
+                    >
                         <p className="hidden px-6 pb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-muted md:block">
-                            Admin
+                            Workspace
                         </p>
                         {navItems.map((item) => {
                             const active = route().current(item.key)
@@ -24,13 +27,16 @@ export default function AdminLayout({ user, header, children }) {
                                 <Link
                                     key={item.key}
                                     href={route(item.key)}
-                                    className={`flex items-center gap-3 whitespace-nowrap border-l-2 px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors md:px-6 ${
+                                    aria-current={active ? "page" : undefined}
+                                    className={`flex items-center gap-3 whitespace-nowrap border-b-2 px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors hover:bg-white/40 md:border-b-0 md:border-l-2 md:px-6 ${
                                         active
-                                            ? "border-accent bg-white/40 text-ink"
+                                            ? "border-accent bg-white/50 text-ink"
                                             : "border-transparent text-muted hover:text-ink"
                                     }`}
                                 >
-                                    <span className="text-[10px]">{item.index}</span>
+                                    <span className={active ? "text-accent-dark" : "text-muted"}>
+                                        {item.index}
+                                    </span>
                                     {item.label}
                                 </Link>
                             )

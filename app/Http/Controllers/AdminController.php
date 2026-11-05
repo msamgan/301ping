@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Analytic;
 use App\Models\Hyperlink;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,6 +13,13 @@ class AdminController extends Controller
 {
     public function dashboard(): Response
     {
+        $since = now()->subDays(29)->startOfDay();
+        $redirectsPerDay = Analytic::query()
+            ->where('created_at', '>=', $since)
+            ->selectRaw('date(created_at) as day, count(*) as total')
+            ->groupBy('day')
+            ->pluck('total', 'day');
+
         return Inertia::render('Admin/Dashboard', [
             'stats' => [
                 'users' => User::count(),
@@ -20,6 +28,11 @@ class AdminController extends Controller
                 'links' => Hyperlink::count(),
                 'visits' => (int) Hyperlink::sum('visits'),
             ],
+            'redirectsDaily' => collect(range(0, 29))->map(function ($day) use ($since, $redirectsPerDay) {
+                $date = $since->copy()->addDays($day)->toDateString();
+
+                return ['date' => $date, 'total' => (int) ($redirectsPerDay[$date] ?? 0)];
+            })->values(),
             'recentUsers' => User::latest()->limit(5)->get(['id', 'name', 'email', 'created_at']),
         ]);
     }
