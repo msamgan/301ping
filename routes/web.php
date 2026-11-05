@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
@@ -23,6 +25,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('/links', 'Links')->name('links');
     Route::get('/links/{shot_slug}', [HyperlinkController::class, 'details'])->name('links.show');
     Route::inertia('/tags', 'Tags')->name('tags');
+});
+
+Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users');
 });
 
 require __DIR__ . '/auth.php';

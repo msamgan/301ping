@@ -158,6 +158,7 @@ export default function Header({ isAuthenticated = false, user = null }) {
                                 <Dropdown.Link href={route("profile.edit")}>Profile</Dropdown.Link>
                                 <Dropdown.Link href={route("billing")}>Billing</Dropdown.Link>
                                 <Dropdown.Link href={route("branding")}>Branding</Dropdown.Link>
+                                {user?.is_admin && <Dropdown.Link href={route("admin.dashboard")}>Admin</Dropdown.Link>}
                                 <Dropdown.Link href={route("logout")} method="post" as="button">
                                     Log out
                                 </Dropdown.Link>
