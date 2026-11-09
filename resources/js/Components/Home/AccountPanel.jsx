@@ -8,10 +8,6 @@ const AUTH_BENEFITS = [
         body: "Monitor usage statistics and performance of your shortened URLs with our analytics dashboard."
     },
     {
-        title: "Reactivate links",
-        body: "Restore inactive links with a single click, so your shortened URLs never permanently disappear."
-    },
-    {
         title: "API access",
         body: "Integrate our URL shortening service directly into your applications with our developer-friendly API."
     },
@@ -29,10 +25,6 @@ const GUEST_BENEFITS = [
     {
         title: "Link analytics",
         body: "Track click counts, usage patterns, and performance metrics for all your shortened URLs."
-    },
-    {
-        title: "Link reactivation",
-        body: "Reactivate expired links at any time, so your shortened URLs never permanently disappear."
     },
     {
         title: "Link management",
