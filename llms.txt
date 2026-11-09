@@ -1,0 +1,31 @@
+# 301 Ping
+
+301 Ping is a URL shortener for creating, sharing, and organizing compact links. Visitors can shorten links without an account; registered users can manage a link library, tags, QR codes, and visit counts through the website. Links can also be created with browser extensions or the authenticated API.
+
+## Main capabilities
+
+- Shorten HTTP/HTTPS destinations, redirect visitors, count visits, and reuse an existing short link for a destination already shortened.
+- Manage links with search, tag filtering, pagination, copy, QR-code downloads, and deletion. View visit totals and each link's most recent visit.
+- Create and manage tags; view dashboard link and visit totals.
+- Shorten the current page with the [Chrome extension](https://chromewebstore.google.com/detail/ms0org-url-shortener/goaddbeloaeledjpkaankdiglhnmpdld) or [Firefox add-on](https://addons.mozilla.org/en-US/firefox/addon/301ping-url-shortener/).
+- Create links through `POST /api/shorten` using a bearer access token.
+- Plans (annual billing is shown at the listed yearly price; the pricing table advertises two months free):
+  - **Free** — $0; 3 custom links, 1 destination edit, visit-count-only analytics, 40 short links per day via API and extension. Custom QR logos and broken-destination monitoring are not included.
+  - **Redirect** — $5/month or $50/year; 10 custom links, 10 destination edits, detailed analytics, 100 short links per day via API and extension, 1 custom QR-code logo, broken-destination monitoring twice daily.
+  - **Redirect Plus** — $10/month or $100/year; 25 custom links, 20 destination edits, detailed analytics, 300 short links per day via API and extension, 5 custom QR-code logos, broken-destination monitoring every 2 hours, and dedicated support.
+  - **Enterprise** — tailored pricing and tailored allowances for custom links, destination edits, analytics, daily short links, custom QR logos, broken-destination monitoring, and dedicated support.
+  - Custom domains and rule-based redirection are marked “Coming soon” for every plan in the pricing table.
+
+## Documentation
+
+- [README](README.md) — feature overview, [local setup](README.md#local-development), [API request example](README.md#api), and tests.
+- [Interactive API documentation](https://301p.ing/documentation/api) — endpoint usage, request and response examples, and error responses.
+- [OpenAPI specification](storage/api-docs/api-docs.yaml) — machine-readable API reference.
+- [URL safety rules](config/url_safety.php) — allowed schemes, blocked hosts and keywords, and allowed file extensions.
+
+## Prerequisites and limitations
+
+- Local development requires PHP 8.4+, Composer, Node.js/npm, and a database supported by Laravel; the example environment is configured for MySQL. See the README for setup steps.
+- API requests require an account access token from the dashboard. Missing or invalid tokens return `401`; missing, invalid, or unsafe URLs return `422`.
+- Only HTTP and HTTPS destinations are accepted by default. Private or reserved hosts, configured blocked domains/keywords, and file extensions outside the configured allowlist are rejected.
+- Custom short slugs, customer-owned domains, detailed visit analytics, link expiry/scheduling/pause controls, bulk link tools, and additional browser integrations are listed as future scope, not current features.
