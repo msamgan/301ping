@@ -34,6 +34,7 @@ const GUEST_BENEFITS = [
 
 export default function AccountPanel({ isAuthenticated, user }) {
     const benefits = isAuthenticated ? AUTH_BENEFITS : GUEST_BENEFITS
+    const firstName = user?.name?.trim().split(/\s+/)[0] || "there"
 
     return (
         <section className="bg-ink text-paper" aria-labelledby="account-heading">
@@ -43,7 +44,7 @@ export default function AccountPanel({ isAuthenticated, user }) {
                 </Reveal>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-14">
-                    <div className="lg:col-span-5">
+                    <div className="lg:col-span-4">
                         <Reveal
                             as="h2"
                             id="account-heading"
@@ -53,7 +54,7 @@ export default function AccountPanel({ isAuthenticated, user }) {
                                 <>
                                     Welcome back,
                                     <br />
-                                    {user?.name?.split(" ")[0] ?? user?.name}.
+                                    {firstName}.
                                 </>
                             ) : (
                                 <>
@@ -77,14 +78,14 @@ export default function AccountPanel({ isAuthenticated, user }) {
                                 <div className="flex flex-col sm:flex-row gap-4">
                                     <Link
                                         href={route("register")}
-                                        className="group inline-flex items-center justify-center gap-3 bg-paper px-6 py-3 font-grotesk text-sm font-semibold uppercase tracking-[0.08em] text-ink hover:bg-accent hover:text-paper transition-colors"
+                                        className="group inline-flex items-center justify-center gap-3 whitespace-nowrap bg-paper px-6 py-3 font-grotesk text-sm font-semibold uppercase tracking-[0.08em] text-ink hover:bg-accent hover:text-paper transition-colors"
                                     >
                                         Create free account
                                         <ArrowIcon />
                                     </Link>
                                     <Link
                                         href={route("login")}
-                                        className="group inline-flex items-center justify-center gap-3 border border-paper/30 px-6 py-3 font-grotesk text-sm font-semibold uppercase tracking-[0.08em] text-paper hover:border-paper transition-colors"
+                                        className="group inline-flex items-center justify-center gap-3 whitespace-nowrap border border-paper/30 px-6 py-3 font-grotesk text-sm font-semibold uppercase tracking-[0.08em] text-paper hover:border-paper transition-colors"
                                     >
                                         Sign in
                                         <ArrowIcon />
@@ -94,14 +95,14 @@ export default function AccountPanel({ isAuthenticated, user }) {
                         </Reveal>
                     </div>
 
-                    <div className="lg:col-span-7">
-                        <ul className="grid grid-cols-1 sm:grid-cols-2 border-t border-paper/20">
+                    <div className="lg:col-span-8">
+                        <ul className="grid grid-cols-1 lg:grid-cols-3 border-t border-paper/20">
                             {benefits.map((benefit, index) => (
                                 <Reveal
                                     as="li"
                                     key={benefit.title}
                                     delay={index * 60}
-                                    className="py-6 sm:pr-8 border-b border-paper/20 odd:sm:border-r odd:sm:border-paper/20"
+                                    className="py-6 lg:py-8 border-b lg:border-b-0 lg:border-r border-paper/20 lg:px-6 lg:first:pl-0 lg:last:pr-0 lg:last:border-r-0"
                                 >
                                     <span className="block font-mono text-xs text-paper/50 mb-2">
                                         {String(index + 1).padStart(2, "0")}
@@ -109,7 +110,7 @@ export default function AccountPanel({ isAuthenticated, user }) {
                                     <h3 className="font-grotesk font-bold text-paper text-base mb-2">
                                         {benefit.title}
                                     </h3>
-                                    <p className="font-grotesk text-sm text-paper/70 leading-relaxed">
+                                    <p className="font-grotesk text-sm text-paper/70 leading-relaxed max-w-xs">
                                         {benefit.body}
                                     </p>
                                 </Reveal>
