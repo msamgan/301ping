@@ -1,5 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout"
-import { Head, Link } from "@inertiajs/react"
+import { Link } from "@inertiajs/react"
+import SeoHead from "@/Components/SeoHead"
 import { useEffect, useState } from "react"
 import axios from "axios"
 
@@ -111,7 +112,11 @@ export default function Dashboard({ auth }) {
                 </div>
             }
         >
-            <Head title="Dashboard" />
+            <SeoHead
+                title="Dashboard"
+                description="Review your short-link activity, click trends, and recent performance in one place. Use your dashboard to see how your links are working and decide what to optimize next."
+                noindex
+            />
 
             <div className="bg-paper font-grotesk text-ink">
                 <section className="border-b border-line" aria-labelledby="dashboard-heading">

@@ -151,7 +151,7 @@ export default function ApiDocumentation() {
         <>
             <SeoHead
                 title="URL Shortener API Documentation"
-                description="Learn how to create short links with the 301 Ping API. Explore authentication, request parameters, response examples, and integration steps."
+                description="Build short links with the 301 Ping API using clear authentication guidance, request parameters, response examples, and integration steps. Find the details you need to connect your workflow."
             />
             <Header isAuthenticated={!!user} user={user} />
 

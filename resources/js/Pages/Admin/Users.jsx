@@ -1,5 +1,6 @@
 import AdminLayout from "@/Layouts/AdminLayout"
-import { Head, Link, router } from "@inertiajs/react"
+import { Link, router } from "@inertiajs/react"
+import SeoHead from "@/Components/SeoHead"
 import { useState } from "react"
 
 const th = "px-4 py-3 text-left font-mono text-[10px] font-normal uppercase tracking-[0.12em] text-muted"
@@ -29,7 +30,11 @@ export default function Users({ auth, users, search, adminIds }) {
                 </div>
             }
         >
-            <Head title="Admin Users" />
+            <SeoHead
+                title="Admin Users"
+                description="Find and review 301 Ping user accounts from the administration area. Search the user list and access account information needed to manage platform support and operations."
+                noindex
+            />
 
             <div className="px-6 py-10 md:px-10">
                 <form onSubmit={submit} className="flex max-w-md gap-2">

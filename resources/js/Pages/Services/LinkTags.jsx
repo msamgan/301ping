@@ -166,7 +166,7 @@ export default function LinkTags() {
         <div className="min-h-screen bg-paper">
             <SeoHead
                 title="Organize Short Links with Tags"
-                description="Organize short links with reusable tags. Group URLs by campaign, client, or channel, then filter your link library to find what you need."
+                description="Organize short links with reusable tags for campaigns, clients, and channels. Group related URLs, then filter your link library to find the right destination and review performance faster."
             />
             <Header isAuthenticated={isAuthenticated} user={user} />
 

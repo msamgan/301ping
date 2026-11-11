@@ -2,7 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout"
 import DeleteUserForm from "./Partials/DeleteUserForm"
 import UpdatePasswordForm from "./Partials/UpdatePasswordForm"
 import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm"
-import { Head } from "@inertiajs/react"
+import SeoHead from "@/Components/SeoHead"
 import { useState, useEffect } from "react"
 
 export default function Edit({ auth, mustVerifyEmail, status }) {
@@ -129,7 +129,11 @@ export default function Edit({ auth, mustVerifyEmail, status }) {
                 </div>
             }
         >
-            <Head title="Profile" />
+            <SeoHead
+                title="Profile"
+                description="Update your account profile, sign-in password, and email verification settings. You can also review account controls and manage the profile information associated with 301 Ping."
+                noindex
+            />
 
             <main className="bg-paper font-grotesk text-ink">
                 <div className="mx-auto max-w-grid px-6 md:px-10 lg:px-16 py-8 md:py-12">

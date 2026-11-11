@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>404 — Page not found</title>
+    <meta name="description" content="The page you requested could not be found. Return to 301 Ping to shorten a URL, manage your short links, or browse the API documentation and product information.">
+    <meta name="robots" content="noindex,follow">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />

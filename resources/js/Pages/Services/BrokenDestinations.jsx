@@ -162,7 +162,7 @@ export default function BrokenDestinations() {
         <div className="min-h-screen bg-paper">
             <SeoHead
                 title="Broken Link Monitoring for Short URLs"
-                description="Monitor destinations behind your short links, catch broken pages earlier, and keep campaigns, QR codes, and shared URLs working."
+                description="Monitor the destinations behind your short links to find broken pages before they disrupt a campaign. Check URL health, repair issues, and keep QR codes and shared links working."
             />
             <Header isAuthenticated={isAuthenticated} user={user} />
 

@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Middleware\AccessTokenCheck;
+use App\Http\Middleware\AddStrictTransportSecurityHeader;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\RedirectWwwToApex;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -22,6 +24,9 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->prepend(AddStrictTransportSecurityHeader::class);
+        $middleware->append(RedirectWwwToApex::class);
+
         $middleware->web(append: [
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,

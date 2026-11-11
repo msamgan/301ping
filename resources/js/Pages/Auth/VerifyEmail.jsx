@@ -1,6 +1,7 @@
 import GuestLayout from "@/Layouts/GuestLayout"
 import PrimaryButton from "@/Components/PrimaryButton"
-import { Head, Link, useForm } from "@inertiajs/react"
+import { Link, useForm } from "@inertiajs/react"
+import SeoHead from "@/Components/SeoHead"
 
 export default function VerifyEmail({ status }) {
     const { post, processing } = useForm({})
@@ -13,7 +14,11 @@ export default function VerifyEmail({ status }) {
 
     return (
         <GuestLayout>
-            <Head title="Email Verification" />
+            <SeoHead
+                title="Verify Your Email"
+                description="Verify the email address connected to your 301 Ping account to complete registration and enable account features. Follow the verification link in your inbox to continue."
+                noindex
+            />
 
             <div className="mb-4 text-sm text-gray-600">
                 Thanks for signing up! Before getting started, could you verify your email address by clicking

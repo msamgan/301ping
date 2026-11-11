@@ -2,7 +2,8 @@ import GuestLayout from "@/Layouts/GuestLayout"
 import InputError from "@/Components/InputError"
 import InputLabel from "@/Components/InputLabel"
 import TextInput from "@/Components/TextInput"
-import { Head, useForm } from "@inertiajs/react"
+import { useForm } from "@inertiajs/react"
+import SeoHead from "@/Components/SeoHead"
 
 export default function ForgotPassword({ status }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -17,7 +18,11 @@ export default function ForgotPassword({ status }) {
 
     return (
         <GuestLayout>
-            <Head title="Forgot Password" />
+            <SeoHead
+                title="Forgot Password"
+                description="Request a password reset for your 301 Ping account. Enter the email address associated with your account and we will send instructions to help you regain access."
+                noindex
+            />
 
             <div className="mb-8 font-grotesk text-sm leading-relaxed text-muted">
                 Forgot your password? No problem. Just let us know your email address and we will email you a

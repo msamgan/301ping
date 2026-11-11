@@ -142,7 +142,7 @@ export default function CustomLinks() {
         <div className="min-h-screen bg-paper">
             <SeoHead
                 title="Custom Short Links"
-                description="Create custom short links with memorable words instead of random characters. Make URLs easier to read, share, and recognize."
+                description="Create custom short links with meaningful words instead of random characters. Give every URL a memorable, trustworthy address that is easy to recognize, share, and use across campaigns."
             />
             <Header isAuthenticated={isAuthenticated} user={user} />
 

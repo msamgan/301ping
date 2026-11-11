@@ -200,7 +200,7 @@ export default function Pricing({ plans: serverPlans = null }) {
         <>
             <SeoHead
                 title="URL Shortener Pricing"
-                description="Compare 301 Ping plans for custom short links, click analytics, QR codes, link tags, and destination monitoring. Start free and upgrade anytime."
+                description="Compare 301 Ping plans for custom short links, click analytics, branded QR codes, link tags, and destination monitoring. Choose a plan that fits your workflow and upgrade when you need more."
             />
             <Header isAuthenticated={!!user} user={user} />
 

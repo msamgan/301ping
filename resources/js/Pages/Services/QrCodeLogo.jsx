@@ -105,7 +105,7 @@ export default function QrCodeLogo() {
         <div className="min-h-screen bg-paper">
             <SeoHead
                 title="Branded QR Codes for Short Links"
-                description="Create branded QR codes for short links, add your logo, and download a high-resolution PNG for print or digital sharing."
+                description="Create branded QR codes for your short links, add your logo, and download high-resolution PNGs for print or digital use. Update destinations later without replacing printed codes."
             />
             <Header isAuthenticated={isAuthenticated} user={user} />
 

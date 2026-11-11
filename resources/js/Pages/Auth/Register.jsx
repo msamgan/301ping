@@ -2,7 +2,8 @@ import GuestLayout from "@/Layouts/GuestLayout"
 import InputError from "@/Components/InputError"
 import InputLabel from "@/Components/InputLabel"
 import TextInput from "@/Components/TextInput"
-import { Head, Link, useForm } from "@inertiajs/react"
+import { Link, useForm } from "@inertiajs/react"
+import SeoHead from "@/Components/SeoHead"
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -27,7 +28,11 @@ export default function Register() {
 
     return (
         <>
-            <Head title="Register" />
+            <SeoHead
+                title="Create an Account"
+                description="Create a 301 Ping account to shorten URLs, build custom links, track clicks, and create branded QR codes. Sign up to manage your links and campaigns in one place."
+                noindex
+            />
 
             <GuestLayout {...customGuestLayoutProps}>
                 <form onSubmit={submit}>

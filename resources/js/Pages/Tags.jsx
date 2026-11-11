@@ -4,7 +4,8 @@ import Dropdown from "@/Components/Dropdown"
 import Modal from "@/Components/Modal"
 import DangerButton from "@/Components/DangerButton"
 import SecondaryButton from "@/Components/SecondaryButton"
-import { Head, Link } from "@inertiajs/react"
+import { Link } from "@inertiajs/react"
+import SeoHead from "@/Components/SeoHead"
 import { useEffect, useState } from "react"
 import axios from "axios"
 
@@ -171,7 +172,11 @@ export default function Tags({ auth }) {
                 </div>
             }
         >
-            <Head title="Tags" />
+            <SeoHead
+                title="Tags"
+                description="Manage your reusable tags and use them to organize short links by campaign, client, or channel. Keep your link library structured so related URLs are easy to find and maintain."
+                noindex
+            />
 
             <main className="bg-paper font-grotesk text-ink">
                 <section className="border-b border-line bg-paper">

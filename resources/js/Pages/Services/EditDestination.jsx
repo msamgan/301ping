@@ -142,7 +142,7 @@ export default function EditDestination() {
         <div className="min-h-screen bg-paper">
             <SeoHead
                 title="Edit Short Link Destinations"
-                description="Change the destination behind a short link without changing its URL. Fix mistakes, rotate campaigns, and update old links without reprinting."
+                description="Change the destination behind an existing short link without changing its public URL. Correct mistakes, update campaigns, and keep printed materials and shared links working."
             />
             <Header isAuthenticated={isAuthenticated} user={user} />
 

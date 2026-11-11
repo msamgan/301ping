@@ -1,6 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout"
 import BrandingForm from "@/Pages/Profile/Partials/BrandingForm"
-import { Head } from "@inertiajs/react"
+import SeoHead from "@/Components/SeoHead"
 
 export default function Branding({ auth, logos = [], logoLimit = 0 }) {
     return (
@@ -38,7 +38,11 @@ export default function Branding({ auth, logos = [], logoLimit = 0 }) {
                 </div>
             }
         >
-            <Head title="Branding" />
+            <SeoHead
+                title="Branding"
+                description="Manage your custom branding assets for short links and QR codes. Update your logo and brand details so the links you share are consistent with your organization."
+                noindex
+            />
 
             <main className="bg-paper font-grotesk text-ink">
                 <div className="mx-auto max-w-grid px-6 py-8 md:px-10 md:py-12 lg:px-16">

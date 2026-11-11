@@ -1,5 +1,6 @@
 import AdminLayout from "@/Layouts/AdminLayout"
-import { Head, Link } from "@inertiajs/react"
+import { Link } from "@inertiajs/react"
+import SeoHead from "@/Components/SeoHead"
 
 const fmt = (v) => Number(v).toLocaleString()
 
@@ -102,7 +103,11 @@ export default function Dashboard({ auth, stats, redirectsDaily, recentUsers }) 
                 </div>
             }
         >
-            <Head title="Admin Dashboard" />
+            <SeoHead
+                title="Admin Dashboard"
+                description="Review 301 Ping platform activity and administration summaries from the admin dashboard. Use these operational insights to monitor service usage and manage the platform."
+                noindex
+            />
 
             <div className="px-6 py-10 md:px-10">
                 <div className="grid grid-cols-2 border-l border-t border-line lg:grid-cols-5">

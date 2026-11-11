@@ -29,7 +29,7 @@ export default function Welcome() {
         <>
             <SeoHead
                 title="URL Shortener & Short Links"
-                description="Shorten long URLs, create memorable custom links, track clicks, and make branded QR codes with 301 Ping."
+                description="Shorten long URLs into memorable links, create custom branded URLs, track clicks with detailed analytics, and turn links into branded QR codes. Manage every campaign from one simple dashboard."
                 structuredData={{
                     "@context": "https://schema.org",
                     "@type": "SoftwareApplication",
