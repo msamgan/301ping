@@ -7,11 +7,17 @@
     <title inertia>{{ config('app.name', '301 ping') }}</title>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
     <link
-        href="https://fonts.bunny.net/css?family=manrope:400,500,600,700,800|dm-serif-display:400|jetbrains-mono:400,500,600&display=swap"
-        rel="stylesheet" />
+        rel="preload"
+        as="style"
+        href="https://fonts.bunny.net/css?family=figtree:400,500,600|manrope:400,500,600,700,800|dm-serif-display:400|jetbrains-mono:400,500,600&display=swap"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link
+            href="https://fonts.bunny.net/css?family=figtree:400,500,600|manrope:400,500,600,700,800|dm-serif-display:400|jetbrains-mono:400,500,600&display=swap"
+            rel="stylesheet">
+    </noscript>
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
