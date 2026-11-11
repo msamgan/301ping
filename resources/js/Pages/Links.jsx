@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx"
-import UrlShortener from "@/Components/Home/UrlShortener"
+import UrlShortenerPanel from "@/Components/Home/UrlShortenerPanel"
 import Dropdown from "@/Components/Dropdown"
 import Modal from "@/Components/Modal"
 import LinkTags from "@/Components/LinkTags"
@@ -244,7 +244,7 @@ export default function Links({ auth }) {
                                 </p>
                             </div>
 
-                            <UrlShortener onSuccess={() => fetchLinks(1, search, tag)} />
+                            <UrlShortenerPanel onSuccess={() => fetchLinks(1, search, tag)} />
                         </div>
                     </div>
                 </section>
