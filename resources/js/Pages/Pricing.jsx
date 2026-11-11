@@ -50,15 +50,51 @@ const buildPlans = (plansData = {}) => [
 
 // One value per plan, in the same order as `plans`. true/false render as a check/dash.
 const features = [
-    { label: "Custom links", values: ["3", "10", "25", "Tailored"] },
-    { label: "Edit destination", values: ["1", "10", "20", "Tailored"] },
-    { label: "Analytics", values: ["Visits only", "Detailed", "Detailed", "Tailored"] },
-    { label: "Short links per day (API & extension)", values: ["40", "100", "300", "Tailored"] },
-    { label: "Custom logo in QR code", values: [false, "1", "5", "Tailored"] },
-    { label: "Monitor broken destinations", values: [false, "Twice a day", "Every 2 hours", "Tailored"] },
-    { label: "Custom domain", values: ["Coming soon", "Coming soon", "Coming soon", "Coming soon"] },
-    { label: "Rule-based redirection", values: ["Coming soon", "Coming soon", "Coming soon", "Coming soon"] },
-    { label: "Dedicated support", values: [false, false, true, "Tailored"] }
+    {
+        label: "Custom links",
+        description: "Choose memorable, branded slugs for your short URLs.",
+        values: ["3", "10", "25", "Tailored"]
+    },
+    {
+        label: "Edit destination",
+        description: "Change where a short link sends visitors without changing its URL.",
+        values: ["1", "10", "20", "Tailored"]
+    },
+    {
+        label: "Analytics",
+        description: "See visits and understand how people use your links.",
+        values: ["Visits only", "Detailed", "Detailed", "Tailored"]
+    },
+    {
+        label: "Short links per day (API & extension)",
+        description: "Daily link creation allowance through the API and browser extension.",
+        values: ["40", "100", "300", "Tailored"]
+    },
+    {
+        label: "Custom logo in QR code",
+        description: "Add your logo to QR codes for a consistent brand experience.",
+        values: [false, "1", "5", "Tailored"]
+    },
+    {
+        label: "Monitor broken destinations",
+        description: "Check linked pages regularly and catch unavailable destinations.",
+        values: [false, "Twice a day", "Every 2 hours", "Tailored"]
+    },
+    {
+        label: "Custom domain",
+        description: "Use your own domain for branded short links.",
+        values: ["Coming soon", "Coming soon", "Coming soon", "Coming soon"]
+    },
+    {
+        label: "Rule-based redirection",
+        description: "Send visitors to different destinations based on rules.",
+        values: ["Coming soon", "Coming soon", "Coming soon", "Coming soon"]
+    },
+    {
+        label: "Dedicated support",
+        description: "Get direct help from the 301 Ping support team.",
+        values: [false, false, true, "Tailored"]
+    }
 ]
 
 function Cell({ value }) {
@@ -342,8 +378,11 @@ export default function Pricing({ plans: serverPlans = null }) {
                                 <tbody className="text-sm">
                                     {features.map((feature) => (
                                         <tr key={feature.label} className="border-b border-line">
-                                            <th scope="row" className="p-4 font-semibold">
-                                                {feature.label}
+                                            <th scope="row" className="p-4 text-left align-top">
+                                                <div className="font-semibold">{feature.label}</div>
+                                                <p className="mt-1 text-xs font-normal leading-relaxed text-muted">
+                                                    {feature.description}
+                                                </p>
                                             </th>
                                             {feature.values.map((value, index) => (
                                                 <td
