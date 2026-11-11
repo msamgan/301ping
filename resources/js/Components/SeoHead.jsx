@@ -11,29 +11,36 @@ export default function SeoHead({
     article = null
 }) {
     const { props, url } = usePage()
+    const pageSeo = props.seo || {}
+    const pageTitle = pageSeo.title || title
+    const pageDescription = pageSeo.description || description
     const siteUrl = props.siteUrl || "http://localhost"
     const pageUrl = new URL(url, siteUrl)
-    const canonicalUrl = `${siteUrl.replace(/\/+$/, "")}${pageUrl.pathname === "/" ? "/" : pageUrl.pathname.replace(/\/+$/, "")}`
-    const imageUrl = image || `${siteUrl.replace(/\/+$/, "")}/android-chrome-512x512.png`
-    const imageDescription = imageAlt || "301 Ping logo"
+    const canonicalUrl =
+        pageSeo.canonicalUrl ||
+        `${siteUrl.replace(/\/+$/, "")}${pageUrl.pathname === "/" ? "/" : pageUrl.pathname.replace(/\/+$/, "")}`
+    const imageUrl = pageSeo.image || image || `${siteUrl.replace(/\/+$/, "")}/android-chrome-512x512.png`
+    const imageDescription = pageSeo.imageAlt || imageAlt || "301 Ping logo"
     const robots = noindex ? "noindex,follow" : "index,follow,max-image-preview:large"
+    const pageType = pageSeo.type || type
+    const pageStructuredData = pageSeo.structuredData || structuredData
 
     return (
-        <Head title={title}>
-            <meta name="description" content={description} head-key="description" />
+        <Head title={pageTitle}>
+            <meta name="description" content={pageDescription} head-key="description" />
             <meta name="robots" content={robots} head-key="robots" />
             <link rel="canonical" href={canonicalUrl} head-key="canonical" />
-            <meta property="og:type" content={type} head-key="og:type" />
+            <meta property="og:type" content={pageType} head-key="og:type" />
             <meta property="og:site_name" content="301 Ping" head-key="og:site_name" />
             <meta property="og:locale" content="en_US" head-key="og:locale" />
-            <meta property="og:title" content={title} head-key="og:title" />
-            <meta property="og:description" content={description} head-key="og:description" />
+            <meta property="og:title" content={pageTitle} head-key="og:title" />
+            <meta property="og:description" content={pageDescription} head-key="og:description" />
             <meta property="og:url" content={canonicalUrl} head-key="og:url" />
             <meta property="og:image" content={imageUrl} head-key="og:image" />
             <meta property="og:image:alt" content={imageDescription} head-key="og:image:alt" />
             <meta name="twitter:card" content="summary_large_image" head-key="twitter:card" />
-            <meta name="twitter:title" content={title} head-key="twitter:title" />
-            <meta name="twitter:description" content={description} head-key="twitter:description" />
+            <meta name="twitter:title" content={pageTitle} head-key="twitter:title" />
+            <meta name="twitter:description" content={pageDescription} head-key="twitter:description" />
             <meta name="twitter:image" content={imageUrl} head-key="twitter:image" />
             <meta name="twitter:image:alt" content={imageDescription} head-key="twitter:image:alt" />
             {article && (
@@ -55,9 +62,9 @@ export default function SeoHead({
                 (article.tags || []).map((tag) => (
                     <meta property="article:tag" content={tag} key={tag} head-key={`article:tag:${tag}`} />
                 ))}
-            {structuredData && (
+            {pageStructuredData && (
                 <script type="application/ld+json" head-key="structured-data">
-                    {JSON.stringify(structuredData)}
+                    {JSON.stringify(pageStructuredData)}
                 </script>
             )}
         </Head>
