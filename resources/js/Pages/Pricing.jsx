@@ -87,8 +87,8 @@ const features = [
     },
     {
         label: "Custom domain",
-        description: "Custom domains are not available.",
-        values: ["Not available", "Not available", "Not available", "Not available"]
+        description: "Custom domains are coming soon.",
+        values: ["Coming soon", "Coming soon", "Coming soon", "Coming soon"]
     },
     {
         label: "Rule-based redirection",
