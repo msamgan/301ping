@@ -10,6 +10,7 @@ test('sitemap lists public pages and excludes account pages', function () {
         ->assertSee('<?xml version="1.0" encoding="UTF-8"?>', false)
         ->assertSee('<loc>https://301p.ing/</loc>', false)
         ->assertSee('<loc>https://301p.ing/pricing</loc>', false)
+        ->assertSee('<loc>https://301p.ing/founder</loc>', false)
         ->assertSee('<loc>https://301p.ing/services/custom-links</loc>', false)
         ->assertDontSee('/login', false)
         ->assertDontSee('/dashboard', false);

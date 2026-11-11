@@ -1,4 +1,5 @@
 const footerLinks = [
+    { label: "Founder", href: () => route("founder") },
     { label: "Pricing", href: () => route("pricing") },
     { label: "Blog", href: () => route("blog.index") },
     { label: "API docs", href: () => route("documentation.api") },

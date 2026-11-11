@@ -15,6 +15,7 @@ class SitemapController extends Controller
         $pageRoutes = [
             'home',
             'pricing',
+            'founder',
             'blog.index',
             'documentation.api',
             'services.qr-code-logo',
