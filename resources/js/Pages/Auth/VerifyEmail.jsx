@@ -2,6 +2,7 @@ import GuestLayout from "@/Layouts/GuestLayout"
 import PrimaryButton from "@/Components/PrimaryButton"
 import { Link, useForm } from "@inertiajs/react"
 import SeoHead from "@/Components/SeoHead"
+import { analytics } from "@heycatch/sdk"
 
 export default function VerifyEmail({ status }) {
     const { post, processing } = useForm({})
@@ -40,6 +41,7 @@ export default function VerifyEmail({ status }) {
                         href={route("logout")}
                         method="post"
                         as="button"
+                        onSuccess={() => analytics.resetIdentity()}
                         className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                         Log Out

@@ -17,7 +17,8 @@ const sections = [
     {
         title: "Cookies and technical information",
         paragraphs: [
-            "301 ping uses session cookies and related session data to support sign-in and secure interactions with the service. When you connect to the site, our hosting environment may also process technical request information, such as your IP address and browser user-agent, as part of operating and securing the service."
+            "301 ping uses session cookies and related session data to support sign-in and secure interactions with the service. When you connect to the site, our hosting environment may also process technical request information, such as your IP address and browser user-agent, as part of operating and securing the service.",
+            "We use HeyCatch analytics to understand visits and interactions with the site. HeyCatch may process identifiers, IP address, browser and device information, page views, and clicks. If you sign in, we also associate analytics with your account ID, name, email address, plan, and signup date."
         ]
     },
     {

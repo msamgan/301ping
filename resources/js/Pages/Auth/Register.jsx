@@ -4,6 +4,7 @@ import InputLabel from "@/Components/InputLabel"
 import TextInput from "@/Components/TextInput"
 import { Link, useForm } from "@inertiajs/react"
 import SeoHead from "@/Components/SeoHead"
+import { identifyUser } from "@/analytics"
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -17,6 +18,7 @@ export default function Register() {
         e.preventDefault()
 
         post(route("register"), {
+            onSuccess: (page) => identifyUser(page.props.auth.user),
             onFinish: () => reset("password", "password_confirmation")
         })
     }

@@ -1,6 +1,7 @@
 import { Link } from "@inertiajs/react"
 import { useState } from "react"
 import Dropdown from "@/Components/Dropdown"
+import { analytics } from "@heycatch/sdk"
 
 const iconPaths = {
     home: "M3 10.5 12 3l9 7.5M5.25 9v11h13.5V9M9 20v-6h6v6",
@@ -260,7 +261,12 @@ export default function Header({ isAuthenticated = false, user = null }) {
                                         Admin
                                     </Dropdown.Link>
                                 )}
-                                <Dropdown.Link href={route("logout")} method="post" as="button">
+                                <Dropdown.Link
+                                    href={route("logout")}
+                                    method="post"
+                                    as="button"
+                                    onSuccess={() => analytics.resetIdentity()}
+                                >
                                     <span className="inline-flex items-center gap-2">
                                         <MenuIcon name="logout" />
                                         Log out
@@ -386,6 +392,7 @@ export default function Header({ isAuthenticated = false, user = null }) {
                                 href={route("logout")}
                                 method="post"
                                 as="button"
+                                onSuccess={() => analytics.resetIdentity()}
                                 className={mobileLinkClass}
                                 onClick={() => setMobileMenuOpen(false)}
                             >

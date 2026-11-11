@@ -6,6 +6,7 @@ import Modal from "@/Components/Modal"
 import SecondaryButton from "@/Components/SecondaryButton"
 import TextInput from "@/Components/TextInput"
 import { useForm } from "@inertiajs/react"
+import { analytics } from "@heycatch/sdk"
 
 export default function DeleteUserForm({ className = "" }) {
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false)
@@ -31,7 +32,10 @@ export default function DeleteUserForm({ className = "" }) {
 
         destroy(route("profile.destroy"), {
             preserveScroll: true,
-            onSuccess: () => closeModal(),
+            onSuccess: () => {
+                analytics.resetIdentity()
+                closeModal()
+            },
             onError: () => passwordInput.current.focus(),
             onFinish: () => reset()
         })

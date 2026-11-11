@@ -4,6 +4,7 @@ import PrimaryButton from "@/Components/PrimaryButton"
 import TextInput from "@/Components/TextInput"
 import { Link, useForm, usePage } from "@inertiajs/react"
 import { Transition } from "@headlessui/react"
+import { analytics } from "@heycatch/sdk"
 
 export default function UpdateProfileInformation({ mustVerifyEmail, status, className = "" }) {
     const user = usePage().props.auth.user
@@ -16,7 +17,12 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
     const submit = (e) => {
         e.preventDefault()
 
-        patch(route("profile.update"))
+        patch(route("profile.update"), {
+            onSuccess: (page) => {
+                const { name, email } = page.props.auth.user
+                analytics.setPersonProperties({ name, email })
+            }
+        })
     }
 
     return (
