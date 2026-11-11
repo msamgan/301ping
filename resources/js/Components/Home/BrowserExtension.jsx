@@ -88,7 +88,7 @@ export default function BrowserExtension() {
                                     href={extension.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center justify-center gap-3 bg-accent px-6 py-4 font-grotesk text-sm font-bold uppercase tracking-[0.08em] text-white transition-colors hover:bg-accent-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-paper"
+                                    className="inline-flex items-center justify-center gap-3 bg-accent px-6 py-4 font-grotesk text-sm font-bold uppercase tracking-[0.08em] text-ink transition-colors hover:bg-accent-dark hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-paper"
                                 >
                                     Add to {extension.label}
                                     <span aria-hidden="true">↗</span>

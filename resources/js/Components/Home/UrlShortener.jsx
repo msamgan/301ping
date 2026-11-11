@@ -75,7 +75,7 @@ export default function UrlShortener({ onSuccess } = {}) {
                         aria-invalid={!!error}
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
-                        className="peer w-full min-w-0 border-0 bg-transparent p-0 font-mono text-base sm:text-lg text-ink placeholder:text-muted/70 focus:ring-0 focus:outline-none"
+                        className="peer w-full min-w-0 border-0 bg-transparent p-0 font-mono text-base sm:text-lg text-ink placeholder:text-muted focus:ring-0 focus:outline-none"
                         autoFocus={true}
                     />
                     <button

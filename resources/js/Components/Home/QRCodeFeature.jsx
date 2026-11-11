@@ -54,7 +54,7 @@ function QRArtwork() {
             <rect x="11" y="11" width="5" height="5" rx="1.3" fill="#e66054" />
             <path
                 d="M12.2 14.6v-2.4h.65l.9 1.13.9-1.13h.65v2.4h-.7v-1.35l-.85 1.02-.85-1.02v1.35h-.7Z"
-                fill="white"
+                fill="#111111"
             />
         </svg>
     )
@@ -113,7 +113,7 @@ export default function QRCodeFeature() {
                             </div>
 
                             <div className="absolute bottom-7 right-5 flex items-center gap-3 border border-paper/20 bg-ink px-3 py-2.5 sm:bottom-10 sm:right-8">
-                                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent font-grotesk text-xs font-extrabold text-white">
+                                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent font-grotesk text-xs font-extrabold text-ink">
                                     M
                                 </span>
                                 <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-paper/70">

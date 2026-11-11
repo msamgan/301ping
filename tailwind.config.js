@@ -30,7 +30,7 @@ export default {
                 line: "#D7D4CC",
                 accent: {
                     DEFAULT: "#E66054",
-                    dark: "#C64C42"
+                    dark: "#B53E35"
                 }
             },
             maxWidth: {
