@@ -20,7 +20,7 @@ const CAPABILITIES = [
     }
 ]
 
-export default function Hero() {
+export default function Hero({ activeLinkCount }) {
     return (
         <section className="border-b border-line bg-paper" aria-labelledby="hero-heading">
             <div className="mx-auto flex min-h-[calc(100svh-64px)] max-w-grid flex-col px-6 pb-6 pt-8 md:min-h-[calc(100svh-72px)] md:px-10 lg:px-16">
@@ -35,7 +35,7 @@ export default function Hero() {
                 <div className="grid flex-1 items-center gap-10 py-10 lg:grid-cols-12 lg:gap-12 lg:py-10">
                     <div className="lg:col-span-7">
                         <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
-                            One small link. A whole lot more.
+                            For creators, marketers &amp; developers
                         </p>
                         <h1
                             id="hero-heading"
@@ -52,17 +52,21 @@ export default function Hero() {
                             </span>
                         </h1>
                         <p className="mt-8 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
-                            Shorten a link in seconds. Then do more with it: track clicks, create QR codes, and
-                            manage every link in one place.
+                            Shorten a link in seconds. Track visits, create QR codes, and organize links for
+                            every campaign or client in one place.
                         </p>
 
                         <div className="mt-8 max-w-xl sm:mt-10">
                             <UrlShortenerPanel />
                         </div>
+                        <p className="mt-4 font-mono text-xs uppercase tracking-[0.12em] text-muted">
+                            {activeLinkCount.toLocaleString("en-US")} active short links
+                        </p>
                     </div>
 
                     <div className="lg:col-span-5">
                         <div className="relative overflow-hidden bg-accent px-6 pb-5 pt-6 text-ink sm:px-8 sm:pt-8">
+                            {/* Replace the illustration with an owner-supplied link-library screenshot when available. */}
                             <div
                                 className="pointer-events-none absolute inset-0 opacity-20"
                                 style={{
@@ -136,7 +140,7 @@ export default function Hero() {
                 </div>
 
                 <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-line pt-5 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
-                    <span>Built for creators, marketers &amp; developers</span>
+                    <span>For everyday links—not custom domains or deep campaign analytics.</span>
                     <a
                         href="#features"
                         className="text-ink underline underline-offset-4 hover:text-accent-dark"

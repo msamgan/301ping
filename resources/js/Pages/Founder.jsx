@@ -30,6 +30,9 @@ const socialLinks = [
 
 export default function Founder() {
     const user = usePage().props.auth?.user
+    const founderStory =
+        "I built 301 Ping to solve a problem I had: I needed a simple URL shortener that didn't expire my links. I couldn't find one that met my needs, so I built 301 Ping for myself. I've been using it ever since, and now I want to share it with the world."
+    const founderPhoto = "https://msamgan.com/assets/msamgan-CytIHvTV.jpeg"
 
     return (
         <>
@@ -70,6 +73,18 @@ export default function Founder() {
                                     reliable integrations to the small details that make a product easier to
                                     use.
                                 </p>
+                                {founderStory && (
+                                    <p className="mt-5 max-w-xl text-base leading-relaxed text-muted">
+                                        {founderStory}
+                                    </p>
+                                )}
+                                {founderPhoto && (
+                                    <img
+                                        src={founderPhoto}
+                                        alt="Mohammed Samgan Khan"
+                                        className="mt-6 h-24 w-24 rounded-full object-cover"
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>

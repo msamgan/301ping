@@ -12,6 +12,7 @@ const buildPlans = (plansData = {}) => [
     {
         name: "Free",
         tier: "Free",
+        fit: "For trying short links",
         price: { monthly: "$0", annual: "$0" },
         cta: "Get started",
         href: "register"
@@ -19,6 +20,7 @@ const buildPlans = (plansData = {}) => [
     {
         name: "Redirect",
         tier: "Redirect",
+        fit: "For regular campaigns and more edits",
         price: { monthly: "$5", annual: "$50" },
         priceIds: {
             monthly: plansData?.redirect_monthly?.price_id || plansData?.redirect_monthly || "",
@@ -30,6 +32,7 @@ const buildPlans = (plansData = {}) => [
     {
         name: "Redirect Plus",
         tier: "Redirect Plus",
+        fit: "For larger campaigns and more QR codes",
         price: { monthly: "$10", annual: "$100" },
         priceIds: {
             monthly: plansData?.redirect_plus_monthly?.price_id || plansData?.redirect_plus_monthly || "",
@@ -43,6 +46,7 @@ const buildPlans = (plansData = {}) => [
     {
         name: "Talk to us",
         tier: "Enterprise",
+        fit: "For tailored limits and support",
         price: null,
         cta: "Contact us",
         contact: true
@@ -288,7 +292,7 @@ export default function Pricing({ plans: serverPlans = null }) {
 
                 <section className="border-b border-line" aria-label="Plan comparison">
                     <div className="mx-auto max-w-grid px-6 py-12 md:px-10 lg:px-16">
-                        <div className="overflow-x-auto">
+                        <div className="hidden overflow-x-auto min-[760px]:block">
                             <table className="w-full min-w-[760px] table-fixed border-collapse text-left">
                                 <caption className="sr-only">Comparison of 301 ping plans</caption>
                                 <colgroup>
@@ -332,6 +336,9 @@ export default function Pricing({ plans: serverPlans = null }) {
                                                         ) : null}
                                                     </div>
                                                     <div className="text-xl font-extrabold">{plan.name}</div>
+                                                    <p className="mt-1 text-xs font-normal leading-relaxed text-muted">
+                                                        {plan.fit}
+                                                    </p>
                                                     <div className="mt-3 min-h-[3rem]">
                                                         {plan.price ? (
                                                             <>
@@ -404,6 +411,95 @@ export default function Pricing({ plans: serverPlans = null }) {
                                     ))}
                                 </tbody>
                             </table>
+                        </div>
+                        <div className="grid gap-4 min-[760px]:hidden">
+                            {[...plans]
+                                .sort((a, b) => Number(Boolean(b.highlight)) - Number(Boolean(a.highlight)))
+                                .map((plan) => {
+                                    const planIndex = plans.findIndex(
+                                        (candidate) => candidate.name === plan.name
+                                    )
+
+                                    return (
+                                        <article
+                                            key={plan.name}
+                                            className={`border p-5 ${
+                                                plan.highlight ? "border-ink bg-ink/5" : "border-line"
+                                            }`}
+                                        >
+                                            <div className="flex items-start justify-between gap-4">
+                                                <div>
+                                                    {plan.badge && (
+                                                        <span className="mb-2 inline-flex border border-accent-dark px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-accent-dark">
+                                                            {plan.badge}
+                                                        </span>
+                                                    )}
+                                                    <h2 className="text-xl font-extrabold">{plan.name}</h2>
+                                                    <p className="mt-1 text-sm leading-relaxed text-muted">
+                                                        {plan.fit}
+                                                    </p>
+                                                </div>
+                                                <div className="shrink-0 text-right">
+                                                    {plan.price ? (
+                                                        <>
+                                                            <span className="font-editorial text-3xl">
+                                                                {annual
+                                                                    ? plan.price.annual
+                                                                    : plan.price.monthly}
+                                                            </span>
+                                                            <span className="ml-1 font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
+                                                                {annual ? "/ yr" : "/ mo"}
+                                                            </span>
+                                                        </>
+                                                    ) : (
+                                                        <span className="font-editorial text-2xl">
+                                                            Tailored
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <a
+                                                href={getPlanHref(plan)}
+                                                onClick={(e) => handlePlanAction(e, plan)}
+                                                className={`mt-4 block border px-3 py-3 text-center font-mono text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors ${
+                                                    plan.highlight
+                                                        ? "border-ink bg-ink text-paper hover:border-accent-dark hover:bg-accent-dark"
+                                                        : "border-line text-ink hover:border-accent-dark hover:text-accent-dark"
+                                                }`}
+                                            >
+                                                {getPlanCtaLabel(plan)}
+                                            </a>
+                                            <dl className="mt-5 divide-y divide-line border-t border-line text-sm">
+                                                {features.map((feature) => (
+                                                    <div
+                                                        key={feature.label}
+                                                        className="flex items-start justify-between gap-4 py-3"
+                                                    >
+                                                        <dt className="font-medium">{feature.label}</dt>
+                                                        <dd className="shrink-0 text-right">
+                                                            <Cell value={feature.values[planIndex]} />
+                                                        </dd>
+                                                    </div>
+                                                ))}
+                                            </dl>
+                                            {plan.name === "Free" ? (
+                                                <p className="mt-3 font-mono text-[10px] leading-relaxed text-muted">
+                                                    Free forever. No credit card required.
+                                                </p>
+                                            ) : plan.priceIds ? (
+                                                <p className="mt-3 font-mono text-[10px] leading-relaxed text-muted">
+                                                    Checkout by Paddle ·{" "}
+                                                    <a
+                                                        href={route("refund-policy")}
+                                                        className="underline underline-offset-2 hover:text-accent-dark"
+                                                    >
+                                                        Refund policy
+                                                    </a>
+                                                </p>
+                                            ) : null}
+                                        </article>
+                                    )
+                                })}
                         </div>
                         <p className="mt-6 inline-flex items-center gap-3 border border-accent-dark bg-accent-dark/10 px-4 py-3 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-accent-dark">
                             <span aria-hidden="true">★</span>

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HyperlinkController;
 use App\Http\Controllers\LogoController;
 use App\Http\Controllers\ProfileController;
@@ -12,7 +13,7 @@ use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'Welcome')->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('/dashboard', 'Dashboard')->name('dashboard');
@@ -36,7 +37,10 @@ require __DIR__ . '/auth.php';
 
 Route::inertia('/documentation/api', 'ApiDocumentation')->name('documentation.api');
 Route::inertia('/founder', 'Founder')->name('founder');
+Route::inertia('/safety', 'Safety')->name('safety');
 Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('pricing');
+Route::inertia('/vs/bitly', 'Comparisons/Show', ['competitor' => 'Bitly'])->name('comparison.bitly');
+Route::inertia('/vs/tinyurl', 'Comparisons/Show', ['competitor' => 'TinyURL'])->name('comparison.tinyurl');
 Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
 Route::inertia('/services/qr-code-logo', 'Services/QrCodeLogo')->name('services.qr-code-logo');
 Route::inertia('/services/link-tags', 'Services/LinkTags')->name('services.link-tags');

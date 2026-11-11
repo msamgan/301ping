@@ -106,6 +106,24 @@ class HandleInertiaRequests extends Middleware
      */
     private function structuredData(string $routeName, array $seo, string $baseUrl, string $canonicalUrl, string $image): ?array
     {
+        if (isset($seo['faqs'])) {
+            return [
+                '@context' => 'https://schema.org',
+                '@type' => 'FAQPage',
+                'mainEntity' => array_map(
+                    fn (array $faq): array => [
+                        '@type' => 'Question',
+                        'name' => $faq['question'],
+                        'acceptedAnswer' => [
+                            '@type' => 'Answer',
+                            'text' => $faq['answer'],
+                        ],
+                    ],
+                    $seo['faqs'],
+                ),
+            ];
+        }
+
         if ($routeName === 'home') {
             return [
                 '@context' => 'https://schema.org',
@@ -129,9 +147,21 @@ class HandleInertiaRequests extends Middleware
                         'operatingSystem' => 'Web',
                         'description' => 'A URL shortener for creating and managing short links, custom URLs, click analytics, and branded QR codes.',
                         'offers' => [
-                            '@type' => 'Offer',
-                            'price' => '0',
+                            '@type' => 'AggregateOffer',
+                            'lowPrice' => '0',
+                            'highPrice' => '10',
                             'priceCurrency' => 'USD',
+                            'offerCount' => '3',
+                            'offers' => array_map(
+                                fn (string $name, string $price): array => [
+                                    '@type' => 'Offer',
+                                    'name' => $name,
+                                    'price' => $price,
+                                    'priceCurrency' => 'USD',
+                                ],
+                                ['Free', 'Redirect', 'Redirect Plus'],
+                                ['0', '5', '10'],
+                            ),
                         ],
                     ],
                 ],
@@ -139,8 +169,7 @@ class HandleInertiaRequests extends Middleware
         }
 
         if ($routeName === 'pricing') {
-            return [
-                '@context' => 'https://schema.org',
+            $product = [
                 '@type' => 'Product',
                 'name' => '301 Ping',
                 'description' => $seo['description'],
@@ -160,6 +189,26 @@ class HandleInertiaRequests extends Middleware
                     ['Free', 'Redirect', 'Redirect Plus'],
                     ['0', '5', '10'],
                 ),
+            ];
+
+            return [
+                '@context' => 'https://schema.org',
+                '@graph' => [
+                    $product,
+                    [
+                        '@type' => 'FAQPage',
+                        'mainEntity' => [
+                            [
+                                '@type' => 'Question',
+                                'name' => 'Do 301 Ping short links expire?',
+                                'acceptedAnswer' => [
+                                    '@type' => 'Answer',
+                                    'text' => "We don't set an expiry date on short links. For links saved to your account, export the short URLs, destinations, and tags as a CSV from your Links page. You can also change a saved link's destination without changing its short URL when your plan includes destination edits.",
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ];
         }
 

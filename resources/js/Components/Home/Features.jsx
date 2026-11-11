@@ -43,6 +43,15 @@ export default function Features() {
                     Make, manage, and measure the links you share.
                 </Reveal>
 
+                <figure className="mb-12 md:mb-16">
+                    <img
+                        src="/images/analytics-dashboard.png"
+                        alt="301ping analytics dashboard showing visit totals, daily visits, devices, countries, browsers, operating systems, languages, and referrers."
+                        className="block h-auto w-full border border-line"
+                        loading="lazy"
+                        decoding="async"
+                    />
+                </figure>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-line divide-y divide-line sm:divide-y-0">
                     {FEATURES.map((feature, index) => (
                         <Reveal
