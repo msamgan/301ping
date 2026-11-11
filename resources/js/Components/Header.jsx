@@ -34,6 +34,11 @@ export default function Header({ isAuthenticated = false, user = null }) {
                     label: "Link tags"
                 },
                 {
+                    key: "services.link-analytics",
+                    href: route("services.link-analytics"),
+                    label: "Link analytics"
+                },
+                {
                     key: "services.custom-links",
                     href: route("services.custom-links"),
                     label: "Custom links"
