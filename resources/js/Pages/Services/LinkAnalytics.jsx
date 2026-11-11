@@ -51,14 +51,12 @@ const benefits = [
     {
         number: "02",
         title: "Spot trends over time",
-        description:
-            "Use the daily visit chart for the last 30 days to see when a link is getting attention."
+        description: "Use the daily visit chart for the last 30 days to see when a link is getting attention."
     },
     {
         number: "03",
         title: "Learn about your audience",
-        description:
-            "Explore country, device, browser, operating system, language, and referrer breakdowns."
+        description: "Explore country, device, browser, operating system, language, and referrer breakdowns."
     },
     {
         number: "04",
@@ -121,11 +119,7 @@ function AnalyticsPreview() {
                         aria-label="Illustrative bar chart showing daily visits over 30 days"
                     >
                         {dailyVisits.map((height, index) => (
-                            <div
-                                key={index}
-                                className="flex-1 bg-accent"
-                                style={{ height: `${height}%` }}
-                            />
+                            <div key={index} className="flex-1 bg-accent" style={{ height: `${height}%` }} />
                         ))}
                     </div>
                 </div>
@@ -256,8 +250,8 @@ export default function LinkAnalytics() {
                                 </h2>
                             </div>
                             <p className="max-w-sm text-sm leading-relaxed text-muted">
-                                Explore the patterns around a link, from where visits come from to
-                                the technology visitors use.
+                                Explore the patterns around a link, from where visits come from to the
+                                technology visitors use.
                             </p>
                         </div>
                         <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
@@ -288,7 +282,8 @@ export default function LinkAnalytics() {
                                 {
                                     number: "02",
                                     title: "Share it anywhere",
-                                    description: "Use the same short link in your campaigns, posts, or QR codes."
+                                    description:
+                                        "Use the same short link in your campaigns, posts, or QR codes."
                                 },
                                 {
                                     number: "03",
@@ -323,8 +318,8 @@ export default function LinkAnalytics() {
                                 Know which links are getting attention.
                             </h2>
                             <p className="mt-4 max-w-xl text-sm leading-relaxed text-paper/60">
-                                Link analytics are available on paid plans. Find the plan that fits how
-                                you share.
+                                Link analytics are available on paid plans. Find the plan that fits how you
+                                share.
                             </p>
                         </div>
                         <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
