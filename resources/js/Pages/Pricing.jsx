@@ -37,7 +37,8 @@ const buildPlans = (plansData = {}) => [
         },
         cta: "Choose Plus",
         href: "register",
-        highlight: true
+        highlight: true,
+        badge: "Most popular"
     },
     {
         name: "Talk to us",
@@ -323,6 +324,13 @@ export default function Pricing({ plans: serverPlans = null }) {
                                                         plan.highlight ? "bg-ink/5" : ""
                                                     }`}
                                                 >
+                                                    <div className="mb-1 min-h-5">
+                                                        {plan.badge ? (
+                                                            <span className="inline-flex border border-accent-dark px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-accent-dark">
+                                                                {plan.badge}
+                                                            </span>
+                                                        ) : null}
+                                                    </div>
                                                     <div className="text-xl font-extrabold">{plan.name}</div>
                                                     <div className="mt-3 min-h-[3rem]">
                                                         {plan.price ? (
@@ -400,6 +408,9 @@ export default function Pricing({ plans: serverPlans = null }) {
                         <p className="mt-6 inline-flex items-center gap-3 border border-accent-dark bg-accent-dark/10 px-4 py-3 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-accent-dark">
                             <span aria-hidden="true">★</span>
                             Annual billing: two months free
+                        </p>
+                        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
+                            If Bitly wanted $348/year, Redirect is $50/year ($5/month).
                         </p>
                     </div>
                 </section>
