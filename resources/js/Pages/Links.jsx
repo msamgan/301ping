@@ -309,6 +309,17 @@ export default function Links({ auth }) {
                         </div>
                     ) : (
                         <>
+                            <div className="mb-6 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
+                                    Export your short URLs, destinations, and tags.
+                                </p>
+                                <a
+                                    href={route("service.links.export")}
+                                    className="inline-flex border border-ink bg-ink px-4 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-paper transition-colors hover:border-accent-dark hover:bg-accent-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-dark"
+                                >
+                                    Export all links (CSV)
+                                </a>
+                            </div>
                             <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
                                 03 / Link Data
                             </p>

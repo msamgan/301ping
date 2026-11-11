@@ -83,8 +83,8 @@ const features = [
     },
     {
         label: "Custom domain",
-        description: "Use your own domain for branded short links.",
-        values: ["Coming soon", "Coming soon", "Coming soon", "Coming soon"]
+        description: "Custom domains are not available.",
+        values: ["Not available", "Not available", "Not available", "Not available"]
     },
     {
         label: "Rule-based redirection",
@@ -428,9 +428,10 @@ export default function Pricing({ plans: serverPlans = null }) {
                                 Do 301 Ping short links expire?
                             </summary>
                             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
-                                301 Ping does not set an expiration date on short links. For links saved to your
-                                account, you can change the destination without changing the short URL when your
-                                plan includes destination edits.
+                                We don&apos;t set an expiry date on short links. For links saved to your
+                                account, export the short URLs, destinations, and tags as a CSV from your Links
+                                page. You can also change a saved link&apos;s destination without changing its
+                                short URL when your plan includes destination edits.
                             </p>
                         </details>
                     </div>

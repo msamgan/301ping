@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Random\RandomException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class HyperlinkController extends Controller
 {
@@ -36,6 +37,53 @@ class HyperlinkController extends Controller
     public function links(Request $request): JsonResponse
     {
         return response()->json($this->linksPayload($request));
+    }
+
+    public function export(Request $request): StreamedResponse
+    {
+        $userId = $request->user()->getKey();
+
+        return response()->streamDownload(function () use ($userId): void {
+            $stream = fopen('php://output', 'w');
+
+            if ($stream === false) {
+                throw new \RuntimeException('Unable to open CSV output stream.');
+            }
+
+            fputcsv($stream, ['Short URL', 'Destination URL', 'Tags', 'Visits', 'Created at'], ',', '"', '');
+
+            Hyperlink::query()
+                ->where('user_id', $userId)
+                ->with('tags')
+                ->orderBy('created_at')
+                ->orderBy('id')
+                ->chunk(500, function ($links) use ($stream): void {
+                    foreach ($links as $link) {
+                        $values = [
+                            url('/' . $link->shot_slug),
+                            $link->url,
+                            $link->tags->pluck('name')->implode(' | '),
+                            (string) $link->visits,
+                            $link->created_at?->toIso8601String() ?? '',
+                        ];
+
+                        fputcsv(
+                            $stream,
+                            array_map(fn (string $value): string => $this->protectCsvValue($value), $values),
+                            ',',
+                            '"',
+                            ''
+                        );
+                    }
+                });
+
+            fclose($stream);
+        }, '301-ping-links.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+    }
+
+    private function protectCsvValue(string $value): string
+    {
+        return preg_match('/^[\x00-\x20]*[=+\-@]/', $value) === 1 ? "'" . $value : $value;
     }
 
     private function linksPayload(Request $request): array

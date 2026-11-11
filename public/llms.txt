@@ -5,7 +5,7 @@
 ## Main capabilities
 
 - Shorten HTTP/HTTPS destinations, redirect visitors, count visits, and reuse an existing short link for a destination already shortened.
-- Manage links with search, tag filtering, pagination, copy, QR-code downloads, and deletion. View visit totals and each link's most recent visit.
+- Manage links with search, tag filtering, pagination, copy, QR-code downloads, CSV export of short URLs, destinations, and tags, and deletion. View visit totals and each link's most recent visit.
 - Create and manage tags; view dashboard link and visit totals.
 - Shorten the current page with the [Chrome extension](https://chromewebstore.google.com/detail/ms0org-url-shortener/goaddbeloaeledjpkaankdiglhnmpdld) or [Firefox add-on](https://addons.mozilla.org/en-US/firefox/addon/301ping-url-shortener/).
 - Create links through `POST /api/shorten` using a bearer access token.
@@ -14,7 +14,7 @@
   - **Redirect** — $5/month or $50/year; 10 custom links, 10 destination edits, detailed analytics, 100 short links per day via API and extension, 1 custom QR-code logo, broken-destination monitoring twice daily.
   - **Redirect Plus** — $10/month or $100/year; 25 custom links, 20 destination edits, detailed analytics, 300 short links per day via API and extension, 5 custom QR-code logos, broken-destination monitoring every 2 hours, and dedicated support.
   - **Enterprise** — tailored pricing and tailored allowances for custom links, destination edits, analytics, daily short links, custom QR logos, broken-destination monitoring, and dedicated support.
-  - Custom domains and rule-based redirection are marked “Coming soon” for every plan in the pricing table.
+  - Custom domains are not available. Rule-based redirection is marked “Coming soon” for every plan in the pricing table.
 
 ## Documentation
 

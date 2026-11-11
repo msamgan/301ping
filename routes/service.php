@@ -16,6 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/api-token', [DashboardController::class, 'token'])->name('service.api-token');
 
     Route::controller(HyperlinkController::class)->group(function () {
+        Route::get('/links/export', 'export')->name('service.links.export');
         Route::get('/links', 'links')->name('service.links');
         Route::post('/regenerate-token', 'regenerateToken')->name('service.regenerate-token');
         Route::delete('/links/{hyperlink}', 'destroy')->name('links.destroy');
