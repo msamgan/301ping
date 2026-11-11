@@ -4,7 +4,7 @@ use App\Actions\BuildDestinationUrl;
 use Illuminate\Http\Request;
 
 test('it returns original destination URL when incoming request has no query parameters', function () {
-    $action = new BuildDestinationUrl();
+    $action = new BuildDestinationUrl;
     $request = Request::create('https://short.ly/abc');
 
     $result = $action->handle('https://example.com/target', $request);
@@ -13,7 +13,7 @@ test('it returns original destination URL when incoming request has no query par
 });
 
 test('it appends incoming query parameters to destination URL without existing query', function () {
-    $action = new BuildDestinationUrl();
+    $action = new BuildDestinationUrl;
     $request = Request::create('https://short.ly/abc?utm_source=twitter&ref=123');
 
     $result = $action->handle('https://example.com/target', $request);
@@ -22,7 +22,7 @@ test('it appends incoming query parameters to destination URL without existing q
 });
 
 test('it merges incoming query parameters with existing destination query parameters', function () {
-    $action = new BuildDestinationUrl();
+    $action = new BuildDestinationUrl;
     $request = Request::create('https://short.ly/abc?utm_source=newsletter&tag=laravel');
 
     $result = $action->handle('https://example.com/target?existing=1&tag=php', $request);
@@ -31,7 +31,7 @@ test('it merges incoming query parameters with existing destination query parame
 });
 
 test('it preserves URL fragment when appending query parameters', function () {
-    $action = new BuildDestinationUrl();
+    $action = new BuildDestinationUrl;
     $request = Request::create('https://short.ly/abc?v=2');
 
     $result = $action->handle('https://example.com/docs#installation', $request);
@@ -40,7 +40,7 @@ test('it preserves URL fragment when appending query parameters', function () {
 });
 
 test('it preserves both query and fragment when merging query parameters', function () {
-    $action = new BuildDestinationUrl();
+    $action = new BuildDestinationUrl;
     $request = Request::create('https://short.ly/abc?page=2');
 
     $result = $action->handle('https://example.com/search?q=test#results', $request);
@@ -49,7 +49,7 @@ test('it preserves both query and fragment when merging query parameters', funct
 });
 
 test('it is invokable', function () {
-    $action = new BuildDestinationUrl();
+    $action = new BuildDestinationUrl;
     $request = Request::create('https://short.ly/abc?foo=bar');
 
     $result = $action('https://example.com/page', $request);

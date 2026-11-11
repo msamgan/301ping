@@ -102,9 +102,27 @@ export default function Dashboard({ auth }) {
             user={auth.user}
             header={
                 <div className="flex items-center justify-between gap-4">
-                    <div>
-                        <SectionLabel>Your workspace</SectionLabel>
-                        <h2 className="mt-1 font-editorial text-3xl text-ink">Dashboard</h2>
+                    <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center border border-line bg-paper">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 text-ink"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M3 3v18h18M8 16v-3m4 3V8m4 8v-5"
+                                />
+                            </svg>
+                        </div>
+                        <div>
+                            <SectionLabel>Your workspace</SectionLabel>
+                            <h2 className="mt-1 font-editorial text-3xl text-ink">Dashboard</h2>
+                        </div>
                     </div>
                     <span className="hidden font-mono text-[10px] uppercase tracking-[0.16em] text-muted sm:block">
                         301p.ing / overview

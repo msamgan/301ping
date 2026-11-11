@@ -16,11 +16,11 @@ This is an editorial feature comparison, not a laboratory speed test or a claim 
 
 ## URL shortener comparison at a glance
 
-| Rank | URL shortener | Best for | Standout strength | Main trade-off |
-|---|---|---|---|---|
-| 1 | Bitly | Marketing teams and organizations | Broad link-management and campaign features | More platform than many people need; plan limits and features vary |
-| 2 | 301 Ping | Individuals and teams who want practical link tools | Shortening, tags, QR codes, visit counts, browser extensions, and API access in one focused workflow | Insights are intentionally simpler than a full analytics suite |
-| 3 | TinyURL | Occasional, straightforward shortening | Familiar service with a simple core use case | Advanced management and analytics depend on its current plans |
+| Rank | URL shortener | Best for                                            | Standout strength                                                                                    | Main trade-off                                                     |
+| ---- | ------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| 1    | Bitly         | Marketing teams and organizations                   | Broad link-management and campaign features                                                          | More platform than many people need; plan limits and features vary |
+| 2    | 301 Ping      | Individuals and teams who want practical link tools | Shortening, tags, QR codes, visit counts, browser extensions, and API access in one focused workflow | Insights are intentionally simpler than a full analytics suite     |
+| 3    | TinyURL       | Occasional, straightforward shortening              | Familiar service with a simple core use case                                                         | Advanced management and analytics depend on its current plans      |
 
 ## 1. Bitly: best for a broad marketing platform
 

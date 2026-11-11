@@ -57,7 +57,7 @@ export default function UrlShortener({ onSuccess } = {}) {
             <form onSubmit={handleSubmit} noValidate>
                 <label
                     htmlFor="url"
-                    className="block font-mono text-[11px] uppercase tracking-[0.18em] text-muted mb-3"
+                    className="mb-3 block font-mono text-[11px] uppercase tracking-[0.18em] text-ink"
                 >
                     Paste URL
                 </label>

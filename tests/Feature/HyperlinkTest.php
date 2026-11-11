@@ -236,6 +236,45 @@ test('authenticated user can view their links ordered by created_at descending',
         ->assertJsonPath('links.data.1.health', Health::Healthy->value);
 });
 
+test('authenticated user can export their links and tags as CSV', function () {
+    $user = User::factory()->create();
+    $link = Hyperlink::factory()->create([
+        'user_id' => $user->id,
+        'url' => 'https://example.com/launch',
+        'shot_slug' => 'launch-link',
+        'visits' => 12,
+    ]);
+    $tag = Tag::factory()->create([
+        'user_id' => $user->id,
+        'name' => '=HYPERLINK("https://example.com","launch")',
+    ]);
+    $link->tags()->attach($tag);
+
+    Hyperlink::factory()->create([
+        'user_id' => User::factory()->create()->id,
+        'url' => 'https://private.example.com/not-yours',
+    ]);
+
+    $response = $this->actingAs($user)->get(route('service.links.export'));
+
+    $response->assertOk()
+        ->assertDownload('301-ping-links.csv');
+
+    $csv = $response->streamedContent();
+
+    expect($csv)
+        ->toContain('"Short URL","Destination URL",Tags,Visits,"Created at"')
+        ->toContain('https://example.com/launch')
+        ->toContain('/launch-link')
+        ->toContain("'=HYPERLINK")
+        ->not->toContain('private.example.com');
+});
+
+test('guest cannot export links', function () {
+    $this->get(route('service.links.export'))
+        ->assertRedirect('/login');
+});
+
 test('authenticated user can view link details using its short slug', function () {
     $user = User::factory()->create();
     $link = Hyperlink::factory()->create([

@@ -2,34 +2,34 @@ import Reveal from "@/Components/Home/Reveal"
 
 const FEATURES = [
     {
-        title: "Lightning fast",
-        body: "Instantly create short links with our optimized high-performance engine."
+        title: "Make a link you can share",
+        body: "Paste a long URL, shorten it, and copy it without creating an account."
     },
     {
-        title: "API access",
-        body: "Integrate our URL shortening service directly into your applications with our developer-friendly API."
+        title: "Shorten links from your app",
+        body: "Use the API to make a short link from your own app."
     },
     {
-        title: "Secure & reliable",
-        body: "Enterprise-grade security keeps your links protected and available."
+        title: "Know which links get visits",
+        body: "See click counts and analytics for the links you share."
     },
     {
-        title: "Analytics",
-        body: "Detailed insights and click tracking to understand your audience."
+        title: "Find links by campaign or client",
+        body: "Tag links by launch, channel, or client instead of digging through one long list."
     },
     {
-        title: "Link tags",
-        body: "Keep related short links organized with simple, reusable tags."
+        title: "Keep the same short URL when a page moves",
+        body: "Change a saved link's destination without changing its short URL. Edit limits depend on your plan."
     },
     {
-        title: "Query param passthrough",
-        body: "Query parameters added to your short link are automatically preserved in the destination URL."
+        title: "Keep tracking with your link",
+        body: "Tracking parameters pass through to the destination, so your campaign links keep their data."
     }
 ]
 
 export default function Features() {
     return (
-        <section className="border-b border-line bg-paper" aria-labelledby="features-heading">
+        <section className="border-b border-line bg-paper" aria-labelledby="features-heading" id={"features"}>
             <div className="mx-auto max-w-grid px-6 md:px-10 lg:px-16 py-20 md:py-28">
                 <Reveal className="flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.18em] text-muted mb-8">
                     <span>03 / Capabilities</span>
@@ -40,7 +40,7 @@ export default function Features() {
                     id="features-heading"
                     className="font-grotesk font-extrabold text-ink text-4xl sm:text-5xl leading-[1.05] max-w-3xl mb-14 md:mb-20"
                 >
-                    Built for the essentials, nothing else.
+                    Make, manage, and measure the links you share.
                 </Reveal>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-line divide-y divide-line sm:divide-y-0">

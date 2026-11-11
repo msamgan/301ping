@@ -7,7 +7,9 @@ import BrowserExtension from "@/Components/Home/BrowserExtension"
 import Features from "@/Components/Home/Features"
 import QRCodeFeature from "@/Components/Home/QRCodeFeature"
 import Process from "@/Components/Home/Process"
+import Testimonial from "@/Components/Home/Testimonial"
 import AccountPanel from "@/Components/Home/AccountPanel"
+import LinkPromise from "@/Components/Home/LinkPromise"
 
 /**
  * Homepage design system (editorial / Swiss / technical utility):
@@ -53,6 +55,8 @@ export default function Welcome() {
                 <Features />
                 <QRCodeFeature />
                 <Process />
+                <LinkPromise />
+                <Testimonial />
                 <AccountPanel isAuthenticated={isAuthenticated} user={user} />
             </main>
 

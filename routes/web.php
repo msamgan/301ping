@@ -35,10 +35,12 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
 require __DIR__ . '/auth.php';
 
 Route::inertia('/documentation/api', 'ApiDocumentation')->name('documentation.api');
+Route::inertia('/founder', 'Founder')->name('founder');
 Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('pricing');
 Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
 Route::inertia('/services/qr-code-logo', 'Services/QrCodeLogo')->name('services.qr-code-logo');
 Route::inertia('/services/link-tags', 'Services/LinkTags')->name('services.link-tags');
+Route::inertia('/services/link-analytics', 'Services/LinkAnalytics')->name('services.link-analytics');
 Route::inertia('/services/custom-links', 'Services/CustomLinks')->name('services.custom-links');
 Route::inertia('/services/broken-destinations', 'Services/BrokenDestinations')->name('services.broken-destinations');
 Route::inertia('/services/edit-destination', 'Services/EditDestination')->name('services.edit-destination');

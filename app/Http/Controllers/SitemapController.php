@@ -15,10 +15,12 @@ class SitemapController extends Controller
         $pageRoutes = [
             'home',
             'pricing',
+            'founder',
             'blog.index',
             'documentation.api',
             'services.qr-code-logo',
             'services.link-tags',
+            'services.link-analytics',
             'services.custom-links',
             'services.broken-destinations',
             'services.edit-destination',

@@ -37,7 +37,8 @@ const buildPlans = (plansData = {}) => [
         },
         cta: "Choose Plus",
         href: "register",
-        highlight: true
+        highlight: true,
+        badge: "Most popular"
     },
     {
         name: "Talk to us",
@@ -50,15 +51,51 @@ const buildPlans = (plansData = {}) => [
 
 // One value per plan, in the same order as `plans`. true/false render as a check/dash.
 const features = [
-    { label: "Custom links", values: ["3", "10", "25", "Tailored"] },
-    { label: "Edit destination", values: ["1", "10", "20", "Tailored"] },
-    { label: "Analytics", values: ["Visits only", "Detailed", "Detailed", "Tailored"] },
-    { label: "Short links per day (API & extension)", values: ["40", "100", "300", "Tailored"] },
-    { label: "Custom logo in QR code", values: [false, "1", "5", "Tailored"] },
-    { label: "Monitor broken destinations", values: [false, "Twice a day", "Every 2 hours", "Tailored"] },
-    { label: "Custom domain", values: ["Coming soon", "Coming soon", "Coming soon", "Coming soon"] },
-    { label: "Rule-based redirection", values: ["Coming soon", "Coming soon", "Coming soon", "Coming soon"] },
-    { label: "Dedicated support", values: [false, false, true, "Tailored"] }
+    {
+        label: "Custom links",
+        description: "Choose memorable, branded slugs for your short URLs.",
+        values: ["3", "10", "25", "Tailored"]
+    },
+    {
+        label: "Edit destination",
+        description: "Change where a short link sends visitors without changing its URL.",
+        values: ["1", "10", "20", "Tailored"]
+    },
+    {
+        label: "Analytics",
+        description: "See visits and understand how people use your links.",
+        values: ["Visits only", "Detailed", "Detailed", "Tailored"]
+    },
+    {
+        label: "Short links per day (API & extension)",
+        description: "Daily link creation allowance through the API and browser extension.",
+        values: ["40", "100", "300", "Tailored"]
+    },
+    {
+        label: "Custom logo in QR code",
+        description: "Add your logo to QR codes for a consistent brand experience.",
+        values: [false, "1", "5", "Tailored"]
+    },
+    {
+        label: "Monitor broken destinations",
+        description: "Check linked pages regularly and catch unavailable destinations.",
+        values: [false, "Twice a day", "Every 2 hours", "Tailored"]
+    },
+    {
+        label: "Custom domain",
+        description: "Custom domains are not available.",
+        values: ["Not available", "Not available", "Not available", "Not available"]
+    },
+    {
+        label: "Rule-based redirection",
+        description: "Send visitors to different destinations based on rules.",
+        values: ["Coming soon", "Coming soon", "Coming soon", "Coming soon"]
+    },
+    {
+        label: "Dedicated support",
+        description: "Get direct help from the 301 Ping support team.",
+        values: [false, false, true, "Tailored"]
+    }
 ]
 
 function Cell({ value }) {
@@ -221,6 +258,10 @@ export default function Pricing({ plans: serverPlans = null }) {
                         <Reveal delay={80} className="mt-6 max-w-md text-lg text-muted">
                             Start free. Upgrade when your links need more.
                         </Reveal>
+                        <Reveal delay={120} className="mt-3 max-w-xl text-sm text-muted">
+                            The free tier is $0. Self-serve plan prices and limits are listed below before you
+                            choose; Enterprise pricing is tailored.
+                        </Reveal>
 
                         <div className="mt-8 inline-flex border border-line font-mono text-[11px] uppercase tracking-[0.16em]">
                             {[
@@ -283,6 +324,13 @@ export default function Pricing({ plans: serverPlans = null }) {
                                                         plan.highlight ? "bg-ink/5" : ""
                                                     }`}
                                                 >
+                                                    <div className="mb-1 min-h-5">
+                                                        {plan.badge ? (
+                                                            <span className="inline-flex border border-accent-dark px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-accent-dark">
+                                                                {plan.badge}
+                                                            </span>
+                                                        ) : null}
+                                                    </div>
                                                     <div className="text-xl font-extrabold">{plan.name}</div>
                                                     <div className="mt-3 min-h-[3rem]">
                                                         {plan.price ? (
@@ -315,6 +363,21 @@ export default function Pricing({ plans: serverPlans = null }) {
                                                     >
                                                         {getPlanCtaLabel(plan)}
                                                     </a>
+                                                    {plan.name === "Free" ? (
+                                                        <p className="mt-2 text-center font-mono text-[10px] leading-relaxed text-muted">
+                                                            Free forever. No CC required.
+                                                        </p>
+                                                    ) : plan.priceIds ? (
+                                                        <p className="mt-2 text-center font-mono text-[10px] leading-relaxed text-muted">
+                                                            Checkout by Paddle ·{" "}
+                                                            <a
+                                                                href={route("refund-policy")}
+                                                                className="underline underline-offset-2 hover:text-accent-dark"
+                                                            >
+                                                                Refund policy
+                                                            </a>
+                                                        </p>
+                                                    ) : null}
                                                 </th>
                                             )
                                         })}
@@ -323,8 +386,11 @@ export default function Pricing({ plans: serverPlans = null }) {
                                 <tbody className="text-sm">
                                     {features.map((feature) => (
                                         <tr key={feature.label} className="border-b border-line">
-                                            <th scope="row" className="p-4 font-semibold">
-                                                {feature.label}
+                                            <th scope="row" className="p-4 text-left align-top">
+                                                <div className="font-semibold">{feature.label}</div>
+                                                <p className="mt-1 text-xs font-normal leading-relaxed text-muted">
+                                                    {feature.description}
+                                                </p>
                                             </th>
                                             {feature.values.map((value, index) => (
                                                 <td
@@ -343,6 +409,31 @@ export default function Pricing({ plans: serverPlans = null }) {
                             <span aria-hidden="true">★</span>
                             Annual billing: two months free
                         </p>
+                        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
+                            If Bitly wanted $348/year, Redirect is $50/year ($5/month).
+                        </p>
+                    </div>
+                </section>
+
+                <section className="border-b border-line" aria-labelledby="link-lifespan-heading">
+                    <div className="mx-auto max-w-grid px-6 py-12 md:px-10 lg:px-16">
+                        <h2
+                            id="link-lifespan-heading"
+                            className="font-editorial text-4xl leading-[1.05] sm:text-5xl"
+                        >
+                            Link lifespan.
+                        </h2>
+                        <details className="mt-8 border-t border-line py-6">
+                            <summary className="cursor-pointer font-grotesk font-bold text-ink">
+                                Do 301 Ping short links expire?
+                            </summary>
+                            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
+                                We don&apos;t set an expiry date on short links. For links saved to your
+                                account, export the short URLs, destinations, and tags as a CSV from your Links
+                                page. You can also change a saved link&apos;s destination without changing its
+                                short URL when your plan includes destination edits.
+                            </p>
+                        </details>
                     </div>
                 </section>
             </main>
