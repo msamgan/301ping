@@ -221,6 +221,10 @@ export default function Pricing({ plans: serverPlans = null }) {
                         <Reveal delay={80} className="mt-6 max-w-md text-lg text-muted">
                             Start free. Upgrade when your links need more.
                         </Reveal>
+                        <Reveal delay={120} className="mt-3 max-w-xl text-sm text-muted">
+                            The free tier is $0. Self-serve plan prices and limits are listed below before you choose;
+                            Enterprise pricing is tailored.
+                        </Reveal>
 
                         <div className="mt-8 inline-flex border border-line font-mono text-[11px] uppercase tracking-[0.16em]">
                             {[
@@ -343,6 +347,27 @@ export default function Pricing({ plans: serverPlans = null }) {
                             <span aria-hidden="true">★</span>
                             Annual billing: two months free
                         </p>
+                    </div>
+                </section>
+
+                <section className="border-b border-line" aria-labelledby="link-lifespan-heading">
+                    <div className="mx-auto max-w-grid px-6 py-12 md:px-10 lg:px-16">
+                        <h2
+                            id="link-lifespan-heading"
+                            className="font-editorial text-4xl leading-[1.05] sm:text-5xl"
+                        >
+                            Link lifespan.
+                        </h2>
+                        <details className="mt-8 border-t border-line py-6">
+                            <summary className="cursor-pointer font-grotesk font-bold text-ink">
+                                Do 301 Ping short links expire?
+                            </summary>
+                            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
+                                301 Ping does not set an expiration date on short links. For links saved to your
+                                account, you can change the destination without changing the short URL when your
+                                plan includes destination edits.
+                            </p>
+                        </details>
                     </div>
                 </section>
             </main>

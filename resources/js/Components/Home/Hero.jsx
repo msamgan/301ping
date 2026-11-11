@@ -6,7 +6,7 @@ export default function Hero() {
         <section className="border-b border-line bg-paper" aria-labelledby="hero-heading">
             <div className="mx-auto max-w-grid px-6 md:px-10 lg:px-16 pt-16 md:pt-20 pb-20 md:pb-28">
                 <Reveal className="flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.18em] text-muted mb-8 md:mb-12">
-                    <span>01 / URL Utility</span>
+                    <span>For marketers, creators, and developers</span>
                     <span className="hidden sm:inline">301p.ing</span>
                 </Reveal>
 
@@ -26,6 +26,9 @@ export default function Hero() {
                             Paste a long URL below to create a short, shareable link in an instant.
                         </p>
                         <UrlShortener />
+                        <p className="mt-4 font-mono text-xs text-muted">
+                            No expiration date is set on your short links.
+                        </p>
                     </Reveal>
                 </div>
             </div>
