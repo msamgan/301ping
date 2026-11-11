@@ -1,5 +1,7 @@
 <?php
 
+use Inertia\Testing\AssertableInertia;
+
 it('renders search and social metadata in the homepage response', function () {
     $html = $this->get('/')->assertOk()->getContent();
 
@@ -9,6 +11,9 @@ it('renders search and social metadata in the homepage response', function () {
         ->toContain('property="og:title"')
         ->toContain('name="twitter:card"')
         ->toContain('"@type":"Organization"')
+        ->toContain('"@type":"AggregateOffer"')
+        ->toContain('"price":"5"')
+        ->toContain('"price":"10"')
         ->toContain('https://addons.mozilla.org/en-US/firefox/addon/301ping-url-shortener/');
 });
 
@@ -20,7 +25,33 @@ it('renders product offers in the pricing response', function () {
         ->toContain('"@type":"Product"')
         ->toContain('"price":"0"')
         ->toContain('"price":"5"')
-        ->toContain('"price":"10"');
+        ->toContain('"price":"10"')
+        ->toContain('"@type":"FAQPage"')
+        ->toContain('Do 301 Ping short links expire?');
+});
+
+it('renders dedicated comparison pages with FAQ structured data', function (string $path, string $competitor, string $title) {
+    $html = $this->get($path)
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('Comparisons/Show')
+            ->where('competitor', $competitor))
+        ->getContent();
+
+    expect($html)
+        ->toContain($title)
+        ->toContain('"@type":"FAQPage"');
+})->with([
+    ['/vs/bitly', 'Bitly', '301 Ping vs Bitly'],
+    ['/vs/tinyurl', 'TinyURL', '301 Ping vs TinyURL'],
+]);
+
+it('renders a public link safety page', function () {
+    $this->get('/safety')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('Safety')
+            ->where('seo.title', 'Link Safety'));
 });
 
 it('renders post-specific metadata for blog articles', function () {

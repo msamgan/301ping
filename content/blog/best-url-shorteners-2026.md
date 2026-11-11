@@ -108,6 +108,8 @@ Look at the number of links you can create, whether you need custom domains, wha
 
 ## Sources and further reading
 
+- [301 Ping vs. Bitly](/vs/bitly) — compare published prices, link limits, and analytics.
+- [301 Ping vs. TinyURL](/vs/tinyurl) — compare published prices, link limits, and analytics.
 - [Bitly vs. TinyURL: Which Link Shortener Is Right for You?](https://bitly.com/blog/bitly-vs-tinyurl/) — Bitly’s own comparison article; read it as the vendor’s perspective.
 - [Bitly pricing and plan features](https://bitly.com/pages/pricing/) — current plan details and feature limits.
 - [TinyURL plans and pricing](https://tinyurl.com/app/pricing) — current plan details and feature limits.

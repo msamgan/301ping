@@ -1,6 +1,9 @@
 const footerLinks = [
     { label: "Founder", href: () => route("founder") },
+    { label: "Link safety", href: () => route("safety") },
     { label: "Pricing", href: () => route("pricing") },
+    { label: "Compare Bitly", href: () => route("comparison.bitly") },
+    { label: "Compare TinyURL", href: () => route("comparison.tinyurl") },
     { label: "Blog", href: () => route("blog.index") },
     { label: "API docs", href: () => route("documentation.api") },
     { label: "Sitemap", href: () => route("sitemap") },

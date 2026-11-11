@@ -11,6 +11,9 @@ test('sitemap lists public pages and excludes account pages', function () {
         ->assertSee('<loc>https://301p.ing/</loc>', false)
         ->assertSee('<loc>https://301p.ing/pricing</loc>', false)
         ->assertSee('<loc>https://301p.ing/founder</loc>', false)
+        ->assertSee('<loc>https://301p.ing/safety</loc>', false)
+        ->assertSee('<loc>https://301p.ing/vs/bitly</loc>', false)
+        ->assertSee('<loc>https://301p.ing/vs/tinyurl</loc>', false)
         ->assertSee('<loc>https://301p.ing/services/custom-links</loc>', false)
         ->assertDontSee('/login', false)
         ->assertDontSee('/dashboard', false);

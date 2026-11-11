@@ -22,7 +22,7 @@ import LinkPromise from "@/Components/Home/LinkPromise"
  *  - Shape: sharp corners everywhere, no cards/shadows - hierarchy comes
  *           from type, spacing, rules and a 12-column grid instead.
  */
-export default function Welcome() {
+export default function Welcome({ activeLinkCount }) {
     const { auth } = usePage().props
     const isAuthenticated = !!auth.user
     const user = auth.user
@@ -32,25 +32,11 @@ export default function Welcome() {
             <SeoHead
                 title="URL Shortener & Short Links"
                 description="Shorten long URLs into memorable links, create custom branded URLs, track clicks with detailed analytics, and turn links into branded QR codes. Manage every campaign from one simple dashboard."
-                structuredData={{
-                    "@context": "https://schema.org",
-                    "@type": "SoftwareApplication",
-                    name: "301 Ping",
-                    applicationCategory: "BusinessApplication",
-                    operatingSystem: "Web",
-                    description:
-                        "A URL shortener for creating and managing short links, custom URLs, click analytics, and branded QR codes.",
-                    offers: {
-                        "@type": "Offer",
-                        price: "0",
-                        priceCurrency: "USD"
-                    }
-                }}
             />
             <Header isAuthenticated={isAuthenticated} user={user} />
 
             <main className="bg-paper font-grotesk">
-                <Hero />
+                <Hero activeLinkCount={activeLinkCount} />
                 <BrowserExtension />
                 <Features />
                 <QRCodeFeature />

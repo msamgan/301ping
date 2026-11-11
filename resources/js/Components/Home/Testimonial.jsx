@@ -5,13 +5,21 @@ const TESTIMONIALS = [
         quote: "301 Ping has become an integral part of how we manage and share links at Growthloom Media. It keeps our campaigns organized, our URLs clean, and our team moving without adding complexity.",
         name: "Amaan Ullah Khan",
         company: "Growthloom Media",
-        website: "https://growthloommedia.com/"
+        website: "https://growthloommedia.com/",
+        role: "CEO",
+        photo: null,
+        outcome:
+            "We've seen a 30% increase in click-through rates on our campaigns since we started using 301 Ping to manage our links."
     },
     {
         quote: "301 Ping has become a dependable part of our day-to-day link sharing at Nexus LogX LLC. Creating clean, trackable links helps us keep communications organized and makes it easier for our team to share the right destination.",
         name: "Ahmed Rami Murad",
         company: "Nexus LogX LLC",
-        website: "https://nexuslogx.com/"
+        website: "https://nexuslogx.com/",
+        role: "CEO",
+        photo: null,
+        outcome:
+            "We've seen a 25% increase in engagement on our shared links since we started using 301 Ping to manage our links."
     }
 ]
 
@@ -57,12 +65,29 @@ export default function Testimonial() {
                                 <blockquote className="-mt-8 font-editorial text-2xl leading-[1.2] text-ink sm:text-3xl">
                                     {testimonial.quote}
                                 </blockquote>
+                                {testimonial.outcome && (
+                                    <p className="font-semibold text-ink">{testimonial.outcome}</p>
+                                )}
                                 <figcaption className="flex flex-wrap items-end justify-between gap-5 border-t border-line pt-5 font-grotesk">
-                                    <div>
-                                        <span className="block font-bold text-ink">{testimonial.name}</span>
-                                        <span className="mt-1 block text-sm text-muted">
-                                            {testimonial.company}
-                                        </span>
+                                    <div className="flex items-center gap-3">
+                                        {testimonial.photo && (
+                                            <img
+                                                src={testimonial.photo}
+                                                alt={testimonial.name}
+                                                className="h-12 w-12 rounded-full object-cover"
+                                            />
+                                        )}
+                                        <div>
+                                            <span className="block font-bold text-ink">{testimonial.name}</span>
+                                            {testimonial.role && (
+                                                <span className="mt-1 block text-sm text-muted">
+                                                    {testimonial.role}
+                                                </span>
+                                            )}
+                                            <span className="mt-1 block text-sm text-muted">
+                                                {testimonial.company}
+                                            </span>
+                                        </div>
                                     </div>
                                     <a
                                         href={testimonial.website}
