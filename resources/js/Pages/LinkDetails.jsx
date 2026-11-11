@@ -2,7 +2,8 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout"
 import { useToast } from "@/Components/ToastProvider"
 import LinkTags from "@/Components/LinkTags"
 import { downloadQrCodeWithLogo } from "@/Utils/qrCode"
-import { Head, Link } from "@inertiajs/react"
+import { Link } from "@inertiajs/react"
+import SeoHead from "@/Components/SeoHead"
 import axios from "axios"
 import { useState } from "react"
 
@@ -393,7 +394,11 @@ export default function LinkDetails({
                 </div>
             }
         >
-            <Head title={`Link ${link.shot_slug}`} />
+            <SeoHead
+                title={`Link ${link.shot_slug}`}
+                description={`Review click analytics for short link ${link.shot_slug}, including traffic trends, locations, browsers, operating systems, and referrers. Use these insights to understand engagement and improve campaigns.`}
+                noindex
+            />
 
             <main className="bg-paper font-grotesk text-ink">
                 <section className="border-b border-line">

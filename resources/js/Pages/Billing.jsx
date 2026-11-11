@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Head } from "@inertiajs/react"
+import SeoHead from "@/Components/SeoHead"
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout"
 import SubscriptionManager from "@/Pages/Profile/Partials/SubscriptionManager"
 
@@ -45,7 +45,11 @@ export default function Billing({ auth, invoices = [] }) {
                 </div>
             }
         >
-            <Head title="Billing" />
+            <SeoHead
+                title="Billing"
+                description="Manage your 301 Ping subscription and billing details, review available plan information, and access your invoices. Keep your account payment records organized in one place."
+                noindex
+            />
 
             <main className="bg-paper font-grotesk text-ink">
                 <div className="mx-auto max-w-grid px-6 py-8 md:px-10 md:py-12 lg:px-16">

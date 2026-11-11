@@ -60,7 +60,7 @@ export default function Privacy() {
     return (
         <LegalPage
             title="Privacy Policy"
-            description="Read the 301 Ping Privacy Policy to learn what information we collect, how we use and protect it, and how to request access or deletion."
+            description="Read the 301 Ping Privacy Policy to understand what account and usage information we collect, why we use it, how we protect it, and how you can request access, correction, or deletion."
             eyebrow="Privacy"
             heading={
                 <>

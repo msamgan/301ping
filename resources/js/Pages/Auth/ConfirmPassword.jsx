@@ -2,7 +2,8 @@ import GuestLayout from "@/Layouts/GuestLayout"
 import InputError from "@/Components/InputError"
 import InputLabel from "@/Components/InputLabel"
 import TextInput from "@/Components/TextInput"
-import { Head, useForm } from "@inertiajs/react"
+import { useForm } from "@inertiajs/react"
+import SeoHead from "@/Components/SeoHead"
 
 export default function ConfirmPassword() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -19,7 +20,11 @@ export default function ConfirmPassword() {
 
     return (
         <GuestLayout>
-            <Head title="Confirm Password" />
+            <SeoHead
+                title="Confirm Password"
+                description="Confirm your 301 Ping account password to continue to a protected action. Verifying your identity helps keep your profile, links, and account settings secure."
+                noindex
+            />
 
             <div className="mb-8 font-grotesk text-sm leading-relaxed text-muted">
                 This is a secure area of the application. Please confirm your password before continuing.

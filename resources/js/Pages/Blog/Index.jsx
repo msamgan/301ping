@@ -23,7 +23,7 @@ export default function Index({ posts }) {
         : posts
     const title = "Blog"
     const description =
-        "Guides, tips and product news about short links, QR codes and link management from 301 Ping."
+        "Explore practical guides, product updates, and ideas for managing short links, QR codes, and online campaigns. Learn how to create more useful links and keep them working."
 
     const structuredData = {
         "@context": "https://schema.org",

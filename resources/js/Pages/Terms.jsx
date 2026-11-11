@@ -70,7 +70,7 @@ export default function Terms() {
     return (
         <LegalPage
             title="Terms of Service"
-            description="Review the 301 Ping Terms of Service, including account responsibilities, short link usage, subscriptions, cancellations, and service limitations."
+            description="Review the 301 Ping Terms of Service for information about accounts, acceptable short-link use, subscriptions, cancellations, your responsibilities, and the limits that apply to our service."
             eyebrow="Terms"
             heading={
                 <>

@@ -3,7 +3,8 @@ import GuestLayout from "@/Layouts/GuestLayout"
 import InputError from "@/Components/InputError"
 import InputLabel from "@/Components/InputLabel"
 import TextInput from "@/Components/TextInput"
-import { Head, Link, useForm } from "@inertiajs/react"
+import { Link, useForm } from "@inertiajs/react"
+import SeoHead from "@/Components/SeoHead"
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -22,7 +23,11 @@ export default function Login({ status, canResetPassword }) {
 
     return (
         <>
-            <Head title="Log in" />
+            <SeoHead
+                title="Log in"
+                description="Sign in to your 301 Ping account to manage short links, review click analytics, organize tags, and update destinations. Enter your account details to continue."
+                noindex
+            />
 
             <GuestLayout>
                 {status && (

@@ -48,7 +48,7 @@ export default function RefundPolicy() {
     return (
         <LegalPage
             title="Refund Policy"
-            description="Learn how 301 Ping handles subscription billing, cancellations, refund requests, and billing errors."
+            description="Learn how 301 Ping handles subscription billing, cancellations, refund requests, and billing errors. Review the policy before purchasing a plan or contacting support about a charge."
             eyebrow="Refunds"
             heading={
                 <>

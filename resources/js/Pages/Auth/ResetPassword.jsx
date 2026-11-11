@@ -2,7 +2,8 @@ import GuestLayout from "@/Layouts/GuestLayout"
 import InputError from "@/Components/InputError"
 import InputLabel from "@/Components/InputLabel"
 import TextInput from "@/Components/TextInput"
-import { Head, useForm } from "@inertiajs/react"
+import { useForm } from "@inertiajs/react"
+import SeoHead from "@/Components/SeoHead"
 
 export default function ResetPassword({ token, email }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -22,7 +23,11 @@ export default function ResetPassword({ token, email }) {
 
     return (
         <GuestLayout>
-            <Head title="Reset Password" />
+            <SeoHead
+                title="Reset Password"
+                description="Choose a new password for your 301 Ping account using the secure reset link sent to your email. Update your credentials to restore access to your short links and account."
+                noindex
+            />
 
             <form onSubmit={submit}>
                 <div className="mb-7">

@@ -6,7 +6,8 @@ import LinkTags from "@/Components/LinkTags"
 import DangerButton from "@/Components/DangerButton"
 import SecondaryButton from "@/Components/SecondaryButton"
 import { downloadQrCodeWithLogo } from "@/Utils/qrCode"
-import { Head, Link } from "@inertiajs/react"
+import { Link } from "@inertiajs/react"
+import SeoHead from "@/Components/SeoHead"
 import { useEffect, useState } from "react"
 import axios from "axios"
 
@@ -177,7 +178,11 @@ export default function Links({ auth }) {
                 </div>
             }
         >
-            <Head title="Links" />
+            <SeoHead
+                title="Links"
+                description="Create, organize, and manage your short links from one place. Review destinations and link activity, update the URLs you share, and quickly find links across your account."
+                noindex
+            />
 
             <main className="bg-paper font-grotesk text-ink">
                 <section className="border-b border-line bg-paper">
