@@ -222,8 +222,8 @@ export default function Pricing({ plans: serverPlans = null }) {
                             Start free. Upgrade when your links need more.
                         </Reveal>
                         <Reveal delay={120} className="mt-3 max-w-xl text-sm text-muted">
-                            The free tier is $0. Self-serve plan prices and limits are listed below before you choose;
-                            Enterprise pricing is tailored.
+                            The free tier is $0. Self-serve plan prices and limits are listed below before you
+                            choose; Enterprise pricing is tailored.
                         </Reveal>
 
                         <div className="mt-8 inline-flex border border-line font-mono text-[11px] uppercase tracking-[0.16em]">

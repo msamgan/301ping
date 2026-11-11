@@ -29,7 +29,7 @@ const FEATURES = [
 
 export default function Features() {
     return (
-        <section className="border-b border-line bg-paper" aria-labelledby="features-heading">
+        <section className="border-b border-line bg-paper" aria-labelledby="features-heading" id={"features"}>
             <div className="mx-auto max-w-grid px-6 md:px-10 lg:px-16 py-20 md:py-28">
                 <Reveal className="flex items-baseline justify-between font-mono text-[11px] uppercase tracking-[0.18em] text-muted mb-8">
                     <span>03 / Capabilities</span>

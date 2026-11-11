@@ -154,7 +154,8 @@ export default function EditDestination() {
                                 Services / Edit destination
                             </p>
                             <h1 className="max-w-2xl font-editorial text-5xl font-normal leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
-                                Change a short link destination, <span className="text-accent">not the link.</span>
+                                Change a short link destination,{" "}
+                                <span className="text-accent">not the link.</span>
                             </h1>
                             <p className="mt-7 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
                                 Change where a short link sends people without touching the link itself. Fix a

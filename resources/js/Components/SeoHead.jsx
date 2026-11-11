@@ -1,6 +1,15 @@
 import { Head, usePage } from "@inertiajs/react"
 
-export default function SeoHead({ title, description, noindex = false, structuredData = null, image = null, imageAlt = null, type = "website", article = null }) {
+export default function SeoHead({
+    title,
+    description,
+    noindex = false,
+    structuredData = null,
+    image = null,
+    imageAlt = null,
+    type = "website",
+    article = null
+}) {
     const { props, url } = usePage()
     const siteUrl = props.siteUrl || "http://localhost"
     const pageUrl = new URL(url, siteUrl)
@@ -27,8 +36,20 @@ export default function SeoHead({ title, description, noindex = false, structure
             <meta name="twitter:description" content={description} head-key="twitter:description" />
             <meta name="twitter:image" content={imageUrl} head-key="twitter:image" />
             <meta name="twitter:image:alt" content={imageDescription} head-key="twitter:image:alt" />
-            {article && <meta property="article:published_time" content={article.publishedTime} head-key="article:published_time" />}
-            {article && <meta property="article:modified_time" content={article.modifiedTime} head-key="article:modified_time" />}
+            {article && (
+                <meta
+                    property="article:published_time"
+                    content={article.publishedTime}
+                    head-key="article:published_time"
+                />
+            )}
+            {article && (
+                <meta
+                    property="article:modified_time"
+                    content={article.modifiedTime}
+                    head-key="article:modified_time"
+                />
+            )}
             {article && <meta property="article:author" content={article.author} head-key="article:author" />}
             {article &&
                 (article.tags || []).map((tag) => (

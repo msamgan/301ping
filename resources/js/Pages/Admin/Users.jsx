@@ -68,7 +68,9 @@ export default function Users({ auth, users, search, adminIds }) {
                         <tbody>
                             {users.data.map((u) => (
                                 <tr key={u.id} className="border-b border-line last:border-b-0">
-                                    <td className="px-4 py-3 font-mono text-xs tabular-nums text-muted">{u.id}</td>
+                                    <td className="px-4 py-3 font-mono text-xs tabular-nums text-muted">
+                                        {u.id}
+                                    </td>
                                     <td className="px-4 py-3 text-ink">
                                         {u.name}
                                         {adminIds.includes(u.id) && (

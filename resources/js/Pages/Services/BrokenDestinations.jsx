@@ -174,7 +174,8 @@ export default function BrokenDestinations() {
                                 Services / Broken destination monitoring
                             </p>
                             <h1 className="max-w-2xl font-editorial text-5xl font-normal leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
-                                Monitor broken links. <span className="text-accent">Keep short URLs working.</span>
+                                Monitor broken links.{" "}
+                                <span className="text-accent">Keep short URLs working.</span>
                             </h1>
                             <p className="mt-7 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
                                 A short link is only useful when it leads somewhere. Monitor the pages behind

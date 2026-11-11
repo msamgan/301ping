@@ -2,7 +2,7 @@ import UrlShortener from "@/Components/Home/UrlShortener"
 
 export default function UrlShortenerPanel({ onSuccess }) {
     return (
-        <div>
+        <div id="shortener-panel">
             <div className="relative isolate border border-ink bg-white p-5 sm:p-6">
                 <div
                     className="absolute -bottom-2 left-2 right-[-8px] top-2 -z-10 bg-accent"

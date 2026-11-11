@@ -4,7 +4,7 @@ import ArrowIcon from "@/Components/Home/ArrowIcon"
 const CAPABILITIES = [
     {
         title: "Click analytics",
-        href: "#features-heading"
+        href: route("services.link-analytics")
     },
     {
         title: "Branded QR codes",
@@ -88,7 +88,7 @@ export default function Hero() {
                                 <span className="absolute left-[12%] top-[25%] h-3 w-3 rounded-full border border-ink bg-paper" />
                                 <span className="absolute bottom-[24%] right-[13%] h-4 w-4 rounded-full bg-ink" />
                                 <span className="relative -rotate-6 border border-ink bg-paper px-6 py-3 font-mono text-sm font-bold uppercase tracking-[0.1em] shadow-[5px_5px_0_#111111] sm:text-base">
-                                    Your link ↗
+                                    301p.ing/something ↗
                                 </span>
                             </div>
 
@@ -96,8 +96,8 @@ export default function Hero() {
                                 <p className="max-w-[13rem] font-editorial text-3xl leading-none sm:text-4xl">
                                     One link. Many directions.
                                 </p>
-                                <span className="pb-1 font-mono text-[10px] uppercase tracking-[0.12em]">
-                                    Go further ↗
+                                <span className="pb-1 font-mono text-[10px] uppercase tracking-[0.12em] underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
+                                    Go further then you think you can go.
                                 </span>
                             </div>
                         </div>
@@ -121,7 +121,15 @@ export default function Hero() {
                                 ))}
                             </div>
                             <p className="border-t border-paper/20 pt-4 font-mono text-[10px] leading-relaxed uppercase tracking-[0.1em] text-paper/70">
-                                Plus tags, editable destinations, API &amp; browser extensions
+                                Plus <a href={route("services.link-tags")}>tags</a>,
+                                <a className={"ml-1"} href={route("services.edit-destination")}>
+                                    editable destinations
+                                </a>
+                                ,
+                                <a className={"ml-1 mr-1"} href={route("documentation.api")}>
+                                    API &amp;
+                                </a>
+                                browser extensions & more. <a href={route("pricing")}>See all features</a>.
                             </p>
                         </div>
                     </div>
@@ -130,7 +138,7 @@ export default function Hero() {
                 <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-line pt-5 font-mono text-[10px] uppercase tracking-[0.14em] text-muted">
                     <span>Built for creators, marketers &amp; developers</span>
                     <a
-                        href="#features-heading"
+                        href="#features"
                         className="text-ink underline underline-offset-4 hover:text-accent-dark"
                     >
                         Explore the capabilities ↓
