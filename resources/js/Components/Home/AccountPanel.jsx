@@ -93,6 +93,11 @@ export default function AccountPanel({ isAuthenticated, user }) {
                                 </div>
                             )}
                         </Reveal>
+                        {!isAuthenticated && (
+                            <p className="mt-3 font-mono text-xs text-paper/60">
+                                Free forever. No credit card required.
+                            </p>
+                        )}
                     </div>
 
                     <div className="lg:col-span-8">

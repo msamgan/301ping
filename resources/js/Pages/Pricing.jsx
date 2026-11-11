@@ -319,6 +319,21 @@ export default function Pricing({ plans: serverPlans = null }) {
                                                     >
                                                         {getPlanCtaLabel(plan)}
                                                     </a>
+                                                    {plan.name === "Free" ? (
+                                                        <p className="mt-2 text-center font-mono text-[10px] leading-relaxed text-muted">
+                                                            Free forever. No CC required.
+                                                        </p>
+                                                    ) : plan.priceIds ? (
+                                                        <p className="mt-2 text-center font-mono text-[10px] leading-relaxed text-muted">
+                                                            Checkout by Paddle ·{" "}
+                                                            <a
+                                                                href={route("refund-policy")}
+                                                                className="underline underline-offset-2 hover:text-accent-dark"
+                                                            >
+                                                                Refund policy
+                                                            </a>
+                                                        </p>
+                                                    ) : null}
                                                 </th>
                                             )
                                         })}
