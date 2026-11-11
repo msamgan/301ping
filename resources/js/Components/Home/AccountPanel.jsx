@@ -40,7 +40,7 @@ export default function AccountPanel({ isAuthenticated, user }) {
         <section className="bg-ink text-paper" aria-labelledby="account-heading">
             <div className="mx-auto max-w-grid px-6 md:px-10 lg:px-16 py-20 md:py-28">
                 <Reveal className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper/50 mb-8">
-                    06 / Account
+                    07 / Account
                 </Reveal>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-14">
