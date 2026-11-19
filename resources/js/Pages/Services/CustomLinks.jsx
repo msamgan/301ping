@@ -18,9 +18,9 @@ const benefits = [
     },
     {
         number: "02",
-        title: "More trust, more clicks",
+        title: "A recognizable address",
         description:
-            "A meaningful back-half looks intentional and safe. Readable links feel less like spam and earn more clicks."
+            "A meaningful back-half helps people recognize the purpose of a link before they visit it."
     },
     {
         number: "03",
@@ -36,9 +36,9 @@ const benefits = [
     },
     {
         number: "05",
-        title: "Change it anytime",
+        title: "Choose your own slug",
         description:
-            "Picked the wrong word? Edit the back-half from your Links page whenever you like. No need to recreate the link."
+            "Edit the back-half from your Links page, subject to your plan's limits. Changing it also changes the address you share."
     },
     {
         number: "06",
@@ -141,8 +141,8 @@ export default function CustomLinks() {
     return (
         <div className="min-h-screen bg-paper">
             <SeoHead
-                title="Custom Short Links"
-                description="Create custom short links with meaningful words instead of random characters. Give every URL a memorable, trustworthy address that is easy to recognize, share, and use across campaigns."
+                title="Custom URL Shortener"
+                description="Create custom short links with memorable words instead of random characters. Start free and organize, track and share your links."
             />
             <Header isAuthenticated={isAuthenticated} user={user} />
 
@@ -154,11 +154,11 @@ export default function CustomLinks() {
                                 Services / Custom links
                             </p>
                             <h1 className="max-w-2xl font-editorial text-5xl font-normal leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
-                                Custom short links, <span className="text-accent">your words.</span>
+                                Custom URL shortener, <span className="text-accent">your words.</span>
                             </h1>
                             <p className="mt-7 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
-                                Customize the back-half of any short link. Swap a random string for something
-                                meaningful, so your links are easier to read, remember, and trust.
+                                Create a short link, then replace its random back-half with a memorable word.
+                                The free plan includes three custom links; higher limits are available on paid plans.
                             </p>
                             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                                 <Link
@@ -175,7 +175,7 @@ export default function CustomLinks() {
                                 </Link>
                             </div>
                             <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
-                                Memorable / Editable anytime / Works with QR codes
+                                Memorable / Plan limits apply / Works with QR codes
                             </p>
                         </div>
 

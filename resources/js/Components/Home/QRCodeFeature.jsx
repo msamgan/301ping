@@ -74,11 +74,11 @@ export default function QRCodeFeature() {
                             id="qr-code-heading"
                             className="font-editorial text-paper text-5xl sm:text-6xl leading-[1.05] mb-6"
                         >
-                            Scan it. Share it. Make it yours.
+                            A URL shortener with QR codes.
                         </h2>
                         <p className="font-grotesk text-base sm:text-lg text-paper/70 max-w-2xl leading-relaxed">
-                            Give every short link a scan-ready QR code you can download and share. Add your own
-                            custom logo in the center to make the code feel unmistakably yours.
+                            Turn a saved short link into a QR code you can download for print or digital
+                            sharing. Paid plans let you add your own logo to the code.
                         </p>
                     </Reveal>
 
@@ -141,7 +141,7 @@ export default function QRCodeFeature() {
                             Branded by you
                         </h3>
                         <p className="font-grotesk text-sm text-paper/70 leading-relaxed max-w-md">
-                            Place your custom logo at its center for a more personal, recognizable code.
+                            Add your own logo on a paid plan for a more recognizable code.
                         </p>
                     </Reveal>
                 </div>

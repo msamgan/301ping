@@ -41,10 +41,10 @@ export default function Hero({ activeLinkCount }) {
                             id="hero-heading"
                             className="font-editorial text-[clamp(3.25rem,6vw,6.5rem)] leading-[0.92] tracking-[-0.04em] text-ink"
                         >
-                            Short links.
+                            Free URL shortener.
                             <br />
                             <span className="relative inline-block text-accent-dark">
-                                Big possibilities.
+                                Better links.
                                 <span
                                     className="absolute -bottom-2 left-0 h-1 w-2/3 -rotate-1 bg-accent sm:h-1.5"
                                     aria-hidden="true"
@@ -52,8 +52,8 @@ export default function Hero({ activeLinkCount }) {
                             </span>
                         </h1>
                         <p className="mt-8 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
-                            Shorten a link in seconds. Track visits, create QR codes, and organize links for
-                            every campaign or client in one place.
+                            Create a short link for any URL in seconds. Save links to a free account, track
+                            visits, and make QR codes for your campaigns, clients, or everyday sharing.
                         </p>
 
                         <div className="mt-8 max-w-xl sm:mt-10">

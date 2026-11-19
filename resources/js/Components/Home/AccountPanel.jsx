@@ -5,7 +5,7 @@ import ArrowIcon from "@/Components/Home/ArrowIcon"
 const AUTH_BENEFITS = [
     {
         title: "Track your links",
-        body: "Monitor usage statistics and performance of your shortened URLs with our analytics dashboard."
+        body: "See visit counts for saved links. Paid plans include detailed analytics."
     },
     {
         title: "API access",
@@ -24,7 +24,7 @@ const GUEST_BENEFITS = [
     },
     {
         title: "Link analytics",
-        body: "Track click counts, usage patterns, and performance metrics for all your shortened URLs."
+        body: "See visit counts for saved links on the free plan, or choose a paid plan for detailed analytics."
     },
     {
         title: "Link management",

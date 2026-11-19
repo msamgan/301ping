@@ -162,8 +162,8 @@ export default function LinkAnalytics() {
     return (
         <div className="min-h-screen bg-paper">
             <SeoHead
-                title="Link Analytics for Short URLs"
-                description="Understand how your short links perform with visit trends and breakdowns by country, device, browser, operating system, language, and referrer."
+                title="URL Shortener with Tracking"
+                description="Track short link visits with 301 Ping. See visit counts for free and explore detailed link analytics on paid plans."
             />
             <Header isAuthenticated={isAuthenticated} user={user} />
 
@@ -175,11 +175,11 @@ export default function LinkAnalytics() {
                                 Services / Link analytics
                             </p>
                             <h1 className="max-w-2xl font-editorial text-5xl font-normal leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
-                                See what happens <span className="text-accent">after the click.</span>
+                                URL shortener with <span className="text-accent">tracking.</span>
                             </h1>
                             <p className="mt-7 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
-                                Learn how your short links perform. Track visit trends and explore the
-                                countries, devices, browsers, and sources behind your traffic.
+                                See visit counts for saved links with a free account. On paid plans, explore
+                                visit trends and breakdowns by country, device, browser, and referrer.
                             </p>
                             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                                 <Link

@@ -2,7 +2,7 @@ import Reveal from "@/Components/Home/Reveal"
 
 const STEPS = [
     { title: "Paste", body: "Drop your long URL into the field above." },
-    { title: "Shorten", body: "We generate a short, permanent link instantly." },
+    { title: "Shorten", body: "Get a short link with no set expiry date." },
     { title: "Share", body: "Send it anywhere. Copy it in one click." }
 ]
 
@@ -20,7 +20,7 @@ export default function Process() {
                             id="process-heading"
                             className="font-grotesk font-extrabold text-ink text-4xl leading-[1.05]"
                         >
-                            Three steps. That's it.
+                            How to create a short link.
                         </Reveal>
                     </div>
 

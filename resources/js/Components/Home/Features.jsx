@@ -2,16 +2,16 @@ import Reveal from "@/Components/Home/Reveal"
 
 const FEATURES = [
     {
-        title: "Make a link you can share",
-        body: "Paste a long URL, shorten it, and copy it without creating an account."
+        title: "Shorten a URL for free",
+        body: "Paste a long web address into the link shortener and copy your short URL. No account is needed."
     },
     {
-        title: "Shorten links from your app",
-        body: "Use the API to make a short link from your own app."
+        title: "Create short links from your app",
+        body: "Use the authenticated URL shortener API to create links from your own application. Plan limits apply."
     },
     {
-        title: "Know which links get visits",
-        body: "See click counts and analytics for the links you share."
+        title: "Track short link visits",
+        body: "A free account shows visit counts for saved links. Paid plans add detailed link analytics."
     },
     {
         title: "Find links by campaign or client",
@@ -40,7 +40,7 @@ export default function Features() {
                     id="features-heading"
                     className="font-grotesk font-extrabold text-ink text-4xl sm:text-5xl leading-[1.05] max-w-3xl mb-14 md:mb-20"
                 >
-                    Make, manage, and measure the links you share.
+                    A link shortening service built for sharing.
                 </Reveal>
 
                 <figure className="mb-12 md:mb-16">

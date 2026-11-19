@@ -30,8 +30,8 @@ export default function Welcome({ activeLinkCount }) {
     return (
         <>
             <SeoHead
-                title="URL Shortener & Short Links"
-                description="Shorten long URLs into memorable links, create custom branded URLs, track clicks with detailed analytics, and turn links into branded QR codes. Manage every campaign from one simple dashboard."
+                title="Free URL Shortener & Link Shortener"
+                description="Shorten URLs for free with 301 Ping. Create custom short links and QR codes, track visits, and organize links in one place."
             />
             <Header isAuthenticated={isAuthenticated} user={user} />
 

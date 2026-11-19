@@ -104,8 +104,8 @@ export default function QrCodeLogo() {
     return (
         <div className="min-h-screen bg-paper">
             <SeoHead
-                title="Branded QR Codes for Short Links"
-                description="Create branded QR codes for your short links, add your logo, and download high-resolution PNGs for print or digital use. Update destinations later without replacing printed codes."
+                title="URL Shortener with QR Codes"
+                description="Create a short link and download its QR code for print or digital use. Add your own logo to QR codes on paid plans."
             />
             <Header isAuthenticated={isAuthenticated} user={user} />
 
@@ -117,12 +117,11 @@ export default function QrCodeLogo() {
                                 Services / Branded QR codes
                             </p>
                             <h1 className="max-w-2xl font-editorial text-5xl font-normal leading-[1.05] text-ink sm:text-6xl lg:text-7xl">
-                                Branded QR codes <span className="text-accent">with your logo.</span>
+                                URL shortener with <span className="text-accent">QR codes.</span>
                             </h1>
                             <p className="mt-7 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
-                                Turn any 301 Ping short link into a scan-ready QR code with your logo at the
-                                center. Make every scan feel like part of your brand, from the first glance to
-                                the final click.
+                                Turn a saved 301 Ping short link into a QR code for print or digital sharing.
+                                On paid plans, add your own logo at the center.
                             </p>
                             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                                 <Link
@@ -350,7 +349,7 @@ export default function QrCodeLogo() {
                                     </p>
                                 </div>
                                 <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
-                                    Unlimited
+                                    5 logos
                                 </span>
                             </div>
                             <div className="grid grid-cols-[1fr_auto] items-center gap-4 py-5">

@@ -4,8 +4,8 @@ return [
     'image' => '/android-chrome-512x512.png',
     'routes' => [
         'home' => [
-            'title' => 'URL Shortener & Short Links',
-            'description' => 'Shorten long URLs into trackable 301p.ing links with tags, QR codes and a link library. Free to start, $5/mo for detailed analytics.',
+            'title' => 'Free URL Shortener & Link Shortener',
+            'description' => 'Shorten URLs for free with 301 Ping. Create custom short links and QR codes, track visits, and organize links in one place.',
         ],
         'pricing' => [
             'title' => 'URL Shortener Pricing',
@@ -20,16 +20,20 @@ return [
             'description' => 'Use the 301 Ping API to create short links. See bearer-token setup, request and response examples, and error responses.',
         ],
         'services.qr-code-logo' => [
-            'title' => 'Branded QR Codes for Short Links',
-            'description' => 'Create branded QR codes for short links, add your logo and download high-resolution PNGs for print or digital use.',
+            'title' => 'URL Shortener with QR Codes',
+            'description' => 'Create a short link and download its QR code for print or digital use. Add your own logo to QR codes on paid plans.',
         ],
         'services.link-tags' => [
             'title' => 'Organize Short Links with Tags',
             'description' => 'Organize short links by campaign, client or channel. Filter your link library to find a destination and review visits.',
         ],
         'services.custom-links' => [
-            'title' => 'Custom Short Links',
-            'description' => 'Create custom short links with a meaningful word instead of random characters, so they are easier to read, share and recognize.',
+            'title' => 'Custom URL Shortener',
+            'description' => 'Create custom short links with memorable words instead of random characters. Start free and organize, track and share your links.',
+        ],
+        'services.link-analytics' => [
+            'title' => 'URL Shortener with Tracking',
+            'description' => 'Track short link visits with 301 Ping. See visit counts for free and explore detailed link analytics on paid plans.',
         ],
         'services.broken-destinations' => [
             'title' => 'Broken Link Monitoring for Short URLs',
