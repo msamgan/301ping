@@ -72,6 +72,6 @@ it('renders post-specific metadata for blog articles', function () {
 
     expect($html)
         ->toContain('property="og:type" content="article"')
-        ->toContain('name="description" content="Compare Bitly, 301 Ping, and TinyURL')
+        ->toContain('name="description" content="Compare the best URL shorteners in 2026, including Bitly, 301 Ping, and TinyURL.')
         ->toContain('/blog/best-url-shorteners-2026');
 });

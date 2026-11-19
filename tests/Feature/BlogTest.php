@@ -9,7 +9,7 @@ test('blog index lists posts newest first', function () {
 test('blog post renders markdown with metadata', function () {
     $this->get('/blog/what-is-a-url-shortener')->assertOk()->assertInertia(fn ($page) => $page
         ->component('Blog/Show')
-        ->where('post.title', 'What Is a URL Shortener? How It Works and When to Use One')
+        ->where('post.title', 'What Is a URL Shortener? How Short Links Work')
         ->where('post.tags', ['url-shortener', 'short-links', 'link-management'])
         ->where('post.html', fn ($html) => str_contains($html, '<strong>URL shortener</strong>'))
         ->where('post.html', fn ($html) => str_contains($html, 'How 301 Ping can help')));
