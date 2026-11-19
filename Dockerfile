@@ -14,9 +14,7 @@ RUN apk add --no-cache \
     openssh-client \
     git \
     nginx \
-    supervisor \
-    nodejs \
-    npm
+    supervisor
 
 # Install PHP extensions
 RUN docker-php-ext-install \
@@ -53,8 +51,8 @@ RUN mkdir -p /run/nginx /var/log/supervisor /etc/nginx/http.d /etc/supervisor/co
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Expose application and Vite dev server ports
-EXPOSE 8082 5173
+# Expose application port
+EXPOSE 8082
 
 # Start supervisor with supervisord.conf as PID 1
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
