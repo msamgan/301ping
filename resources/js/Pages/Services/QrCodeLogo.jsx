@@ -82,7 +82,7 @@ const benefits = [
     }
 ]
 
-const steps = [
+/*const steps = [
     {
         number: "01",
         title: "Create a short link",
@@ -94,7 +94,7 @@ const steps = [
         title: "Download and share",
         description: "Save your branded QR code as a high-resolution PNG."
     }
-]
+]*/
 
 export default function QrCodeLogo() {
     const { auth } = usePage().props
@@ -243,6 +243,40 @@ export default function QrCodeLogo() {
                                     </p>
                                 </article>
                             ))}
+                        </div>
+                    </div>
+                </section>
+
+                <section className="border-b border-line bg-ink text-paper">
+                    <div className="mx-auto grid max-w-grid grid-cols-1 items-center gap-10 px-6 py-16 md:px-10 md:py-20 lg:grid-cols-12 lg:px-16">
+                        <div className="lg:col-span-4">
+                            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper/50">
+                                See it in action
+                            </p>
+                            <h2 className="mt-5 font-editorial text-4xl font-normal leading-tight text-paper sm:text-5xl">
+                                Your logo, right in the scan.
+                            </h2>
+                            <p className="mt-5 max-w-sm text-sm leading-relaxed text-paper/65">
+                                Watch how to create a short link, add your logo, and get a QR code ready to
+                                share.
+                            </p>
+                        </div>
+                        <div className="lg:col-span-8">
+                            <div className="overflow-hidden border border-paper/20 bg-black">
+                                <video
+                                    className="aspect-video w-full"
+                                    controls
+                                    playsInline
+                                    preload="metadata"
+                                    aria-label="301 Ping branded QR code explainer video"
+                                >
+                                    <source src="/videos/301-ping-explainer-QR-Code.mp4" type="video/mp4" />
+                                    Your browser does not support the video element.
+                                </video>
+                            </div>
+                            <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.12em] text-paper/50">
+                                301 Ping / Branded QR code walkthrough
+                            </p>
                         </div>
                     </div>
                 </section>
