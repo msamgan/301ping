@@ -82,7 +82,7 @@ const benefits = [
     }
 ]
 
-/*const steps = [
+const steps = [
     {
         number: "01",
         title: "Create a short link",
@@ -94,7 +94,7 @@ const benefits = [
         title: "Download and share",
         description: "Save your branded QR code as a high-resolution PNG."
     }
-]*/
+]
 
 export default function QrCodeLogo() {
     const { auth } = usePage().props
